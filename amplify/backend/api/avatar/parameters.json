@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "avatar",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authavatarce3b6f31",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
