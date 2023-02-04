@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Button, Grid, Snackbar, TextField } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useUser } from "../context/AuthContext";
 import { Auth } from "aws-amplify";
-import { CognitoUser } from "@aws-amplify/auth";
 import { useRouter } from "next/router";
 
 interface IFormInput {
@@ -12,7 +10,6 @@ interface IFormInput {
 }
 
 export default function Login() {
-    const { user, setUser } = useUser();
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [signInError, setSignInError] = useState<string>("");
@@ -21,9 +18,14 @@ export default function Login() {
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         const { username, password } = data;
-        const amplifyUser = await Auth.signIn(username, password);
-        if (amplifyUser) router.push(`/`);
-        else throw new Error("Something went wrong.");
+
+        try {
+            await Auth.signIn(username, password);
+            router.push(`/`);
+        } catch (error: any) {
+            setSignInError(error.message);
+            setOpen(true);
+        }
     };
 
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -48,11 +50,7 @@ export default function Login() {
                             type="text"
                             error={errors.username ? true : false}
                             helperText={errors.username ? errors.username.message : null}
-                            {...register("username", {
-                                required: { value: true, message: "Please enter a username." },
-                                minLength: { value: 3, message: "Please enter a username between 3 and 16 characters." },
-                                maxLength: { value: 16, message: "Please enter a username between 3 and 16 characters." },
-                            })} />
+                            {...register("username")} />
                     </Grid>
                     <Grid item>
                         <TextField
@@ -61,10 +59,7 @@ export default function Login() {
                             type="password"
                             error={errors.password ? true : false}
                             helperText={errors.password ? errors.password.message : null}
-                            {...register("password", {
-                                required: { value: true, message: "Please enter a password." },
-                                minLength: { value: 8, message: "Please enter a stronger password." },
-                            })} />
+                            {...register("password")} />
                     </Grid>
                     <br />
                     <Grid>
