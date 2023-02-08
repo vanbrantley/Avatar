@@ -10,7 +10,7 @@ import { CreateGarmentInput, CreateGarmentMutation } from '@/API';
 // import { CirclePicker, ChromePicker } from 'react-color';
 // from https://you.com/search?q=warning%3A%20prop%20%60style%60%20did%20not%20match
 import dynamic from 'next/dynamic';
-const ChromePicker = dynamic(
+const SketchPicker = dynamic(
   () => import('react-color').then((mod) => mod.SketchPicker),
   { ssr: false }
 );
@@ -37,6 +37,11 @@ export default function Home() {
 
   const [showHat, setShowHat] = useState<boolean>(false);
   const [showAdd, setShowAdd] = useState<boolean>(false);
+
+  const [hatSwatches, setHatSwatches] = useState<string[]>(["#fff"]);
+  const [topSwatches, setTopSwatches] = useState<string[]>(["#fff"]);
+  const [bottomSwatches, setBottomSwatches] = useState<string[]>(["#fff"]);
+  const [shoeSwatches, setShoeSwatches] = useState<string[]>(["#fff"]);
 
   const hatColors: string[] = ["#000", "#fff"];
   const topColors: string[] = ["#000", "#fff"];
@@ -68,32 +73,6 @@ export default function Home() {
     }
   }
 
-  const handleColorChangeSwatch = (color: string, area: string) => {
-
-    // want to also have the selectedColor to be updated in the color picker
-
-    switch (area) {
-      case "hat":
-        setHatColor(color);
-        if (!showHat) setShowHat(true);
-        break;
-      case "top":
-        console.log("Entered case.")
-        setTopColor(color);
-        break;
-      case "bottom":
-        setBottomColor(color);
-        break;
-      case "shoes":
-        setShoeColor(color);
-        break;
-      default:
-        break;
-    }
-    setSelectedArea(area);
-    setSelectedColor(color);
-  }
-
   const handleColorChangePicker = (color: string) => {
 
     // sets the color of the selectedArea to the color
@@ -115,11 +94,60 @@ export default function Home() {
         break;
     }
 
-    // when selectedArea is changed, selectedColor should be set to the color of the new area
-
-    // handle how saved colors are integrated into this
-
     setSelectedColor(color);
+
+  }
+
+  const handleColorChangeSwatch = (color: string, area: string) => {
+
+
+    switch (area) {
+      case "hat":
+        setHatColor(color);
+        if (!showHat) setShowHat(true);
+        break;
+      case "top":
+        setTopColor(color);
+        break;
+      case "bottom":
+        setBottomColor(color);
+        break;
+      case "shoes":
+        setShoeColor(color);
+        break;
+      default:
+        break;
+    }
+
+    setSelectedArea(area);
+    setSelectedColor(color);
+
+  }
+
+  const addColorSwatch = (area: string) => {
+    switch (area) {
+      case "hat":
+        setHatSwatches([hatColor, ...hatSwatches]);
+        setSelectedColor(hatColor);
+        break;
+      case "top":
+        setTopSwatches([topColor, ...topSwatches]);
+        setSelectedColor(topColor);
+        break;
+      case "bottom":
+        setBottomSwatches([bottomColor, ...bottomSwatches]);
+        setSelectedColor(bottomColor);
+        break;
+      case "shoes":
+        setShoeSwatches([shoeColor, ...shoeSwatches]);
+        setSelectedColor(shoeColor);
+        break;
+      default:
+        break;
+    }
+
+    setSelectedArea(area);
+
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -157,7 +185,13 @@ export default function Home() {
       {/* <Typography variant='h1'>Hello World!</Typography> */}
 
       <Grid container spacing={1}>
-        <Grid item xs={7}>
+        <Grid item xs={1}>
+          <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", backgroundColor: hatColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", backgroundColor: topColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", backgroundColor: bottomColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", backgroundColor: shoeColor }}></Button></Grid>
+        </Grid>
+        <Grid item xs={6}>
           <Grid container direction="column" alignItems="center">
             <Grid item>
               {showHat ? (
@@ -183,83 +217,41 @@ export default function Home() {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={3}>
           <Grid container direction="column">
-            <Grid item container style={{ maxHeight: "80px", overflowY: "auto" }}>
-              <Grid item style={{ width: "75px" }}>Hat</Grid>
+            <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
+              {/* <Grid item style={{ width: "75px" }}>Hat</Grid> */}
               <Grid item><Button onClick={() => setShowHat(false)} variant="outlined" style={{ height: "30px" }}></Button></Grid>
-              {hatColors.map((color) => (
+              {hatSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "hat")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
             </Grid>
-            <Grid item container style={{ maxHeight: "80px", overflowY: "auto" }}>
-              <Grid item style={{ width: "75px" }}>Top</Grid>
-              {topColors.map((color) => (
+            <br></br>
+            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+              {/* <Grid item style={{ width: "75px" }}>Top</Grid> */}
+              {topSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "top")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
             </Grid>
-            <Grid item container style={{ maxHeight: "80px", overflowY: "auto" }}>
-              <Grid item style={{ width: "75px" }}>Bottom</Grid>
-              {bottomColors.map((color) => (
+            <br></br>
+            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+              {/* <Grid item style={{ width: "75px" }}>Bottom</Grid> */}
+              {bottomSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "bottom")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
             </Grid>
-            <Grid item container style={{ maxHeight: "80px", overflowY: "auto" }}>
-              <Grid item style={{ width: "75px" }}>Shoe</Grid>
-              {shoeColors.map((color) => (
+            <br></br>
+            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+              {/* <Grid item style={{ width: "75px" }}>Shoe</Grid> */}
+              {shoeSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "shoes")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
             </Grid>
-            <Grid item>
-              {showAdd ?
-                <IconButton onClick={() => setShowAdd(false)}>
-                  <RemoveIcon color="secondary" />
-                </IconButton>
-                :
-                <IconButton onClick={() => setShowAdd(true)}>
-                  <AddIcon color="secondary" />
-                </IconButton>
-              }
-            </Grid>
-            {showAdd && (
-              <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-                <Grid container direction="row" alignItems="center" spacing={1}>
-                  <Grid item>
-                    <TextField
-                      id="color"
-                      label="Color"
-                      type="color"
-                      style={{ width: "80px" }}
-                      error={errors.color ? true : false}
-                      helperText={errors.color ? errors.color.message : null}
-                      {...register("color")} />
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      select
-                      id="type"
-                      label="Type"
-                      type="text"
-                      defaultValue="Top"
-                      error={errors.type ? true : false}
-                      helperText={errors.type ? errors.type.message : null}
-                      {...register("type")}>
-                      <MenuItem value="Hat">Hat</MenuItem>
-                      <MenuItem value="Top">Top</MenuItem>
-                      <MenuItem value="Bottom">Bottom</MenuItem>
-                      <MenuItem value="Shoes">Shoes</MenuItem>
-                    </TextField>
-                  </Grid>
-                  <Grid>
-                    <Button type="submit" variant="contained">Add</Button>
-                  </Grid>
-                </Grid>
-              </form>
-            )}
-            {!showAdd && (
-              <ChromePicker color={selectedColor}
-                onChangeComplete={color => handleColorChangePicker(color.hex)} />
-            )}
+            <br></br>
+          </Grid>
+          <Grid item xs={2}>
+            <SketchPicker disableAlpha color={selectedColor}
+              onChangeComplete={color => handleColorChangePicker(color.hex)} />
           </Grid>
         </Grid>
       </Grid>
