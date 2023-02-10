@@ -1,3 +1,3 @@
-## Avatar
+# Avatar
 
 Manage your wardrobe
