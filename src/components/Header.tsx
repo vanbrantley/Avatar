@@ -38,6 +38,7 @@ export default function Header() {
                     </Typography>
                     {user && (
                         <>
+                            <Button style={{ color: "white" }}>Lab</Button>
                             <Button style={{ color: "white" }}>Palettes</Button>
                             <Button style={{ color: "white", marginRight: "10px" }}>Wardrobe</Button>
                             <Button variant='contained' onClick={() => signUserOut()}>Sign Out</Button>
