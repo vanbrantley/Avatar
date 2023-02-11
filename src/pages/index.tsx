@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+import LockIcon from '@mui/icons-material/Lock';
 import { useUser } from '../context/AuthContext';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { API } from 'aws-amplify';
@@ -40,13 +42,20 @@ export default function Home() {
 
   const [showHat, setShowHat] = useState<boolean>(false);
 
+  const [hatHistory, setHatHistory] = useState<string[]>([]);
+  const [topHistory, setTopHistory] = useState<string[]>([]);
+  const [bottomHistory, setBottomHistory] = useState<string[]>([]);
+  const [shoeHistory, setShoeHistory] = useState<string[]>([]);
+
+
   const [hatSwatches, setHatSwatches] = useState<string[]>(["#fff"]);
   const [topSwatches, setTopSwatches] = useState<string[]>(["#fff"]);
   const [bottomSwatches, setBottomSwatches] = useState<string[]>(["#fff"]);
   const [shoeSwatches, setShoeSwatches] = useState<string[]>(["#fff"]);
 
-  // const hexNumber = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-  // console.log(hexNumber);
+  useEffect(() => {
+    randomizePalette()
+  }, [])
 
   const { register, formState: { errors }, handleSubmit } = useForm<IFormInput>();
 
@@ -72,26 +81,33 @@ export default function Home() {
 
   const handleColorChangePicker = (color: string) => {
 
-    // sets the color of the selectedArea to the color
+    // sets the color of the selectedArea to the color picker color
     switch (selectedArea) {
       case "hat":
         setHatColor(color);
         if (!showHat) setShowHat(true);
+        setHatHistory([color, ...hatHistory]);
         break;
       case "top":
         setTopColor(color);
+        setTopHistory([color, ...topHistory]);
         break;
       case "bottom":
         setBottomColor(color);
+        setBottomHistory([color, ...bottomHistory]);
         break;
       case "shoes":
         setShoeColor(color);
+        setShoeHistory([color, ...shoeHistory]);
         break;
       default:
         break;
     }
 
     setSelectedColor(color);
+
+    // add color to history
+
 
   }
 
@@ -145,6 +161,42 @@ export default function Home() {
     }
 
     setSelectedArea(area);
+
+  }
+
+  const randomizePalette = () => {
+
+    const randomHatColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+    const randomTopColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+    const randomBottomColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+    const randomShoeColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+
+    setHatColor(randomHatColor);
+    setTopColor(randomTopColor);
+    setBottomColor(randomBottomColor);
+    setShoeColor(randomShoeColor);
+
+    // add colors to the histories
+    setHatHistory([randomHatColor, ...hatHistory]);
+    setTopHistory([randomTopColor, ...topHistory]);
+    setBottomHistory([randomBottomColor, ...bottomHistory]);
+    setShoeHistory([randomShoeColor, ...shoeHistory]);
+
+    // set the selected color to the color of the selected area
+    switch (selectedArea) {
+      case "hat":
+        setSelectedColor(hatColor);
+        break;
+      case "top":
+        setSelectedColor(topColor);
+        break;
+      case "bottom":
+        setSelectedColor(bottomColor);
+        break;
+      case "shoe":
+        setSelectedColor(shoeColor);
+        break;
+    }
 
   }
 
@@ -202,10 +254,10 @@ export default function Home() {
           <SwatchMenu
             handler={handleColorChangeSwatch}
             setShowHat={setShowHat}
-            hatSwatches={hatSwatches}
-            topSwatches={topSwatches}
-            bottomSwatches={bottomSwatches}
-            shoeSwatches={shoeSwatches} />
+            hatSwatches={hatHistory}
+            topSwatches={topHistory}
+            bottomSwatches={bottomHistory}
+            shoeSwatches={shoeHistory} />
           <Grid container flexWrap="nowrap">
             <Grid item>
               <SketchPicker
@@ -213,13 +265,20 @@ export default function Home() {
                 color={selectedColor}
                 onChangeComplete={color => handleColorChangePicker(color.hex)} />
             </Grid>
-            <Grid item>
-              <Palette
-                handler={addColorSwatch}
-                hatColor={hatColor}
-                topColor={topColor}
-                bottomColor={bottomColor}
-                shoeColor={shoeColor} />
+            <Grid container direction="column">
+              <Grid item>
+                <Palette
+                  handler={addColorSwatch}
+                  hatColor={hatColor}
+                  topColor={topColor}
+                  bottomColor={bottomColor}
+                  shoeColor={shoeColor} />
+              </Grid>
+              <Grid item>
+                <IconButton onClick={() => randomizePalette()}>
+                  <ShuffleIcon style={{ color: "white" }} />
+                </IconButton>
+              </Grid>
             </Grid>
           </Grid>
 
