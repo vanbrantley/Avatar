@@ -42,12 +42,6 @@ export default function Home() {
 
   const [showHat, setShowHat] = useState<boolean>(false);
 
-  const [hatHistory, setHatHistory] = useState<string[]>([]);
-  const [topHistory, setTopHistory] = useState<string[]>([]);
-  const [bottomHistory, setBottomHistory] = useState<string[]>([]);
-  const [shoeHistory, setShoeHistory] = useState<string[]>([]);
-
-
   const [hatSwatches, setHatSwatches] = useState<string[]>(["#fff"]);
   const [topSwatches, setTopSwatches] = useState<string[]>(["#fff"]);
   const [bottomSwatches, setBottomSwatches] = useState<string[]>(["#fff"]);
@@ -86,19 +80,15 @@ export default function Home() {
       case "hat":
         setHatColor(color);
         if (!showHat) setShowHat(true);
-        setHatHistory([color, ...hatHistory]);
         break;
       case "top":
         setTopColor(color);
-        setTopHistory([color, ...topHistory]);
         break;
       case "bottom":
         setBottomColor(color);
-        setBottomHistory([color, ...bottomHistory]);
         break;
       case "shoes":
         setShoeColor(color);
-        setShoeHistory([color, ...shoeHistory]);
         break;
       default:
         break;
@@ -176,12 +166,6 @@ export default function Home() {
     setBottomColor(randomBottomColor);
     setShoeColor(randomShoeColor);
 
-    // add colors to the histories
-    setHatHistory([randomHatColor, ...hatHistory]);
-    setTopHistory([randomTopColor, ...topHistory]);
-    setBottomHistory([randomBottomColor, ...bottomHistory]);
-    setShoeHistory([randomShoeColor, ...shoeHistory]);
-
     // set the selected color to the color of the selected area
     switch (selectedArea) {
       case "hat":
@@ -234,30 +218,72 @@ export default function Home() {
     <>
       <Grid container spacing={1}>
         <Grid item xs={1}>
-          <Palette
-            handler={addColorSwatch}
-            hatColor={hatColor}
-            topColor={topColor}
-            bottomColor={bottomColor}
-            shoeColor={shoeColor} />
+          {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
+          <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", backgroundColor: hatColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", backgroundColor: topColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", backgroundColor: bottomColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", backgroundColor: shoeColor }}></Button></Grid>
         </Grid>
         <Grid item xs={6}>
-          <Avatar
-            handler={handleAreaChange}
-            showHat={showHat}
-            hatColor={hatColor}
-            topColor={topColor}
-            bottomColor={bottomColor}
-            shoeColor={shoeColor} />
+          {/* <Avatar handler={handleAreaChange} showHat={showHat} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
+          <Grid container direction="column" alignItems="center">
+            <Grid item>
+              {showHat ? (
+                <Button onClick={() => handleAreaChange("hat")} style={{ height: "40px", width: "62px", marginLeft: "auto", marginRight: "auto", backgroundColor: hatColor, borderTopLeftRadius: "60% 90%", borderTopRightRadius: "60% 90%" }}></Button>
+              )
+                : (
+                  <div style={{ height: "15px" }}></div>
+                )}
+            </Grid>
+            <Grid item>
+              <div className="face" style={showHat ?
+                { height: "55px", width: "60px", marginLeft: "auto", marginRight: "auto", backgroundColor: "#a18057", borderBottomLeftRadius: "120%", borderBottomRightRadius: "120%" }
+                : { height: "80px", width: "60px", marginLeft: "auto", marginRight: "auto", backgroundColor: "#a18057", borderTopRightRadius: "40%", borderTopLeftRadius: "40%", borderBottomLeftRadius: "45%", borderBottomRightRadius: "45%" }}></div>
+            </Grid>
+            <Grid item>
+              <Button onClick={() => handleAreaChange("top")} style={{ height: "180px", width: "125px", marginLeft: "auto", marginRight: "auto", backgroundColor: topColor, borderTopLeftRadius: "30%", borderTopRightRadius: "30%" }}></Button>
+            </Grid>
+            <Grid item>
+              <Button onClick={() => handleAreaChange("bottom")} style={{ height: "180px", width: "125px", marginLeft: "auto", marginRight: "auto", backgroundColor: bottomColor }}></Button>
+            </Grid>
+            <Grid item>
+              <Button onClick={() => handleAreaChange("shoes")} style={{ height: "50px", width: "170px", marginLeft: "auto", marginRight: "auto", backgroundColor: shoeColor, borderTopRightRadius: "15% 60%", borderTopLeftRadius: "15% 60%", borderBottomLeftRadius: "15% 60%", borderBottomRightRadius: "15% 60%" }}></Button>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={3}>
-          <SwatchMenu
-            handler={handleColorChangeSwatch}
-            setShowHat={setShowHat}
-            hatSwatches={hatHistory}
-            topSwatches={topHistory}
-            bottomSwatches={bottomHistory}
-            shoeSwatches={shoeHistory} />
+          {/* <SwatchMenu handler={handleColorChangeSwatch} setShowHat={setShowHat} hatSwatches={hatHistory} topSwatches={topHistory} bottomSwatches={bottomHistory} shoeSwatches={shoeHistory} /> */}
+          <Grid container direction="column">
+            <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
+              {/* <Grid item style={{ width: "75px" }}>Hat</Grid> */}
+              <Grid item><Button onClick={() => setShowHat(false)} variant="outlined" style={{ height: "30px" }}></Button></Grid>
+              {hatSwatches.map((color) => (
+                <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "hat")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
+              ))}
+            </Grid>
+            <br></br>
+            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+              {/* <Grid item style={{ width: "75px" }}>Top</Grid> */}
+              {topSwatches.map((color) => (
+                <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "top")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
+              ))}
+            </Grid>
+            <br></br>
+            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+              {/* <Grid item style={{ width: "75px" }}>Bottom</Grid> */}
+              {bottomSwatches.map((color) => (
+                <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "bottom")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
+              ))}
+            </Grid>
+            <br></br>
+            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+              {/* <Grid item style={{ width: "75px" }}>Shoe</Grid> */}
+              {shoeSwatches.map((color) => (
+                <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "shoes")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
+              ))}
+            </Grid>
+            <br></br>
+          </Grid>
           <Grid container flexWrap="nowrap">
             <Grid item>
               <SketchPicker
@@ -267,12 +293,11 @@ export default function Home() {
             </Grid>
             <Grid container direction="column">
               <Grid item>
-                <Palette
-                  handler={addColorSwatch}
-                  hatColor={hatColor}
-                  topColor={topColor}
-                  bottomColor={bottomColor}
-                  shoeColor={shoeColor} />
+                {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
+                <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", backgroundColor: hatColor }}></Button></Grid>
+                <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", backgroundColor: topColor }}></Button></Grid>
+                <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", backgroundColor: bottomColor }}></Button></Grid>
+                <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", backgroundColor: shoeColor }}></Button></Grid>
               </Grid>
               <Grid item>
                 <IconButton onClick={() => randomizePalette()}>
