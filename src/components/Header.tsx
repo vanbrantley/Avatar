@@ -9,8 +9,13 @@ import { useUser } from '../context/AuthContext';
 import { Button } from '@mui/material';
 import { useRouter } from 'next/router';
 import { Auth } from 'aws-amplify';
+import { Dispatch, SetStateAction } from 'react';
 
-export default function Header() {
+export interface IHeaderProps {
+    setClosetMode: Dispatch<SetStateAction<boolean>>
+}
+
+export default function Header(props: IHeaderProps) {
 
     const { user } = useUser();
     const router = useRouter();
@@ -38,9 +43,9 @@ export default function Header() {
                     </Typography>
                     {user && (
                         <>
-                            <Button style={{ color: "white" }}>Lab</Button>
+                            <Button onClick={() => props.setClosetMode(false)} style={{ color: "white" }}>Lab</Button>
                             {/* <Button style={{ color: "white" }}>Palettes</Button> */}
-                            <Button style={{ color: "white", marginRight: "10px" }}>Wardrobe</Button>
+                            <Button onClick={() => props.setClosetMode(true)} style={{ color: "white", marginRight: "10px" }}>Closet</Button>
                             <Button variant='contained' onClick={() => signUserOut()}>Sign Out</Button>
                         </>
                     )}

@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Button, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
-import LockIcon from '@mui/icons-material/Lock';
 import { useUser } from '../context/AuthContext';
-import { useForm, SubmitHandler } from 'react-hook-form';
 import { API } from 'aws-amplify';
 import { createGarment } from '@/graphql/mutations';
 import { CreateGarmentInput, CreateGarmentMutation } from '@/API';
 import dynamic from 'next/dynamic';
+import Header from '@/components/Header';
 import Palette from '@/components/Palette';
 import Avatar from '@/components/Avatar';
 import SwatchMenu from '@/components/SwatchMenu';
@@ -20,12 +19,6 @@ const SketchPicker = dynamic(
 //   () => import('react-color').then((mod) => mod.CirclePicker),
 //   { ssr: false }
 // );
-
-
-interface IFormInput {
-  color: string;
-  type: string;
-}
 
 export default function Home() {
 
@@ -47,11 +40,12 @@ export default function Home() {
   const [bottomSwatches, setBottomSwatches] = useState<string[]>(["#fff"]);
   const [shoeSwatches, setShoeSwatches] = useState<string[]>(["#fff"]);
 
+  const [closetMode, setClosetMode] = useState<boolean>(false);
+
   useEffect(() => {
     randomizePalette()
   }, [])
 
-  const { register, formState: { errors }, handleSubmit } = useForm<IFormInput>();
 
   const handleAreaChange = (area: string) => {
 
@@ -96,9 +90,6 @@ export default function Home() {
 
     setSelectedColor(color);
 
-    // add color to history
-
-
   }
 
   const handleColorChangeSwatch = (color: string, area: string) => {
@@ -131,19 +122,31 @@ export default function Home() {
     // add color to the corresponding swatches array if it isn't already
     switch (area) {
       case "hat":
-        if (!(hatSwatches.includes(hatColor))) setHatSwatches([hatColor, ...hatSwatches]);
+        if (!(hatSwatches.includes(hatColor))) {
+          if (closetMode) addGarmentToDB("hat", hatColor);
+          else setHatSwatches([hatColor, ...hatSwatches]);
+        }
         setSelectedColor(hatColor);
         break;
       case "top":
-        if (!(topSwatches.includes(topColor))) setTopSwatches([topColor, ...topSwatches]);
+        if (!(topSwatches.includes(topColor))) {
+          if (closetMode) addGarmentToDB("top", topColor);
+          else setTopSwatches([topColor, ...topSwatches]);
+        }
         setSelectedColor(topColor);
         break;
       case "bottom":
-        if (!(bottomSwatches.includes(bottomColor))) setBottomSwatches([bottomColor, ...bottomSwatches]);
+        if (!(bottomSwatches.includes(bottomColor))) {
+          if (closetMode) addGarmentToDB("bottom", bottomColor);
+          else setBottomSwatches([bottomColor, ...bottomSwatches]);
+        }
         setSelectedColor(bottomColor);
         break;
       case "shoes":
-        if (!(shoeSwatches.includes(shoeColor))) setShoeSwatches([shoeColor, ...shoeSwatches]);
+        if (!(shoeSwatches.includes(shoeColor))) {
+          if (closetMode) addGarmentToDB("shoe", shoeColor);
+          else setShoeSwatches([shoeColor, ...shoeSwatches]);
+        }
         setSelectedColor(shoeColor);
         break;
       default:
@@ -152,6 +155,29 @@ export default function Home() {
 
     setSelectedArea(area);
 
+  }
+
+  const addGarmentToDB = async (area: string, color: string) => {
+
+    try {
+
+      const createNewGarmentInput: CreateGarmentInput = {
+        color: color,
+        area: area
+      };
+
+      const createNewGarment = (await API.graphql({
+        query: createGarment,
+        variables: { input: createNewGarmentInput }
+      })) as CreateGarmentMutation;
+
+      console.log("Garment added successfully: ", createNewGarment);
+
+      // see if you need to refresh -- add new garment to area's swatches
+
+    } catch (error: any) {
+      console.error("Error adding garment: ", error);
+    }
   }
 
   const randomizePalette = () => {
@@ -184,38 +210,12 @@ export default function Home() {
 
   }
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const { color, type } = data;
 
-    console.log(data);
-
-    // try {
-
-    //   const createNewGarmentInput: CreateGarmentInput = {
-    //     name: name,
-    //     brand: brand,
-    //     color: color,
-    //     own: own,
-    //     type: type
-    //   };
-
-    //   const createNewGarment = (await API.graphql({
-    //     query: createGarment,
-    //     variables: { input: createNewGarmentInput }
-    //   })) as CreateGarmentMutation;
-
-    //   console.log("Garment added successfully: ", createNewGarment);
-
-    //   // see if you need to refresh
-
-    // } catch (error: any) {
-    //   console.error("Error adding garment: ", error);
-    // }
-
-  };
 
   return (
     <>
+      {console.log("Closet Mode: ", closetMode)}
+      <Header setClosetMode={setClosetMode} />
       <Grid container spacing={1}>
         <Grid item xs={1}>
           {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
