@@ -6,7 +6,6 @@ export const getOutfit = /* GraphQL */ `
   query GetOutfit($id: ID!) {
     getOutfit(id: $id) {
       id
-      name
       garments {
         items {
           id
@@ -33,7 +32,6 @@ export const listOutfits = /* GraphQL */ `
     listOutfits(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
         garments {
           nextToken
         }
@@ -49,11 +47,8 @@ export const getGarment = /* GraphQL */ `
   query GetGarment($id: ID!) {
     getGarment(id: $id) {
       id
-      name
-      brand
       color
-      own
-      type
+      area
       outfits {
         items {
           id
@@ -80,11 +75,8 @@ export const listGarments = /* GraphQL */ `
     listGarments(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
-        brand
         color
-        own
-        type
+        area
         outfits {
           nextToken
         }
@@ -104,7 +96,6 @@ export const getGarmentAssignments = /* GraphQL */ `
       garmentId
       outfit {
         id
-        name
         garments {
           nextToken
         }
@@ -114,11 +105,8 @@ export const getGarmentAssignments = /* GraphQL */ `
       }
       garment {
         id
-        name
-        brand
         color
-        own
-        type
+        area
         outfits {
           nextToken
         }
@@ -149,18 +137,14 @@ export const listGarmentAssignments = /* GraphQL */ `
         garmentId
         outfit {
           id
-          name
           createdAt
           updatedAt
           owner
         }
         garment {
           id
-          name
-          brand
           color
-          own
-          type
+          area
           createdAt
           updatedAt
           owner
@@ -194,18 +178,14 @@ export const garmentAssignmentsByOutfitId = /* GraphQL */ `
         garmentId
         outfit {
           id
-          name
           createdAt
           updatedAt
           owner
         }
         garment {
           id
-          name
-          brand
           color
-          own
-          type
+          area
           createdAt
           updatedAt
           owner
@@ -239,18 +219,14 @@ export const garmentAssignmentsByGarmentId = /* GraphQL */ `
         garmentId
         outfit {
           id
-          name
           createdAt
           updatedAt
           owner
         }
         garment {
           id
-          name
-          brand
           color
-          own
-          type
+          area
           createdAt
           updatedAt
           owner

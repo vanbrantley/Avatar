@@ -9,7 +9,6 @@ export const createOutfit = /* GraphQL */ `
   ) {
     createOutfit(input: $input, condition: $condition) {
       id
-      name
       garments {
         items {
           id
@@ -34,7 +33,6 @@ export const updateOutfit = /* GraphQL */ `
   ) {
     updateOutfit(input: $input, condition: $condition) {
       id
-      name
       garments {
         items {
           id
@@ -59,7 +57,6 @@ export const deleteOutfit = /* GraphQL */ `
   ) {
     deleteOutfit(input: $input, condition: $condition) {
       id
-      name
       garments {
         items {
           id
@@ -84,11 +81,8 @@ export const createGarment = /* GraphQL */ `
   ) {
     createGarment(input: $input, condition: $condition) {
       id
-      name
-      brand
       color
-      own
-      type
+      area
       outfits {
         items {
           id
@@ -113,11 +107,8 @@ export const updateGarment = /* GraphQL */ `
   ) {
     updateGarment(input: $input, condition: $condition) {
       id
-      name
-      brand
       color
-      own
-      type
+      area
       outfits {
         items {
           id
@@ -142,11 +133,8 @@ export const deleteGarment = /* GraphQL */ `
   ) {
     deleteGarment(input: $input, condition: $condition) {
       id
-      name
-      brand
       color
-      own
-      type
+      area
       outfits {
         items {
           id
@@ -175,7 +163,6 @@ export const createGarmentAssignments = /* GraphQL */ `
       garmentId
       outfit {
         id
-        name
         garments {
           nextToken
         }
@@ -185,11 +172,8 @@ export const createGarmentAssignments = /* GraphQL */ `
       }
       garment {
         id
-        name
-        brand
         color
-        own
-        type
+        area
         outfits {
           nextToken
         }
@@ -214,7 +198,6 @@ export const updateGarmentAssignments = /* GraphQL */ `
       garmentId
       outfit {
         id
-        name
         garments {
           nextToken
         }
@@ -224,11 +207,8 @@ export const updateGarmentAssignments = /* GraphQL */ `
       }
       garment {
         id
-        name
-        brand
         color
-        own
-        type
+        area
         outfits {
           nextToken
         }
@@ -253,7 +233,6 @@ export const deleteGarmentAssignments = /* GraphQL */ `
       garmentId
       outfit {
         id
-        name
         garments {
           nextToken
         }
@@ -263,11 +242,8 @@ export const deleteGarmentAssignments = /* GraphQL */ `
       }
       garment {
         id
-        name
-        brand
         color
-        own
-        type
+        area
         outfits {
           nextToken
         }
