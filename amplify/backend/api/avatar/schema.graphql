@@ -4,16 +4,12 @@
 
 type Outfit @model @auth(rules: [{ allow: owner }]) {
   id: ID!
-  name: String!
   garments: [Garment] @manyToMany(relationName: "GarmentAssignments")
 }
 
 type Garment @model @auth(rules: [{ allow: owner }]) {
   id: ID!
-  name: String!
-  brand: String!
   color: String!
-  own: Boolean!
-  type: String!
+  area: String!
   outfits: [Outfit] @manyToMany(relationName: "GarmentAssignments")
 }

@@ -4,14 +4,72 @@
 
 export type CreateOutfitInput = {
   id?: string | null,
-  name: string,
 };
 
 export type ModelOutfitConditionInput = {
-  name?: ModelStringInput | null,
   and?: Array< ModelOutfitConditionInput | null > | null,
   or?: Array< ModelOutfitConditionInput | null > | null,
   not?: ModelOutfitConditionInput | null,
+};
+
+export type Outfit = {
+  __typename: "Outfit",
+  id: string,
+  garments?: ModelGarmentAssignmentsConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type ModelGarmentAssignmentsConnection = {
+  __typename: "ModelGarmentAssignmentsConnection",
+  items:  Array<GarmentAssignments | null >,
+  nextToken?: string | null,
+};
+
+export type GarmentAssignments = {
+  __typename: "GarmentAssignments",
+  id: string,
+  outfitId: string,
+  garmentId: string,
+  outfit: Outfit,
+  garment: Garment,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type Garment = {
+  __typename: "Garment",
+  id: string,
+  color: string,
+  area: string,
+  outfits?: ModelGarmentAssignmentsConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type UpdateOutfitInput = {
+  id: string,
+};
+
+export type DeleteOutfitInput = {
+  id: string,
+};
+
+export type CreateGarmentInput = {
+  id?: string | null,
+  color: string,
+  area: string,
+};
+
+export type ModelGarmentConditionInput = {
+  color?: ModelStringInput | null,
+  area?: ModelStringInput | null,
+  and?: Array< ModelGarmentConditionInput | null > | null,
+  or?: Array< ModelGarmentConditionInput | null > | null,
+  not?: ModelGarmentConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -54,91 +112,10 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type Outfit = {
-  __typename: "Outfit",
-  id: string,
-  name: string,
-  garments?: ModelGarmentAssignmentsConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  owner?: string | null,
-};
-
-export type ModelGarmentAssignmentsConnection = {
-  __typename: "ModelGarmentAssignmentsConnection",
-  items:  Array<GarmentAssignments | null >,
-  nextToken?: string | null,
-};
-
-export type GarmentAssignments = {
-  __typename: "GarmentAssignments",
-  id: string,
-  outfitId: string,
-  garmentId: string,
-  outfit: Outfit,
-  garment: Garment,
-  createdAt: string,
-  updatedAt: string,
-  owner?: string | null,
-};
-
-export type Garment = {
-  __typename: "Garment",
-  id: string,
-  name: string,
-  brand: string,
-  color: string,
-  own: boolean,
-  type: string,
-  outfits?: ModelGarmentAssignmentsConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  owner?: string | null,
-};
-
-export type UpdateOutfitInput = {
-  id: string,
-  name?: string | null,
-};
-
-export type DeleteOutfitInput = {
-  id: string,
-};
-
-export type CreateGarmentInput = {
-  id?: string | null,
-  name: string,
-  brand: string,
-  color: string,
-  own: boolean,
-  type: string,
-};
-
-export type ModelGarmentConditionInput = {
-  name?: ModelStringInput | null,
-  brand?: ModelStringInput | null,
-  color?: ModelStringInput | null,
-  own?: ModelBooleanInput | null,
-  type?: ModelStringInput | null,
-  and?: Array< ModelGarmentConditionInput | null > | null,
-  or?: Array< ModelGarmentConditionInput | null > | null,
-  not?: ModelGarmentConditionInput | null,
-};
-
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type UpdateGarmentInput = {
   id: string,
-  name?: string | null,
-  brand?: string | null,
   color?: string | null,
-  own?: boolean | null,
-  type?: string | null,
+  area?: string | null,
 };
 
 export type DeleteGarmentInput = {
@@ -187,7 +164,6 @@ export type DeleteGarmentAssignmentsInput = {
 
 export type ModelOutfitFilterInput = {
   id?: ModelIDInput | null,
-  name?: ModelStringInput | null,
   and?: Array< ModelOutfitFilterInput | null > | null,
   or?: Array< ModelOutfitFilterInput | null > | null,
   not?: ModelOutfitFilterInput | null,
@@ -201,11 +177,8 @@ export type ModelOutfitConnection = {
 
 export type ModelGarmentFilterInput = {
   id?: ModelIDInput | null,
-  name?: ModelStringInput | null,
-  brand?: ModelStringInput | null,
   color?: ModelStringInput | null,
-  own?: ModelBooleanInput | null,
-  type?: ModelStringInput | null,
+  area?: ModelStringInput | null,
   and?: Array< ModelGarmentFilterInput | null > | null,
   or?: Array< ModelGarmentFilterInput | null > | null,
   not?: ModelGarmentFilterInput | null,
@@ -234,7 +207,6 @@ export enum ModelSortDirection {
 
 export type ModelSubscriptionOutfitFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
   or?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
 };
@@ -254,6 +226,14 @@ export type ModelSubscriptionIDInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionGarmentFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  color?: ModelSubscriptionStringInput | null,
+  area?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
+  or?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
+};
+
 export type ModelSubscriptionStringInput = {
   ne?: string | null,
   eq?: string | null,
@@ -267,22 +247,6 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
-};
-
-export type ModelSubscriptionGarmentFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  brand?: ModelSubscriptionStringInput | null,
-  color?: ModelSubscriptionStringInput | null,
-  own?: ModelSubscriptionBooleanInput | null,
-  type?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
-  or?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
-};
-
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
 };
 
 export type ModelSubscriptionGarmentAssignmentsFilterInput = {
@@ -302,7 +266,6 @@ export type CreateOutfitMutation = {
   createOutfit?:  {
     __typename: "Outfit",
     id: string,
-    name: string,
     garments?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -331,7 +294,6 @@ export type UpdateOutfitMutation = {
   updateOutfit?:  {
     __typename: "Outfit",
     id: string,
-    name: string,
     garments?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -360,7 +322,6 @@ export type DeleteOutfitMutation = {
   deleteOutfit?:  {
     __typename: "Outfit",
     id: string,
-    name: string,
     garments?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -389,11 +350,8 @@ export type CreateGarmentMutation = {
   createGarment?:  {
     __typename: "Garment",
     id: string,
-    name: string,
-    brand: string,
     color: string,
-    own: boolean,
-    type: string,
+    area: string,
     outfits?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -422,11 +380,8 @@ export type UpdateGarmentMutation = {
   updateGarment?:  {
     __typename: "Garment",
     id: string,
-    name: string,
-    brand: string,
     color: string,
-    own: boolean,
-    type: string,
+    area: string,
     outfits?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -455,11 +410,8 @@ export type DeleteGarmentMutation = {
   deleteGarment?:  {
     __typename: "Garment",
     id: string,
-    name: string,
-    brand: string,
     color: string,
-    own: boolean,
-    type: string,
+    area: string,
     outfits?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -493,7 +445,6 @@ export type CreateGarmentAssignmentsMutation = {
     outfit:  {
       __typename: "Outfit",
       id: string,
-      name: string,
       garments?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -505,11 +456,8 @@ export type CreateGarmentAssignmentsMutation = {
     garment:  {
       __typename: "Garment",
       id: string,
-      name: string,
-      brand: string,
       color: string,
-      own: boolean,
-      type: string,
+      area: string,
       outfits?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -538,7 +486,6 @@ export type UpdateGarmentAssignmentsMutation = {
     outfit:  {
       __typename: "Outfit",
       id: string,
-      name: string,
       garments?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -550,11 +497,8 @@ export type UpdateGarmentAssignmentsMutation = {
     garment:  {
       __typename: "Garment",
       id: string,
-      name: string,
-      brand: string,
       color: string,
-      own: boolean,
-      type: string,
+      area: string,
       outfits?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -583,7 +527,6 @@ export type DeleteGarmentAssignmentsMutation = {
     outfit:  {
       __typename: "Outfit",
       id: string,
-      name: string,
       garments?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -595,11 +538,8 @@ export type DeleteGarmentAssignmentsMutation = {
     garment:  {
       __typename: "Garment",
       id: string,
-      name: string,
-      brand: string,
       color: string,
-      own: boolean,
-      type: string,
+      area: string,
       outfits?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -622,7 +562,6 @@ export type GetOutfitQuery = {
   getOutfit?:  {
     __typename: "Outfit",
     id: string,
-    name: string,
     garments?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -654,7 +593,6 @@ export type ListOutfitsQuery = {
     items:  Array< {
       __typename: "Outfit",
       id: string,
-      name: string,
       garments?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -675,11 +613,8 @@ export type GetGarmentQuery = {
   getGarment?:  {
     __typename: "Garment",
     id: string,
-    name: string,
-    brand: string,
     color: string,
-    own: boolean,
-    type: string,
+    area: string,
     outfits?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -711,11 +646,8 @@ export type ListGarmentsQuery = {
     items:  Array< {
       __typename: "Garment",
       id: string,
-      name: string,
-      brand: string,
       color: string,
-      own: boolean,
-      type: string,
+      area: string,
       outfits?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -741,7 +673,6 @@ export type GetGarmentAssignmentsQuery = {
     outfit:  {
       __typename: "Outfit",
       id: string,
-      name: string,
       garments?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -753,11 +684,8 @@ export type GetGarmentAssignmentsQuery = {
     garment:  {
       __typename: "Garment",
       id: string,
-      name: string,
-      brand: string,
       color: string,
-      own: boolean,
-      type: string,
+      area: string,
       outfits?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -789,7 +717,6 @@ export type ListGarmentAssignmentsQuery = {
       outfit:  {
         __typename: "Outfit",
         id: string,
-        name: string,
         createdAt: string,
         updatedAt: string,
         owner?: string | null,
@@ -797,11 +724,8 @@ export type ListGarmentAssignmentsQuery = {
       garment:  {
         __typename: "Garment",
         id: string,
-        name: string,
-        brand: string,
         color: string,
-        own: boolean,
-        type: string,
+        area: string,
         createdAt: string,
         updatedAt: string,
         owner?: string | null,
@@ -833,7 +757,6 @@ export type GarmentAssignmentsByOutfitIdQuery = {
       outfit:  {
         __typename: "Outfit",
         id: string,
-        name: string,
         createdAt: string,
         updatedAt: string,
         owner?: string | null,
@@ -841,11 +764,8 @@ export type GarmentAssignmentsByOutfitIdQuery = {
       garment:  {
         __typename: "Garment",
         id: string,
-        name: string,
-        brand: string,
         color: string,
-        own: boolean,
-        type: string,
+        area: string,
         createdAt: string,
         updatedAt: string,
         owner?: string | null,
@@ -877,7 +797,6 @@ export type GarmentAssignmentsByGarmentIdQuery = {
       outfit:  {
         __typename: "Outfit",
         id: string,
-        name: string,
         createdAt: string,
         updatedAt: string,
         owner?: string | null,
@@ -885,11 +804,8 @@ export type GarmentAssignmentsByGarmentIdQuery = {
       garment:  {
         __typename: "Garment",
         id: string,
-        name: string,
-        brand: string,
         color: string,
-        own: boolean,
-        type: string,
+        area: string,
         createdAt: string,
         updatedAt: string,
         owner?: string | null,
@@ -911,7 +827,6 @@ export type OnCreateOutfitSubscription = {
   onCreateOutfit?:  {
     __typename: "Outfit",
     id: string,
-    name: string,
     garments?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -940,7 +855,6 @@ export type OnUpdateOutfitSubscription = {
   onUpdateOutfit?:  {
     __typename: "Outfit",
     id: string,
-    name: string,
     garments?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -969,7 +883,6 @@ export type OnDeleteOutfitSubscription = {
   onDeleteOutfit?:  {
     __typename: "Outfit",
     id: string,
-    name: string,
     garments?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -998,11 +911,8 @@ export type OnCreateGarmentSubscription = {
   onCreateGarment?:  {
     __typename: "Garment",
     id: string,
-    name: string,
-    brand: string,
     color: string,
-    own: boolean,
-    type: string,
+    area: string,
     outfits?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -1031,11 +941,8 @@ export type OnUpdateGarmentSubscription = {
   onUpdateGarment?:  {
     __typename: "Garment",
     id: string,
-    name: string,
-    brand: string,
     color: string,
-    own: boolean,
-    type: string,
+    area: string,
     outfits?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -1064,11 +971,8 @@ export type OnDeleteGarmentSubscription = {
   onDeleteGarment?:  {
     __typename: "Garment",
     id: string,
-    name: string,
-    brand: string,
     color: string,
-    own: boolean,
-    type: string,
+    area: string,
     outfits?:  {
       __typename: "ModelGarmentAssignmentsConnection",
       items:  Array< {
@@ -1102,7 +1006,6 @@ export type OnCreateGarmentAssignmentsSubscription = {
     outfit:  {
       __typename: "Outfit",
       id: string,
-      name: string,
       garments?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -1114,11 +1017,8 @@ export type OnCreateGarmentAssignmentsSubscription = {
     garment:  {
       __typename: "Garment",
       id: string,
-      name: string,
-      brand: string,
       color: string,
-      own: boolean,
-      type: string,
+      area: string,
       outfits?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -1147,7 +1047,6 @@ export type OnUpdateGarmentAssignmentsSubscription = {
     outfit:  {
       __typename: "Outfit",
       id: string,
-      name: string,
       garments?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -1159,11 +1058,8 @@ export type OnUpdateGarmentAssignmentsSubscription = {
     garment:  {
       __typename: "Garment",
       id: string,
-      name: string,
-      brand: string,
       color: string,
-      own: boolean,
-      type: string,
+      area: string,
       outfits?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -1192,7 +1088,6 @@ export type OnDeleteGarmentAssignmentsSubscription = {
     outfit:  {
       __typename: "Outfit",
       id: string,
-      name: string,
       garments?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
@@ -1204,11 +1099,8 @@ export type OnDeleteGarmentAssignmentsSubscription = {
     garment:  {
       __typename: "Garment",
       id: string,
-      name: string,
-      brand: string,
       color: string,
-      own: boolean,
-      type: string,
+      area: string,
       outfits?:  {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
