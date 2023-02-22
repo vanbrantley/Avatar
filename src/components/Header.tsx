@@ -12,7 +12,7 @@ import { Auth } from 'aws-amplify';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface IHeaderProps {
-    setClosetMode: Dispatch<SetStateAction<boolean>>
+    handleModeChange: (toClosetMode: boolean) => void
 }
 
 export default function Header(props: IHeaderProps) {
@@ -43,9 +43,9 @@ export default function Header(props: IHeaderProps) {
                     </Typography>
                     {user && (
                         <>
-                            <Button onClick={() => props.setClosetMode(false)} style={{ color: "white" }}>Lab</Button>
+                            <Button onClick={() => props.handleModeChange(false)} style={{ color: "white" }}>Lab</Button>
                             {/* <Button style={{ color: "white" }}>Palettes</Button> */}
-                            <Button onClick={() => props.setClosetMode(true)} style={{ color: "white", marginRight: "10px" }}>Closet</Button>
+                            <Button onClick={() => props.handleModeChange(true)} style={{ color: "white", marginRight: "10px" }}>Closet</Button>
                             <Button variant='contained' onClick={() => signUserOut()}>Sign Out</Button>
                         </>
                     )}

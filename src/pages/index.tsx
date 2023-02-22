@@ -4,12 +4,14 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 import { useUser } from '../context/AuthContext';
 import { API } from 'aws-amplify';
 import { createGarment } from '@/graphql/mutations';
-import { CreateGarmentInput, CreateGarmentMutation } from '@/API';
+import { CreateGarmentInput, CreateGarmentMutation, Garment, ListGarmentsQuery } from '@/API';
 import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import Palette from '@/components/Palette';
 import Avatar from '@/components/Avatar';
 import SwatchMenu from '@/components/SwatchMenu';
+import { listGarments } from '@/graphql/queries';
+import groupByArea from '@/lib/groupByArea';
 // from https://you.com/search?q=warning%3A%20prop%20%60style%60%20did%20not%20match
 const SketchPicker = dynamic(
   () => import('react-color').then((mod) => mod.SketchPicker),
@@ -45,6 +47,56 @@ export default function Home() {
   useEffect(() => {
     randomizePalette()
   }, [])
+
+  const handleModeChange = (toClosetMode: boolean): void => {
+
+    // toClosetMode is the mode you want to switch to
+    // if true - you want to switch to closet mode, if false, you want to switch to lab mode
+
+    // check if mode is switching
+    const modeSwitch: boolean = ((toClosetMode && !closetMode) || (!toClosetMode && closetMode));
+
+    if (!modeSwitch) return;
+
+    if (toClosetMode) {
+      // fetch garments & set swatches
+      const fetchGarmentsFromDB = async (): Promise<Garment[]> => {
+        const userGarments = (await API.graphql({ query: listGarments })) as {
+          data: ListGarmentsQuery;
+          errors: any[];
+        };
+
+        console.log(userGarments);
+
+        if (userGarments.data) {
+          // sort into areas
+          const garments = userGarments.data.listGarments.items as Garment[];
+          const grouped = groupByArea(garments);
+          console.log(grouped);
+          setHatSwatches(grouped["hat"]);
+          setTopSwatches(grouped["top"]);
+          setBottomSwatches(grouped["bottom"]);
+          setShoeSwatches(grouped["shoe"]);
+          return garments;
+        } else {
+          throw new Error("Could not get garments");
+        }
+
+      }
+
+      fetchGarmentsFromDB();
+
+    } else {
+      // reset swatches
+      setHatSwatches(["#fff"]);
+      setTopSwatches(["#fff"]);
+      setBottomSwatches(["#fff"]);
+      setShoeSwatches(["#fff"]);
+    }
+
+    setClosetMode(toClosetMode);
+
+  }
 
 
   const handleAreaChange = (area: string) => {
@@ -123,28 +175,40 @@ export default function Home() {
     switch (area) {
       case "hat":
         if (!(hatSwatches.includes(hatColor))) {
-          if (closetMode) addGarmentToDB("hat", hatColor);
+          if (closetMode) {
+            addGarmentToDB("hat", hatColor);
+            setHatSwatches([hatColor, ...hatSwatches]);
+          }
           else setHatSwatches([hatColor, ...hatSwatches]);
         }
         setSelectedColor(hatColor);
         break;
       case "top":
         if (!(topSwatches.includes(topColor))) {
-          if (closetMode) addGarmentToDB("top", topColor);
+          if (closetMode) {
+            addGarmentToDB("top", topColor);
+            setTopSwatches([topColor, ...topSwatches]);
+          }
           else setTopSwatches([topColor, ...topSwatches]);
         }
         setSelectedColor(topColor);
         break;
       case "bottom":
         if (!(bottomSwatches.includes(bottomColor))) {
-          if (closetMode) addGarmentToDB("bottom", bottomColor);
+          if (closetMode) {
+            addGarmentToDB("bottom", bottomColor);
+            setBottomSwatches([bottomColor, ...bottomSwatches]);
+          }
           else setBottomSwatches([bottomColor, ...bottomSwatches]);
         }
         setSelectedColor(bottomColor);
         break;
       case "shoes":
         if (!(shoeSwatches.includes(shoeColor))) {
-          if (closetMode) addGarmentToDB("shoe", shoeColor);
+          if (closetMode) {
+            addGarmentToDB("shoe", shoeColor);
+            setShoeSwatches([shoeColor, ...shoeSwatches]);
+          }
           else setShoeSwatches([shoeColor, ...shoeSwatches]);
         }
         setSelectedColor(shoeColor);
@@ -215,7 +279,7 @@ export default function Home() {
   return (
     <>
       {console.log("Closet Mode: ", closetMode)}
-      <Header setClosetMode={setClosetMode} />
+      <Header handleModeChange={handleModeChange} />
       <Grid container spacing={1}>
         <Grid item xs={1}>
           {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
