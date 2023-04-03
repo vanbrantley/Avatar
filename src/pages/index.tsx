@@ -70,7 +70,7 @@ export default function Home() {
 
         if (userGarments.data) {
           // sort into areas
-          const garments = userGarments.data.listGarments.items as Garment[];
+          const garments = userGarments.data.listGarments!.items as Garment[];
           const grouped = groupByArea(garments);
           console.log(grouped);
           setHatSwatches(grouped["hat"]);
