@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import Head from 'next/head';
 import { AppProps } from 'next/app';
@@ -11,11 +9,11 @@ import Header from '@/components/Header';
 import createEmotionCache from '../createEmotionCache';
 
 import AuthContext from '../context/AuthContext';
-import { Amplify } from 'aws-amplify';
+import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from '../aws-exports';
 
 Amplify.configure({ ...awsconfig, ssr: true });
-
+// Auth.configure(awsconfig);
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
