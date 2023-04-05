@@ -13,7 +13,7 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from '../aws-exports';
 
 Amplify.configure({ ...awsconfig, ssr: true });
-// Auth.configure(awsconfig);
+Auth.configure(awsconfig);
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
