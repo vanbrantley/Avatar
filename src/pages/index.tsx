@@ -25,7 +25,7 @@ const SketchPicker = dynamic(
 export default function Home() {
 
   const { user } = useUser();
-  console.log("USER: ", user);
+  // console.log("USER: ", user);
 
   const [hatColor, setHatColor] = useState<string>("#000");
   const [topColor, setTopColor] = useState<string>("#fff");
@@ -35,7 +35,7 @@ export default function Home() {
   const [selectedArea, setSelectedArea] = useState<string>("top");
   const [selectedColor, setSelectedColor] = useState<string>("#000");
 
-  const [showHat, setShowHat] = useState<boolean>(false);
+  const [showHat, setShowHat] = useState<boolean>(true);
 
   const [hatSwatches, setHatSwatches] = useState<string[]>(["#fff"]);
   const [topSwatches, setTopSwatches] = useState<string[]>(["#fff"]);
@@ -72,7 +72,7 @@ export default function Home() {
           // sort into areas
           const garments = userGarments.data.listGarments!.items as Garment[];
           const grouped = groupByArea(garments);
-          console.log(grouped);
+          // console.log(grouped);
           setHatSwatches(grouped["hat"]);
           setTopSwatches(grouped["top"]);
           setBottomSwatches(grouped["bottom"]);
@@ -278,7 +278,7 @@ export default function Home() {
 
   return (
     <>
-      {console.log("Closet Mode: ", closetMode)}
+      {/* {console.log("Closet Mode: ", closetMode)} */}
       <Header handleModeChange={handleModeChange} />
       <Grid container spacing={1}>
         <Grid item xs={1}>
