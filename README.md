@@ -2,6 +2,10 @@
 
 Manage your wardrobe
 
+<p align="center">
+    <img src="public/avatar-logo-1.png" width="200" height="200" alt="Avatar Logo"/>
+</p>
+
 
 <p align="center">
     <a href="https://react.dev">
