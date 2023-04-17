@@ -1,11 +1,4 @@
-# Avatar - https://avatar-blond.vercel.app
-
-Manage your wardrobe
-
-<p align="center">
-    <img src="public/avatar-logo-1.png" width="200" height="200" alt="Avatar Logo"/>
-</p>
-
+# AVATAR
 
 <p align="center">
     <a href="https://react.dev">
@@ -20,4 +13,8 @@ Manage your wardrobe
     <a href="https://www.vercel.com/">
         <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel"/>
     </a>
+</p>
+
+<p align="center">
+    <img src="public/avatar-logo-1.png" width="200" height="200" alt="Avatar Logo"/>
 </p>
