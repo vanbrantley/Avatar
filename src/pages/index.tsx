@@ -28,14 +28,13 @@ export default function Home() {
   // console.log("USER: ", user);
 
   const [hatColor, setHatColor] = useState<string>("#000");
+  const [faceColor, setFaceColor] = useState<string>("#a18057");
   const [topColor, setTopColor] = useState<string>("#fff");
   const [bottomColor, setBottomColor] = useState<string>("#000");
   const [shoeColor, setShoeColor] = useState<string>("#000");
 
   const [selectedArea, setSelectedArea] = useState<string>("top");
   const [selectedColor, setSelectedColor] = useState<string>("#000");
-
-  const [showHat, setShowHat] = useState<boolean>(true);
 
   const [hatSwatches, setHatSwatches] = useState<string[]>(["#fff"]);
   const [topSwatches, setTopSwatches] = useState<string[]>(["#fff"]);
@@ -107,6 +106,9 @@ export default function Home() {
       case "hat":
         setSelectedColor(hatColor);
         break;
+      case "face":
+        setSelectedColor(faceColor);
+        break;
       case "top":
         setSelectedColor(topColor);
         break;
@@ -125,7 +127,9 @@ export default function Home() {
     switch (selectedArea) {
       case "hat":
         setHatColor(color);
-        if (!showHat) setShowHat(true);
+        break;
+      case "face":
+        setFaceColor(color);
         break;
       case "top":
         setTopColor(color);
@@ -149,7 +153,9 @@ export default function Home() {
     switch (area) {
       case "hat":
         setHatColor(color);
-        if (!showHat) setShowHat(true);
+        break;
+      case "face":
+        setFaceColor(color);
         break;
       case "top":
         setTopColor(color);
@@ -283,26 +289,20 @@ export default function Home() {
       <Grid container spacing={1}>
         <Grid item xs={1}>
           {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
-          <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", backgroundColor: hatColor }}></Button></Grid>
-          <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", backgroundColor: topColor }}></Button></Grid>
-          <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", backgroundColor: bottomColor }}></Button></Grid>
-          <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", backgroundColor: shoeColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button></Grid>
+          <Grid item><Button disableRipple style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: faceColor, cursor: "default" }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button></Grid>
+          <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button></Grid>
         </Grid>
         <Grid item xs={6}>
           {/* <Avatar handler={handleAreaChange} showHat={showHat} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
           <Grid container direction="column" alignItems="center">
             <Grid item>
-              {showHat ? (
-                <Button onClick={() => handleAreaChange("hat")} style={{ height: "40px", width: "62px", marginLeft: "auto", marginRight: "auto", backgroundColor: hatColor, borderTopLeftRadius: "60% 90%", borderTopRightRadius: "60% 90%" }}></Button>
-              )
-                : (
-                  <div style={{ height: "15px" }}></div>
-                )}
+              <Button onClick={() => handleAreaChange("hat")} style={{ height: "40px", width: "62px", marginLeft: "auto", marginRight: "auto", backgroundColor: hatColor, borderTopLeftRadius: "60% 90%", borderTopRightRadius: "60% 90%" }}></Button>
             </Grid>
             <Grid item>
-              <div className="face" style={showHat ?
-                { height: "55px", width: "60px", marginLeft: "auto", marginRight: "auto", backgroundColor: "#a18057", borderBottomLeftRadius: "120%", borderBottomRightRadius: "120%" }
-                : { height: "80px", width: "60px", marginLeft: "auto", marginRight: "auto", backgroundColor: "#a18057", borderTopRightRadius: "40%", borderTopLeftRadius: "40%", borderBottomLeftRadius: "45%", borderBottomRightRadius: "45%" }}></div>
+              <div onClick={() => handleAreaChange("face")} style={{ height: "55px", width: "60px", marginLeft: "auto", marginRight: "auto", backgroundColor: faceColor, borderBottomLeftRadius: "120%", borderBottomRightRadius: "120%", cursor: "pointer" }}></div>
             </Grid>
             <Grid item>
               <Button onClick={() => handleAreaChange("top")} style={{ height: "180px", width: "125px", marginLeft: "auto", marginRight: "auto", backgroundColor: topColor, borderTopLeftRadius: "30%", borderTopRightRadius: "30%" }}></Button>
@@ -320,7 +320,6 @@ export default function Home() {
           <Grid container direction="column">
             <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
               {/* <Grid item style={{ width: "75px" }}>Hat</Grid> */}
-              <Grid item><Button onClick={() => setShowHat(false)} variant="outlined" style={{ height: "30px" }}></Button></Grid>
               {hatSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "hat")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
@@ -358,10 +357,11 @@ export default function Home() {
             <Grid container direction="column">
               <Grid item>
                 {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
-                <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", backgroundColor: hatColor }}></Button></Grid>
-                <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", backgroundColor: topColor }}></Button></Grid>
-                <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", backgroundColor: bottomColor }}></Button></Grid>
-                <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", backgroundColor: shoeColor }}></Button></Grid>
+                <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button></Grid>
+                <Grid item><Button disableRipple style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: faceColor, cursor: "default" }}></Button></Grid>
+                <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button></Grid>
+                <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button></Grid>
+                <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button></Grid>
               </Grid>
               <Grid item>
                 <IconButton onClick={() => randomizePalette()}>
