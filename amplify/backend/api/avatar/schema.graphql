@@ -13,3 +13,11 @@ type Garment @model @auth(rules: [{ allow: owner, operations: [create, update, d
   area: String!
   outfits: [Outfit] @manyToMany(relationName: "GarmentAssignments")
 }
+
+type Palette @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
+  id: ID!
+  hatColor: String!
+  topColor: String!
+  bottomColor: String!
+  shoeColor: String!
+}

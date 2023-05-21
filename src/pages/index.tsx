@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Button, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useUser } from '../context/AuthContext';
 import { API } from 'aws-amplify';
-import { createGarment } from '@/graphql/mutations';
-import { CreateGarmentInput, CreateGarmentMutation, Garment, ListGarmentsQuery } from '@/API';
+import { createGarment, createPalette } from '@/graphql/mutations';
+import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
 import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
-import Palette from '@/components/Palette';
 import Avatar from '@/components/Avatar';
 import SwatchMenu from '@/components/SwatchMenu';
-import { listGarments } from '@/graphql/queries';
+import { listGarments, listPalettes } from '@/graphql/queries';
 import groupByArea from '@/lib/groupByArea';
 // from https://you.com/search?q=warning%3A%20prop%20%60style%60%20did%20not%20match
 const SketchPicker = dynamic(
@@ -34,7 +34,9 @@ export default function Home() {
   const [shoeColor, setShoeColor] = useState<string>("#000");
 
   const [selectedArea, setSelectedArea] = useState<string>("top");
-  const [selectedColor, setSelectedColor] = useState<string>("#000");
+  const [selectedColor, setSelectedColor] = useState<string>(topColor);
+
+  const [palettes, setPalettes] = useState<Palette[]>([]);
 
   const [hatSwatches, setHatSwatches] = useState<string[]>(["#fff"]);
   const [topSwatches, setTopSwatches] = useState<string[]>(["#fff"]);
@@ -45,6 +47,10 @@ export default function Home() {
 
   useEffect(() => {
     randomizePalette()
+  }, [])
+
+  useEffect(() => {
+    fetchPalettes()
   }, [])
 
   const handleModeChange = (toClosetMode: boolean): void => {
@@ -280,7 +286,59 @@ export default function Home() {
 
   }
 
+  const savePalette = async () => {
 
+    try {
+
+      const createNewPaletteInput: CreatePaletteInput = {
+        hatColor: hatColor,
+        topColor: topColor,
+        bottomColor: bottomColor,
+        shoeColor: shoeColor
+      };
+
+      const createNewPalette = (await API.graphql({
+        query: createPalette,
+        variables: { input: createNewPaletteInput }
+      })) as CreatePaletteMutation;
+
+      console.log("Palette added successfully: ", createNewPalette);
+
+    } catch (error: any) {
+      console.error("Error adding palette: ", error);
+    }
+  }
+
+  const fetchPalettes = async (): Promise<Palette[]> => {
+    const userPalettes = (await API.graphql({ query: listPalettes })) as {
+      data: ListPalettesQuery;
+      errors: any[];
+    };
+
+    console.log(userPalettes);
+
+    if (userPalettes.data) {
+
+      const palettes = userPalettes.data.listPalettes!.items as Palette[];
+
+      // setPalettes to the hatColor, topColor, bottomColor, shoeColor
+      setPalettes(palettes);
+
+      return palettes;
+    } else {
+      throw new Error("Could not get palettes");
+    }
+
+  }
+
+  const assignAreaColorsFromPalatte = (hatColor: string, topColor: string, bottomColor: string, shoeColor: string) => {
+
+    setHatColor(hatColor);
+    setTopColor(topColor);
+    setBottomColor(bottomColor);
+    setShoeColor(shoeColor);
+
+  }
 
   return (
     <>
@@ -316,36 +374,32 @@ export default function Home() {
         </Grid>
         <Grid item xs={3}>
           {/* <SwatchMenu handler={handleColorChangeSwatch} setShowHat={setShowHat} hatSwatches={hatHistory} topSwatches={topHistory} bottomSwatches={bottomHistory} shoeSwatches={shoeHistory} /> */}
-          <Grid container direction="column">
+          {/* <Grid container direction="column">
             <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
-              {/* <Grid item style={{ width: "75px" }}>Hat</Grid> */}
               {hatSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "hat")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
             </Grid>
             <br></br>
             <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
-              {/* <Grid item style={{ width: "75px" }}>Top</Grid> */}
               {topSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "top")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
             </Grid>
             <br></br>
             <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
-              {/* <Grid item style={{ width: "75px" }}>Bottom</Grid> */}
               {bottomSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "bottom")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
             </Grid>
             <br></br>
             <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
-              {/* <Grid item style={{ width: "75px" }}>Shoe</Grid> */}
               {shoeSwatches.map((color) => (
                 <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "shoes")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
               ))}
             </Grid>
             <br></br>
-          </Grid>
+          </Grid> */}
           <Grid container flexWrap="nowrap">
             <Grid item>
               <SketchPicker
@@ -366,6 +420,31 @@ export default function Home() {
                   <ShuffleIcon style={{ color: "white" }} />
                 </IconButton>
               </Grid>
+              <Grid item>
+                <IconButton onClick={() => savePalette()}>
+                  <FavoriteBorderIcon style={{ color: "white" }} />
+                </IconButton>
+              </Grid>
+            </Grid>
+          </Grid>
+          <br></br>
+          <Grid container>
+            <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
+              {palettes.map((palette, i) => {
+
+                const { hatColor, topColor, bottomColor, shoeColor } = palette;
+
+                return (
+
+                  <Grid container key={i} onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor)}>
+                    <Grid item style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
+                    <Grid item style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
+                    <Grid item style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
+                    <Grid item style={{ backgroundColor: shoeColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
+                  </Grid>
+                )
+              })}
+              <div></div>
             </Grid>
           </Grid>
 

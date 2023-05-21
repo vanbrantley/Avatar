@@ -88,6 +88,41 @@ export const listGarments = /* GraphQL */ `
     }
   }
 `;
+export const getPalette = /* GraphQL */ `
+  query GetPalette($id: ID!) {
+    getPalette(id: $id) {
+      id
+      hatColor
+      topColor
+      bottomColor
+      shoeColor
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const listPalettes = /* GraphQL */ `
+  query ListPalettes(
+    $filter: ModelPaletteFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPalettes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        hatColor
+        topColor
+        bottomColor
+        shoeColor
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;
 export const getGarmentAssignments = /* GraphQL */ `
   query GetGarmentAssignments($id: ID!) {
     getGarmentAssignments(id: $id) {
