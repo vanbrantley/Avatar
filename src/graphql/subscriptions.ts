@@ -152,6 +152,57 @@ export const onDeleteGarment = /* GraphQL */ `
     }
   }
 `;
+export const onCreatePalette = /* GraphQL */ `
+  subscription OnCreatePalette(
+    $filter: ModelSubscriptionPaletteFilterInput
+    $owner: String
+  ) {
+    onCreatePalette(filter: $filter, owner: $owner) {
+      id
+      hatColor
+      topColor
+      bottomColor
+      shoeColor
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onUpdatePalette = /* GraphQL */ `
+  subscription OnUpdatePalette(
+    $filter: ModelSubscriptionPaletteFilterInput
+    $owner: String
+  ) {
+    onUpdatePalette(filter: $filter, owner: $owner) {
+      id
+      hatColor
+      topColor
+      bottomColor
+      shoeColor
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onDeletePalette = /* GraphQL */ `
+  subscription OnDeletePalette(
+    $filter: ModelSubscriptionPaletteFilterInput
+    $owner: String
+  ) {
+    onDeletePalette(filter: $filter, owner: $owner) {
+      id
+      hatColor
+      topColor
+      bottomColor
+      shoeColor
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
 export const onCreateGarmentAssignments = /* GraphQL */ `
   subscription OnCreateGarmentAssignments(
     $filter: ModelSubscriptionGarmentAssignmentsFilterInput

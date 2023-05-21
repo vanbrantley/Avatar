@@ -152,6 +152,57 @@ export const deleteGarment = /* GraphQL */ `
     }
   }
 `;
+export const createPalette = /* GraphQL */ `
+  mutation CreatePalette(
+    $input: CreatePaletteInput!
+    $condition: ModelPaletteConditionInput
+  ) {
+    createPalette(input: $input, condition: $condition) {
+      id
+      hatColor
+      topColor
+      bottomColor
+      shoeColor
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const updatePalette = /* GraphQL */ `
+  mutation UpdatePalette(
+    $input: UpdatePaletteInput!
+    $condition: ModelPaletteConditionInput
+  ) {
+    updatePalette(input: $input, condition: $condition) {
+      id
+      hatColor
+      topColor
+      bottomColor
+      shoeColor
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const deletePalette = /* GraphQL */ `
+  mutation DeletePalette(
+    $input: DeletePaletteInput!
+    $condition: ModelPaletteConditionInput
+  ) {
+    deletePalette(input: $input, condition: $condition) {
+      id
+      hatColor
+      topColor
+      bottomColor
+      shoeColor
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
 export const createGarmentAssignments = /* GraphQL */ `
   mutation CreateGarmentAssignments(
     $input: CreateGarmentAssignmentsInput!

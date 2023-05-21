@@ -122,6 +122,48 @@ export type DeleteGarmentInput = {
   id: string,
 };
 
+export type CreatePaletteInput = {
+  id?: string | null,
+  hatColor: string,
+  topColor: string,
+  bottomColor: string,
+  shoeColor: string,
+};
+
+export type ModelPaletteConditionInput = {
+  hatColor?: ModelStringInput | null,
+  topColor?: ModelStringInput | null,
+  bottomColor?: ModelStringInput | null,
+  shoeColor?: ModelStringInput | null,
+  and?: Array< ModelPaletteConditionInput | null > | null,
+  or?: Array< ModelPaletteConditionInput | null > | null,
+  not?: ModelPaletteConditionInput | null,
+};
+
+export type Palette = {
+  __typename: "Palette",
+  id: string,
+  hatColor: string,
+  topColor: string,
+  bottomColor: string,
+  shoeColor: string,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type UpdatePaletteInput = {
+  id: string,
+  hatColor?: string | null,
+  topColor?: string | null,
+  bottomColor?: string | null,
+  shoeColor?: string | null,
+};
+
+export type DeletePaletteInput = {
+  id: string,
+};
+
 export type CreateGarmentAssignmentsInput = {
   id?: string | null,
   outfitId: string,
@@ -190,6 +232,23 @@ export type ModelGarmentConnection = {
   nextToken?: string | null,
 };
 
+export type ModelPaletteFilterInput = {
+  id?: ModelIDInput | null,
+  hatColor?: ModelStringInput | null,
+  topColor?: ModelStringInput | null,
+  bottomColor?: ModelStringInput | null,
+  shoeColor?: ModelStringInput | null,
+  and?: Array< ModelPaletteFilterInput | null > | null,
+  or?: Array< ModelPaletteFilterInput | null > | null,
+  not?: ModelPaletteFilterInput | null,
+};
+
+export type ModelPaletteConnection = {
+  __typename: "ModelPaletteConnection",
+  items:  Array<Palette | null >,
+  nextToken?: string | null,
+};
+
 export type ModelGarmentAssignmentsFilterInput = {
   id?: ModelIDInput | null,
   outfitId?: ModelIDInput | null,
@@ -247,6 +306,16 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionPaletteFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  hatColor?: ModelSubscriptionStringInput | null,
+  topColor?: ModelSubscriptionStringInput | null,
+  bottomColor?: ModelSubscriptionStringInput | null,
+  shoeColor?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionPaletteFilterInput | null > | null,
+  or?: Array< ModelSubscriptionPaletteFilterInput | null > | null,
 };
 
 export type ModelSubscriptionGarmentAssignmentsFilterInput = {
@@ -425,6 +494,63 @@ export type DeleteGarmentMutation = {
       } | null >,
       nextToken?: string | null,
     } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type CreatePaletteMutationVariables = {
+  input: CreatePaletteInput,
+  condition?: ModelPaletteConditionInput | null,
+};
+
+export type CreatePaletteMutation = {
+  createPalette?:  {
+    __typename: "Palette",
+    id: string,
+    hatColor: string,
+    topColor: string,
+    bottomColor: string,
+    shoeColor: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type UpdatePaletteMutationVariables = {
+  input: UpdatePaletteInput,
+  condition?: ModelPaletteConditionInput | null,
+};
+
+export type UpdatePaletteMutation = {
+  updatePalette?:  {
+    __typename: "Palette",
+    id: string,
+    hatColor: string,
+    topColor: string,
+    bottomColor: string,
+    shoeColor: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type DeletePaletteMutationVariables = {
+  input: DeletePaletteInput,
+  condition?: ModelPaletteConditionInput | null,
+};
+
+export type DeletePaletteMutation = {
+  deletePalette?:  {
+    __typename: "Palette",
+    id: string,
+    hatColor: string,
+    topColor: string,
+    bottomColor: string,
+    shoeColor: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -652,6 +778,48 @@ export type ListGarmentsQuery = {
         __typename: "ModelGarmentAssignmentsConnection",
         nextToken?: string | null,
       } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetPaletteQueryVariables = {
+  id: string,
+};
+
+export type GetPaletteQuery = {
+  getPalette?:  {
+    __typename: "Palette",
+    id: string,
+    hatColor: string,
+    topColor: string,
+    bottomColor: string,
+    shoeColor: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type ListPalettesQueryVariables = {
+  filter?: ModelPaletteFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListPalettesQuery = {
+  listPalettes?:  {
+    __typename: "ModelPaletteConnection",
+    items:  Array< {
+      __typename: "Palette",
+      id: string,
+      hatColor: string,
+      topColor: string,
+      bottomColor: string,
+      shoeColor: string,
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
@@ -986,6 +1154,63 @@ export type OnDeleteGarmentSubscription = {
       } | null >,
       nextToken?: string | null,
     } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnCreatePaletteSubscriptionVariables = {
+  filter?: ModelSubscriptionPaletteFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnCreatePaletteSubscription = {
+  onCreatePalette?:  {
+    __typename: "Palette",
+    id: string,
+    hatColor: string,
+    topColor: string,
+    bottomColor: string,
+    shoeColor: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnUpdatePaletteSubscriptionVariables = {
+  filter?: ModelSubscriptionPaletteFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnUpdatePaletteSubscription = {
+  onUpdatePalette?:  {
+    __typename: "Palette",
+    id: string,
+    hatColor: string,
+    topColor: string,
+    bottomColor: string,
+    shoeColor: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnDeletePaletteSubscriptionVariables = {
+  filter?: ModelSubscriptionPaletteFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnDeletePaletteSubscription = {
+  onDeletePalette?:  {
+    __typename: "Palette",
+    id: string,
+    hatColor: string,
+    topColor: string,
+    bottomColor: string,
+    shoeColor: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
