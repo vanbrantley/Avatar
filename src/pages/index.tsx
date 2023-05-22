@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import LockIcon from '@mui/icons-material/Lock';
 import { useUser } from '../context/AuthContext';
 import { API } from 'aws-amplify';
 import { createGarment, createPalette } from '@/graphql/mutations';
@@ -32,6 +33,12 @@ export default function Home() {
   const [topColor, setTopColor] = useState<string>("#fff");
   const [bottomColor, setBottomColor] = useState<string>("#000");
   const [shoeColor, setShoeColor] = useState<string>("#000");
+
+  const [hatLock, setHatLock] = useState<boolean>(false);
+  const [topLock, setTopLock] = useState<boolean>(false);
+  const [bottomLock, setBottomLock] = useState<boolean>(false);
+  const [shoeLock, setShoeLock] = useState<boolean>(false);
+
 
   const [selectedArea, setSelectedArea] = useState<string>("top");
   const [selectedColor, setSelectedColor] = useState<string>(topColor);
@@ -215,7 +222,7 @@ export default function Home() {
         }
         setSelectedColor(bottomColor);
         break;
-      case "shoes":
+      case "shoe":
         if (!(shoeSwatches.includes(shoeColor))) {
           if (closetMode) {
             addGarmentToDB("shoe", shoeColor);
@@ -258,15 +265,25 @@ export default function Home() {
 
   const randomizePalette = () => {
 
-    const randomHatColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-    const randomTopColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-    const randomBottomColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-    const randomShoeColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+    if (!hatLock) {
+      const randomHatColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+      setHatColor(randomHatColor);
+    }
 
-    setHatColor(randomHatColor);
-    setTopColor(randomTopColor);
-    setBottomColor(randomBottomColor);
-    setShoeColor(randomShoeColor);
+    if (!topLock) {
+      const randomTopColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+      setTopColor(randomTopColor);
+    }
+
+    if (!bottomLock) {
+      const randomBottomColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+      setBottomColor(randomBottomColor);
+    }
+
+    if (!shoeLock) {
+      const randomShoeColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+      setShoeColor(randomShoeColor);
+    }
 
     // set the selected color to the color of the selected area
     switch (selectedArea) {
@@ -410,10 +427,49 @@ export default function Home() {
             <Grid container direction="column">
               <Grid item>
                 {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
-                <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button></Grid>
-                <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button></Grid>
+                <Grid item container wrap="nowrap">
+                  <Grid item>
+                    <Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button>
+                  </Grid>
+                  <Grid item>
+                    <IconButton onClick={() => setHatLock(prev => !prev)}>
+                      <LockIcon style={{ color: hatLock ? "white" : "grey" }} />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+                <Grid item container wrap="nowrap">
+                  <Grid item>
+                    <Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button>
+                  </Grid>
+                  <Grid item>
+                    <IconButton onClick={() => setTopLock(prev => !prev)}>
+                      <LockIcon style={{ color: topLock ? "white" : "grey" }} />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+                <Grid item container wrap="nowrap">
+                  <Grid item>
+                    <Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button>
+                  </Grid>
+                  <Grid item>
+                    <IconButton onClick={() => setBottomLock(prev => !prev)}>
+                      <LockIcon style={{ color: bottomLock ? "white" : "grey" }} />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+                <Grid item container wrap="nowrap">
+                  <Grid item>
+                    <Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button>
+                  </Grid>
+                  <Grid item>
+                    <IconButton onClick={() => setShoeLock(prev => !prev)}>
+                      <LockIcon style={{ color: shoeLock ? "white" : "grey" }} />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+                {/* <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button></Grid>
                 <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button></Grid>
-                <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button></Grid>
+                <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button></Grid> */}
               </Grid>
               <Grid item>
                 <IconButton onClick={() => randomizePalette()}>
