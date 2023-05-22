@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import LockIcon from '@mui/icons-material/Lock';
 import { useUser } from '../context/AuthContext';
 import { API } from 'aws-amplify';
-import { createGarment, createPalette } from '@/graphql/mutations';
-import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
+import { createGarment, createPalette, deletePalette } from '@/graphql/mutations';
+import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeletePaletteInput, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
 import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import Avatar from '@/components/Avatar';
@@ -44,6 +45,8 @@ export default function Home() {
   const [selectedColor, setSelectedColor] = useState<string>(topColor);
 
   const [palettes, setPalettes] = useState<Palette[]>([]);
+  const [heartFilled, setHeartFilled] = useState<boolean>(false);
+  const [selectedPalette, setSelectedPalette] = useState<string | null>(null);
 
   const [hatSwatches, setHatSwatches] = useState<string[]>(["#fff"]);
   const [topSwatches, setTopSwatches] = useState<string[]>(["#fff"]);
@@ -53,11 +56,11 @@ export default function Home() {
   const [closetMode, setClosetMode] = useState<boolean>(false);
 
   useEffect(() => {
-    randomizePalette()
+    randomizePalette();
   }, [])
 
   useEffect(() => {
-    fetchPalettes()
+    if (user) fetchPalettes();
   }, [])
 
   const handleModeChange = (toClosetMode: boolean): void => {
@@ -135,6 +138,9 @@ export default function Home() {
   }
 
   const handleColorChangePicker = (color: string) => {
+
+    if (heartFilled) setHeartFilled(false);
+    if (selectedPalette) setSelectedPalette(null);
 
     // sets the color of the selectedArea to the color picker color
     switch (selectedArea) {
@@ -265,6 +271,9 @@ export default function Home() {
 
   const randomizePalette = () => {
 
+    if (heartFilled) setHeartFilled(false);
+    if (selectedPalette) setSelectedPalette(null);
+
     if (!hatLock) {
       const randomHatColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
       setHatColor(randomHatColor);
@@ -303,29 +312,6 @@ export default function Home() {
 
   }
 
-  const savePalette = async () => {
-
-    try {
-
-      const createNewPaletteInput: CreatePaletteInput = {
-        hatColor: hatColor,
-        topColor: topColor,
-        bottomColor: bottomColor,
-        shoeColor: shoeColor
-      };
-
-      const createNewPalette = (await API.graphql({
-        query: createPalette,
-        variables: { input: createNewPaletteInput }
-      })) as CreatePaletteMutation;
-
-      console.log("Palette added successfully: ", createNewPalette);
-
-    } catch (error: any) {
-      console.error("Error adding palette: ", error);
-    }
-  }
-
   const fetchPalettes = async (): Promise<Palette[]> => {
     const userPalettes = (await API.graphql({ query: listPalettes })) as {
       data: ListPalettesQuery;
@@ -348,12 +334,64 @@ export default function Home() {
 
   }
 
-  const assignAreaColorsFromPalatte = (hatColor: string, topColor: string, bottomColor: string, shoeColor: string) => {
+  const savePalette = async () => {
+
+    try {
+
+      const createNewPaletteInput: CreatePaletteInput = {
+        hatColor: hatColor,
+        topColor: topColor,
+        bottomColor: bottomColor,
+        shoeColor: shoeColor
+      };
+
+      const createNewPalette = (await API.graphql({
+        query: createPalette,
+        variables: { input: createNewPaletteInput }
+      })) as CreatePaletteMutation;
+
+      console.log("Palette added successfully: ", createNewPalette);
+
+      setPalettes([createNewPalette.data.createPalette, ...palettes]);
+
+      setSelectedPalette(createNewPalette.data.createPalette.id);
+      setHeartFilled(true);
+
+    } catch (error: any) {
+      console.error("Error adding palette: ", error);
+    }
+  }
+
+  const removePalette = async () => {
+
+    console.log('Remove palette function triggered.');
+
+    const paletteDetails: DeletePaletteInput = {
+      id: selectedPalette!,
+    };
+
+    const removedPalette = await API.graphql({
+      query: deletePalette,
+      variables: { input: paletteDetails }
+    });
+
+    // remove the deleted palette from the palettes state array
+    setPalettes(palettes.filter((palette) => palette.id !== removedPalette.data.deletePalette.id));
+
+    setSelectedPalette(null);
+    setHeartFilled(false);
+
+  }
+
+  const assignAreaColorsFromPalatte = (hatColor: string, topColor: string, bottomColor: string, shoeColor: string, id: string) => {
 
     setHatColor(hatColor);
     setTopColor(topColor);
     setBottomColor(bottomColor);
     setShoeColor(shoeColor);
+
+    setHeartFilled(true);
+    setSelectedPalette(id);
 
   }
 
@@ -476,23 +514,31 @@ export default function Home() {
                   <ShuffleIcon style={{ color: "white" }} />
                 </IconButton>
               </Grid>
-              <Grid item>
-                <IconButton onClick={() => savePalette()}>
-                  <FavoriteBorderIcon style={{ color: "white" }} />
-                </IconButton>
-              </Grid>
+              {user && heartFilled && (
+                <Grid item>
+                  <IconButton onClick={() => removePalette()}>
+                    <FavoriteIcon style={{ color: "white" }} />
+                  </IconButton>
+                </Grid>
+              )}
+              {user && !heartFilled && (
+                <Grid item>
+                  <IconButton onClick={() => savePalette()}>
+                    <FavoriteBorderIcon style={{ color: "white" }} />
+                  </IconButton>
+                </Grid>
+              )}
             </Grid>
           </Grid>
           <br></br>
           <Grid container>
             <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
               {palettes.map((palette, i) => {
-
-                const { hatColor, topColor, bottomColor, shoeColor } = palette;
+                const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
 
                 return (
 
-                  <Grid container key={i} onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor)}>
+                  <Grid container key={i} onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)} style={{ cursor: "pointer" }}>
                     <Grid item style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
                     <Grid item style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
                     <Grid item style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
