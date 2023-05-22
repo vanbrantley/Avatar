@@ -6,8 +6,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import LockIcon from '@mui/icons-material/Lock';
 import { useUser } from '../context/AuthContext';
 import { API } from 'aws-amplify';
+import { GraphQLQuery } from '@aws-amplify/api';
 import { createGarment, createPalette, deletePalette } from '@/graphql/mutations';
-import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeletePaletteInput, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
+import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
 import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import Avatar from '@/components/Avatar';
@@ -345,17 +346,20 @@ export default function Home() {
         shoeColor: shoeColor
       };
 
-      const createNewPalette = (await API.graphql({
+      const response = await API.graphql<GraphQLQuery<CreatePaletteMutation>>({
         query: createPalette,
         variables: { input: createNewPaletteInput }
-      })) as CreatePaletteMutation;
+      });
 
-      console.log("Palette added successfully: ", createNewPalette);
+      const createdPalette = response.data?.createPalette;
 
-      setPalettes([createNewPalette.data.createPalette, ...palettes]);
+      if (createdPalette) {
+        setPalettes((prevPalettes) => [createdPalette, ...prevPalettes]);
+        setSelectedPalette(createdPalette.id);
+        setHeartFilled(true);
+      }
 
-      setSelectedPalette(createNewPalette.data.createPalette.id);
-      setHeartFilled(true);
+      console.log("Palette added successfully: ", createdPalette);
 
     } catch (error: any) {
       console.error("Error adding palette: ", error);
@@ -364,22 +368,28 @@ export default function Home() {
 
   const removePalette = async () => {
 
-    console.log('Remove palette function triggered.');
+    try {
 
-    const paletteDetails: DeletePaletteInput = {
-      id: selectedPalette!,
-    };
+      const paletteDetails: DeletePaletteInput = {
+        id: selectedPalette!,
+      };
 
-    const removedPalette = await API.graphql({
-      query: deletePalette,
-      variables: { input: paletteDetails }
-    });
+      const response = await API.graphql<GraphQLQuery<DeletePaletteMutation>>({
+        query: deletePalette,
+        variables: { input: paletteDetails }
+      });
 
-    // remove the deleted palette from the palettes state array
-    setPalettes(palettes.filter((palette) => palette.id !== removedPalette.data.deletePalette.id));
+      const removedPalette = response.data?.deletePalette;
 
-    setSelectedPalette(null);
-    setHeartFilled(false);
+      if (removedPalette) {
+        setPalettes(palettes.filter((palette) => palette.id !== removedPalette.id));
+        setSelectedPalette(null);
+        setHeartFilled(false);
+      }
+
+    } catch (error: any) {
+      console.error("Error removing palette: ", error);
+    }
 
   }
 
