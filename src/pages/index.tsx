@@ -5,7 +5,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import LockIcon from '@mui/icons-material/Lock';
 import { useUser } from '../context/AuthContext';
-import { API, GraphQLQuery, graphqlOperation, GraphQLResult } from '@aws-amplify/api';
+import { API } from 'aws-amplify';
+import { GraphQLQuery, graphqlOperation, GraphQLResult } from '@aws-amplify/api';
 import { createGarment, createPalette, deletePalette } from '@/graphql/mutations';
 import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
 import dynamic from 'next/dynamic';
@@ -27,7 +28,6 @@ const SketchPicker = dynamic(
 export default function Home() {
 
   const { user } = useUser();
-  // console.log("USER: ", user);
 
   const [hatColor, setHatColor] = useState<string>("#000");
   const [faceColor, setFaceColor] = useState<string>("#a18057");
@@ -263,13 +263,15 @@ export default function Home() {
 
       const response = await API.graphql<GraphQLQuery<CreateGarmentMutation>>(graphqlOperation(createGarment, {
         input: createNewGarmentInput
-      }));
-
-      const createdGarment = response.data?.createGarment;
-
-      console.log("Garment added successfully: ", createdGarment);
-
-      // see if you need to refresh -- add new garment to area's swatches
+      })) as GraphQLResult<CreateGarmentMutation>;
+      const { data } = response;
+      if (data && data.createGarment) {
+        const createdGarment = data.createGarment;
+        console.log("Garment added successfully: ", createdGarment);
+        // add createdGarment to swatches
+      } else {
+        throw new Error("Could not add garment")
+      }
 
     } catch (error: any) {
       console.error("Error adding garment: ", error);
@@ -321,7 +323,6 @@ export default function Home() {
 
   const fetchPalettes = async (): Promise<Palette[]> => {
 
-
     try {
       const response = await API.graphql<GraphQLQuery<ListPalettesQuery>>(graphqlOperation(listPalettes)) as GraphQLResult<ListPalettesQuery>;
       const { data } = response;
@@ -334,6 +335,7 @@ export default function Home() {
         throw new Error("Could not get palettes.");
       }
     } catch (error: any) {
+      console.error(error);
       throw new Error("Could not get palettes");
     }
 
@@ -352,21 +354,23 @@ export default function Home() {
 
       const response = await API.graphql<GraphQLQuery<CreatePaletteMutation>>(graphqlOperation(createPalette, {
         input: createNewPaletteInput
-      }));
+      })) as GraphQLResult<CreatePaletteMutation>;
+      const { data } = response;
 
-      const createdPalette = response.data?.createPalette;
-
-      if (createdPalette) {
+      if (data && data.createPalette) {
+        const createdPalette = data.createPalette;
         setPalettes((prevPalettes) => [createdPalette, ...prevPalettes]);
         setSelectedPalette(createdPalette.id);
         setHeartFilled(true);
+        console.log("Palette added successfully: ", createdPalette);
+
+      } else {
+        throw new Error("Could not save palette.");
       }
-
-      console.log("Palette added successfully: ", createdPalette);
-
     } catch (error: any) {
       console.error("Error adding palette: ", error);
     }
+
   }
 
   const removePalette = async () => {
@@ -379,14 +383,15 @@ export default function Home() {
 
       const response = await API.graphql<GraphQLQuery<DeletePaletteMutation>>(graphqlOperation(deletePalette, {
         input: paletteDetails
-      }));
+      })) as GraphQLResult<DeletePaletteMutation>;
+      const { data } = response;
 
-      const removedPalette = response.data?.deletePalette;
-
-      if (removedPalette) {
+      if (data && data.deletePalette) {
+        const removedPalette = data.deletePalette;
         setPalettes(palettes.filter((palette) => palette.id !== removedPalette.id));
         setSelectedPalette(null);
         setHeartFilled(false);
+        console.log("Palette removed successfully: ", removedPalette);
       }
 
     } catch (error: any) {
