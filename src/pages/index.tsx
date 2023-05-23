@@ -5,8 +5,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import LockIcon from '@mui/icons-material/Lock';
 import { useUser } from '../context/AuthContext';
-import { API } from 'aws-amplify';
-import { GraphQLQuery } from '@aws-amplify/api';
+import { API, GraphQLQuery, graphqlOperation, GraphQLResult } from '@aws-amplify/api';
 import { createGarment, createPalette, deletePalette } from '@/graphql/mutations';
 import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
 import dynamic from 'next/dynamic';
@@ -58,11 +57,34 @@ export default function Home() {
 
   useEffect(() => {
     randomizePalette();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (user) fetchPalettes();
-  }, [])
+  }, []);
+
+  const fetchGarmentsFromDB = async (): Promise<Garment[]> => {
+
+    try {
+      const response = (await API.graphql<GraphQLQuery<ListGarmentsQuery>>(graphqlOperation(listGarments))) as GraphQLResult<ListGarmentsQuery>;
+      const { data } = response;
+      if (data && data.listGarments && data.listGarments.items) {
+        const userGarments = data.listGarments.items as Garment[];
+        const grouped = groupByArea(userGarments);
+        // console.log(grouped);
+        setHatSwatches(grouped["hat"]);
+        setTopSwatches(grouped["top"]);
+        setBottomSwatches(grouped["bottom"]);
+        setShoeSwatches(grouped["shoe"]);
+        return userGarments;
+      } else {
+        throw new Error("Could not get garments");
+      }
+    } catch (error: any) {
+      throw new Error("Could not get palettes");
+    }
+
+  }
 
   const handleModeChange = (toClosetMode: boolean): void => {
 
@@ -76,31 +98,15 @@ export default function Home() {
 
     if (toClosetMode) {
       // fetch garments & set swatches
-      const fetchGarmentsFromDB = async (): Promise<Garment[]> => {
-        const userGarments = (await API.graphql({ query: listGarments })) as {
-          data: ListGarmentsQuery;
-          errors: any[];
-        };
 
-        console.log(userGarments);
-
-        if (userGarments.data) {
-          // sort into areas
-          const garments = userGarments.data.listGarments!.items as Garment[];
-          const grouped = groupByArea(garments);
-          // console.log(grouped);
+      fetchGarmentsFromDB()
+        .then((userGarments) => {
+          const grouped = groupByArea(userGarments);
           setHatSwatches(grouped["hat"]);
           setTopSwatches(grouped["top"]);
           setBottomSwatches(grouped["bottom"]);
           setShoeSwatches(grouped["shoe"]);
-          return garments;
-        } else {
-          throw new Error("Could not get garments");
-        }
-
-      }
-
-      fetchGarmentsFromDB();
+        })
 
     } else {
       // reset swatches
@@ -113,7 +119,6 @@ export default function Home() {
     setClosetMode(toClosetMode);
 
   }
-
 
   const handleAreaChange = (area: string) => {
 
@@ -256,12 +261,13 @@ export default function Home() {
         area: area
       };
 
-      const createNewGarment = (await API.graphql({
-        query: createGarment,
-        variables: { input: createNewGarmentInput }
-      })) as CreateGarmentMutation;
+      const response = await API.graphql<GraphQLQuery<CreateGarmentMutation>>(graphqlOperation(createGarment, {
+        input: createNewGarmentInput
+      }));
 
-      console.log("Garment added successfully: ", createNewGarment);
+      const createdGarment = response.data?.createGarment;
+
+      console.log("Garment added successfully: ", createdGarment);
 
       // see if you need to refresh -- add new garment to area's swatches
 
@@ -314,22 +320,20 @@ export default function Home() {
   }
 
   const fetchPalettes = async (): Promise<Palette[]> => {
-    const userPalettes = (await API.graphql({ query: listPalettes })) as {
-      data: ListPalettesQuery;
-      errors: any[];
-    };
 
-    console.log(userPalettes);
 
-    if (userPalettes.data) {
-
-      const palettes = userPalettes.data.listPalettes!.items as Palette[];
-
-      // setPalettes to the hatColor, topColor, bottomColor, shoeColor
-      setPalettes(palettes);
-
-      return palettes;
-    } else {
+    try {
+      const response = await API.graphql<GraphQLQuery<ListPalettesQuery>>(graphqlOperation(listPalettes)) as GraphQLResult<ListPalettesQuery>;
+      const { data } = response;
+      if (data && data.listPalettes && data.listPalettes.items) {
+        const userPalettes = data.listPalettes.items as Palette[];
+        // setPalettes to the hatColor, topColor, bottomColor, shoeColor
+        setPalettes(userPalettes);
+        return userPalettes;
+      } else {
+        throw new Error("Could not get palettes.");
+      }
+    } catch (error: any) {
       throw new Error("Could not get palettes");
     }
 
@@ -346,10 +350,9 @@ export default function Home() {
         shoeColor: shoeColor
       };
 
-      const response = await API.graphql<GraphQLQuery<CreatePaletteMutation>>({
-        query: createPalette,
-        variables: { input: createNewPaletteInput }
-      });
+      const response = await API.graphql<GraphQLQuery<CreatePaletteMutation>>(graphqlOperation(createPalette, {
+        input: createNewPaletteInput
+      }));
 
       const createdPalette = response.data?.createPalette;
 
@@ -374,10 +377,9 @@ export default function Home() {
         id: selectedPalette!,
       };
 
-      const response = await API.graphql<GraphQLQuery<DeletePaletteMutation>>({
-        query: deletePalette,
-        variables: { input: paletteDetails }
-      });
+      const response = await API.graphql<GraphQLQuery<DeletePaletteMutation>>(graphqlOperation(deletePalette, {
+        input: paletteDetails
+      }));
 
       const removedPalette = response.data?.deletePalette;
 
