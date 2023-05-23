@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-amplify/api": "^5.1.0",
     "@emotion/cache": "^11.10.5",
     "@emotion/react": "^11.10.6",
     "@emotion/server": "^11.10.0",
@@ -20,6 +21,7 @@
     "@types/react": "18.0.33",
     "@types/react-dom": "18.0.11",
     "aws-amplify": "^5.0.23",
+    "aws-amplify-react": "^5.1.43",
     "eslint-config-next": "13.2.4",
     "next": "13.2.4",
     "react": "18.2.0",
