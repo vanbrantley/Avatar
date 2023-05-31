@@ -21,7 +21,18 @@ export default function Header(props: IHeaderProps) {
     const router = useRouter();
 
     const signUserOut = async () => {
-        await Auth.signOut();
+        // Clear the access and refresh tokens from local storage
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+
+        // Sign out the user using Amplify's Auth.signOut()
+        try {
+            await Auth.signOut();
+            // Handle any additional sign-out logic or UI updates
+        } catch (error) {
+            // Handle the sign-out error
+            console.log('Sign-out error:', error);
+        }
     }
 
     return (
