@@ -60,8 +60,27 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (user) fetchPalettes();
-  }, []);
+
+    // Execute the fetchPalettes function when the component mounts
+    if (user) {
+      fetchPalettes();
+    }
+
+    // Register the beforeunload event listener to fetch palettes on page refresh
+    const handlePageRefresh = () => {
+      if (user) {
+        fetchPalettes();
+      }
+    };
+
+    // Add the event listener on component mount
+    window.addEventListener('beforeunload', handlePageRefresh);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener('beforeunload', handlePageRefresh);
+    };
+  }, [user]);
 
   const fetchGarmentsFromDB = async (): Promise<Garment[]> => {
 
@@ -548,24 +567,27 @@ export default function Home() {
             </Grid>
           </Grid>
           <br></br>
-          <Grid container>
-            <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
-              {palettes.map((palette, i) => {
-                const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
+          {user && (
+            <Grid container>
+              <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
+                {palettes.map((palette, i) => {
+                  const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
 
-                return (
+                  return (
 
-                  <Grid container key={i} onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)} style={{ cursor: "pointer" }}>
-                    <Grid item style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
-                    <Grid item style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
-                    <Grid item style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
-                    <Grid item style={{ backgroundColor: shoeColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
-                  </Grid>
-                )
-              })}
-              <div></div>
+                    <Grid container key={i} onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)} style={{ cursor: "pointer" }}>
+                      <Grid item style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
+                      <Grid item style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
+                      <Grid item style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
+                      <Grid item style={{ backgroundColor: shoeColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
+                    </Grid>
+                  )
+                })}
+                <div></div>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
+
 
         </Grid>
       </Grid>
