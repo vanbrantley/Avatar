@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -569,13 +570,19 @@ export default function Home() {
           <br></br>
           {user && (
             <Grid container>
-              <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
+              {/* <Grid item container spacing={0} wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
                 {palettes.map((palette, i) => {
                   const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
 
                   return (
 
-                    <Grid container key={i} onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)} style={{ cursor: "pointer" }}>
+                    <Grid container key={i} direction="column" onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)} style={{
+                      cursor: "pointer",
+                      flexWrap: "nowrap",
+                      alignItems: "flex-start",
+                      margin: 0,
+                      padding: 0
+                    }}>
                       <Grid item style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
                       <Grid item style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
                       <Grid item style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
@@ -584,10 +591,24 @@ export default function Home() {
                   )
                 })}
                 <div></div>
-              </Grid>
+              </Grid> */}
+              <div style={{ display: "flex", maxWidth: "300px", overflowX: "auto" }}>
+                {palettes.map((palette, i) => {
+                  const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
+
+                  return (
+                    <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
+                      onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)}>
+                      <div style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }} />
+                      <div style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }} />
+                      <div style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }} />
+                      <div style={{ backgroundColor: shoeColor, height: "27px", width: "30px", borderRadius: "0%" }} />
+                    </div>
+                  );
+                })}
+              </div>
             </Grid>
           )}
-
 
         </Grid>
       </Grid>
