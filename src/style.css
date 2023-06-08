@@ -1,3 +1,44 @@
 .zoom-125 {
     zoom: 1.25;
 }
+
+.sketch-zoom {
+    zoom: 0.8
+}
+
+.sketch-wrapper {
+    transform: scale(1.25);
+    /* margin to create space between the SketchPicker and other content */
+    margin-right: 20px;
+    margin-top: 20px;
+    /* padding to prevent overlapping with other elements */
+    padding: 10px;
+}
+
+.column-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.swatch-container {
+    max-width: 400px;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    /* Adjust the gap value as per your preference */
+}
+
+.grid-container {
+    position: relative;
+}
+
+.background-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 45%;
+    background-color: #2b2b2b;
+    /* Set the desired background color for the overlay on the right side */
+    z-index: -1;
+}

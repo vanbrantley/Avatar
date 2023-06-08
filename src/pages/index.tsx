@@ -1,30 +1,27 @@
 import { useEffect, useState } from 'react';
-import { Button, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
-import Box from '@mui/material/Box';
+import { Button, Grid, IconButton, Typography } from '@mui/material';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import LockIcon from '@mui/icons-material/Lock';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useUser } from '../context/AuthContext';
 import { API } from 'aws-amplify';
 import { GraphQLQuery, graphqlOperation, GraphQLResult } from '@aws-amplify/api';
 import { createGarment, createPalette, deletePalette } from '@/graphql/mutations';
+import { listGarments, listPalettes } from '@/graphql/queries';
 import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
-import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import Avatar from '@/components/Avatar';
 import SwatchMenu from '@/components/SwatchMenu';
-import { listGarments, listPalettes } from '@/graphql/queries';
+import dynamic from 'next/dynamic';
 import groupByArea from '@/lib/groupByArea';
-// from https://you.com/search?q=warning%3A%20prop%20%60style%60%20did%20not%20match
 const SketchPicker = dynamic(
   () => import('react-color').then((mod) => mod.SketchPicker),
   { ssr: false }
 );
-// const CirclePicker = dynamic(
-//   () => import('react-color').then((mod) => mod.CirclePicker),
-//   { ssr: false }
-// );
 
 export default function Home() {
 
@@ -55,6 +52,8 @@ export default function Home() {
   const [shoeSwatches, setShoeSwatches] = useState<string[]>(["#fff"]);
 
   const [closetMode, setClosetMode] = useState<boolean>(false);
+  const [showPicker, setShowPicker] = useState<boolean>(false);
+
 
   useEffect(() => {
     randomizePalette();
@@ -91,7 +90,6 @@ export default function Home() {
       if (data && data.listGarments && data.listGarments.items) {
         const userGarments = data.listGarments.items as Garment[];
         const grouped = groupByArea(userGarments);
-        // console.log(grouped);
         setHatSwatches(grouped["hat"]);
         setTopSwatches(grouped["top"]);
         setBottomSwatches(grouped["bottom"]);
@@ -108,17 +106,14 @@ export default function Home() {
 
   const handleModeChange = (toClosetMode: boolean): void => {
 
-    // toClosetMode is the mode you want to switch to
-    // if true - you want to switch to closet mode, if false, you want to switch to lab mode
-
     // check if mode is switching
     const modeSwitch: boolean = ((toClosetMode && !closetMode) || (!toClosetMode && closetMode));
 
     if (!modeSwitch) return;
 
     if (toClosetMode) {
-      // fetch garments & set swatches
 
+      // fetch garments & set swatches
       fetchGarmentsFromDB()
         .then((userGarments) => {
           const grouped = groupByArea(userGarments);
@@ -128,12 +123,10 @@ export default function Home() {
           setShoeSwatches(grouped["shoe"]);
         })
 
-    } else {
-      // reset swatches
-      setHatSwatches(["#fff"]);
-      setTopSwatches(["#fff"]);
-      setBottomSwatches(["#fff"]);
-      setShoeSwatches(["#fff"]);
+      // assign area colors to random colors in swatches - not implemented
+
+      setShowPicker(false);
+
     }
 
     setClosetMode(toClosetMode);
@@ -226,41 +219,29 @@ export default function Home() {
     switch (area) {
       case "hat":
         if (!(hatSwatches.includes(hatColor))) {
-          if (closetMode) {
-            addGarmentToDB("hat", hatColor);
-            setHatSwatches([hatColor, ...hatSwatches]);
-          }
-          else setHatSwatches([hatColor, ...hatSwatches]);
+          addGarmentToDB("hat", hatColor);
+          setHatSwatches([hatColor, ...hatSwatches]);
         }
         setSelectedColor(hatColor);
         break;
       case "top":
         if (!(topSwatches.includes(topColor))) {
-          if (closetMode) {
-            addGarmentToDB("top", topColor);
-            setTopSwatches([topColor, ...topSwatches]);
-          }
-          else setTopSwatches([topColor, ...topSwatches]);
+          addGarmentToDB("top", topColor);
+          setTopSwatches([topColor, ...topSwatches]);
         }
         setSelectedColor(topColor);
         break;
       case "bottom":
         if (!(bottomSwatches.includes(bottomColor))) {
-          if (closetMode) {
-            addGarmentToDB("bottom", bottomColor);
-            setBottomSwatches([bottomColor, ...bottomSwatches]);
-          }
-          else setBottomSwatches([bottomColor, ...bottomSwatches]);
+          addGarmentToDB("bottom", bottomColor);
+          setBottomSwatches([bottomColor, ...bottomSwatches]);
         }
         setSelectedColor(bottomColor);
         break;
-      case "shoe":
+      case "shoes":
         if (!(shoeSwatches.includes(shoeColor))) {
-          if (closetMode) {
-            addGarmentToDB("shoe", shoeColor);
-            setShoeSwatches([shoeColor, ...shoeSwatches]);
-          }
-          else setShoeSwatches([shoeColor, ...shoeSwatches]);
+          addGarmentToDB("shoe", shoeColor);
+          setShoeSwatches([shoeColor, ...shoeSwatches]);
         }
         setSelectedColor(shoeColor);
         break;
@@ -337,6 +318,33 @@ export default function Home() {
       case "shoe":
         setSelectedColor(shoeColor);
         break;
+    }
+
+  }
+
+  const randomizeOutfit = () => {
+
+    // generate a random number between 0 and length of each swatch array
+    // set each area color to the swatchArray[index]
+
+    if (!hatLock) {
+      const hatIndex = Math.floor(Math.random() * hatSwatches.length);
+      setHatColor(hatSwatches[hatIndex]);
+    }
+
+    if (!topLock) {
+      const topIndex = Math.floor(Math.random() * topSwatches.length);
+      setTopColor(topSwatches[topIndex]);
+    }
+
+    if (!bottomLock) {
+      const bottomIndex = Math.floor(Math.random() * bottomSwatches.length);
+      setBottomColor(bottomSwatches[bottomIndex]);
+    }
+
+    if (!shoeLock) {
+      const shoeIndex = Math.floor(Math.random() * shoeSwatches.length);
+      setShoeColor(shoeSwatches[shoeIndex]);
     }
 
   }
@@ -435,8 +443,8 @@ export default function Home() {
   return (
     <>
       {/* {console.log("Closet Mode: ", closetMode)} */}
-      <Header handleModeChange={handleModeChange} />
-      <Grid container spacing={1}>
+      <Header closetMode={closetMode} setClosetMode={setClosetMode} handleModeChange={handleModeChange} />
+      <Grid container spacing={1} className="grid-container">
         <Grid item xs={1}>
           {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
           <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button></Grid>
@@ -464,154 +472,267 @@ export default function Home() {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={3}>
-          {/* <SwatchMenu handler={handleColorChangeSwatch} setShowHat={setShowHat} hatSwatches={hatHistory} topSwatches={topHistory} bottomSwatches={bottomHistory} shoeSwatches={shoeHistory} /> */}
-          {/* <Grid container direction="column">
-            <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
-              {hatSwatches.map((color) => (
-                <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "hat")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
-              ))}
+        {!closetMode && (
+          <Grid item xs={3}>
+            <Grid container flexWrap="nowrap">
+              <Grid item>
+                <div className="sketch-wrapper">
+                  <SketchPicker
+                    disableAlpha
+                    className="sketch-zoom"
+                    color={selectedColor}
+                    onChangeComplete={color => handleColorChangePicker(color.hex)} />
+                </div>
+              </Grid>
+              <Grid item container direction="column">
+                <Grid item>
+                  {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
+                  <Grid item container wrap="nowrap">
+                    <Grid item>
+                      <Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button>
+                    </Grid>
+                    <Grid item>
+                      <IconButton onClick={() => setHatLock(prev => !prev)}>
+                        <LockIcon style={{ color: hatLock ? "white" : "grey" }} />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                  <Grid item container wrap="nowrap">
+                    <Grid item>
+                      <Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button>
+                    </Grid>
+                    <Grid item>
+                      <IconButton onClick={() => setTopLock(prev => !prev)}>
+                        <LockIcon style={{ color: topLock ? "white" : "grey" }} />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                  <Grid item container wrap="nowrap">
+                    <Grid item>
+                      <Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button>
+                    </Grid>
+                    <Grid item>
+                      <IconButton onClick={() => setBottomLock(prev => !prev)}>
+                        <LockIcon style={{ color: bottomLock ? "white" : "grey" }} />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                  <Grid item container wrap="nowrap">
+                    <Grid item>
+                      <Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button>
+                    </Grid>
+                    <Grid item>
+                      <IconButton onClick={() => setShoeLock(prev => !prev)}>
+                        <LockIcon style={{ color: shoeLock ? "white" : "grey" }} />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <IconButton onClick={() => randomizePalette()}>
+                    <ShuffleIcon style={{ color: "white" }} />
+                  </IconButton>
+                </Grid>
+                {user && heartFilled && (
+                  <Grid item>
+                    <IconButton onClick={() => removePalette()}>
+                      <FavoriteIcon style={{ color: "white" }} />
+                    </IconButton>
+                  </Grid>
+                )}
+                {user && !heartFilled && (
+                  <Grid item>
+                    <IconButton onClick={() => savePalette()}>
+                      <FavoriteBorderIcon style={{ color: "white" }} />
+                    </IconButton>
+                  </Grid>
+                )}
+              </Grid>
             </Grid>
             <br></br>
-            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
-              {topSwatches.map((color) => (
-                <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "top")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
-              ))}
-            </Grid>
-            <br></br>
-            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
-              {bottomSwatches.map((color) => (
-                <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "bottom")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
-              ))}
-            </Grid>
-            <br></br>
-            <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
-              {shoeSwatches.map((color) => (
-                <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "shoes")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
-              ))}
-            </Grid>
-            <br></br>
-          </Grid> */}
-          <Grid container flexWrap="nowrap">
-            <Grid item>
-              <SketchPicker
-                disableAlpha
-                color={selectedColor}
-                onChangeComplete={color => handleColorChangePicker(color.hex)} />
-            </Grid>
+            {user && (
+              <Grid container>
+                <div style={{ display: "flex", maxWidth: "300px", overflowX: "auto" }}>
+                  {palettes.map((palette, i) => {
+                    const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
+
+                    return (
+                      <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
+                        onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)}>
+                        <div style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }} />
+                        <div style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }} />
+                        <div style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }} />
+                        <div style={{ backgroundColor: shoeColor, height: "27px", width: "30px", borderRadius: "0%" }} />
+                      </div>
+                    );
+                  })}
+                </div>
+              </Grid>
+            )}
+          </Grid>
+
+        )}
+
+        {closetMode && (
+          <Grid item xs={3}>
+            {/* <SwatchMenu handler={handleColorChangeSwatch} setShowHat={setShowHat} hatSwatches={hatHistory} topSwatches={topHistory} bottomSwatches={bottomHistory} shoeSwatches={shoeHistory} /> */}
             <Grid container direction="column">
-              <Grid item>
-                {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
-                <Grid item container wrap="nowrap">
-                  <Grid item>
-                    <Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button>
-                  </Grid>
-                  <Grid item>
-                    <IconButton onClick={() => setHatLock(prev => !prev)}>
-                      <LockIcon style={{ color: hatLock ? "white" : "grey" }} />
-                    </IconButton>
-                  </Grid>
+              <Grid item container wrap="nowrap">
+                <Grid item container wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
+                  {hatSwatches.map((color) => (
+                    <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "hat")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
+                  ))}
                 </Grid>
-                <Grid item container wrap="nowrap">
-                  <Grid item>
-                    <Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button>
-                  </Grid>
-                  <Grid item>
-                    <IconButton onClick={() => setTopLock(prev => !prev)}>
-                      <LockIcon style={{ color: topLock ? "white" : "grey" }} />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-                <Grid item container wrap="nowrap">
-                  <Grid item>
-                    <Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button>
-                  </Grid>
-                  <Grid item>
-                    <IconButton onClick={() => setBottomLock(prev => !prev)}>
-                      <LockIcon style={{ color: bottomLock ? "white" : "grey" }} />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-                <Grid item container wrap="nowrap">
-                  <Grid item>
-                    <Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button>
-                  </Grid>
-                  <Grid item>
-                    <IconButton onClick={() => setShoeLock(prev => !prev)}>
-                      <LockIcon style={{ color: shoeLock ? "white" : "grey" }} />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-                {/* <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button></Grid>
-                <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button></Grid>
-                <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button></Grid> */}
-              </Grid>
-              <Grid item>
-                <IconButton onClick={() => randomizePalette()}>
-                  <ShuffleIcon style={{ color: "white" }} />
-                </IconButton>
-              </Grid>
-              {user && heartFilled && (
+                {/* <Grid item>
+                  <IconButton onClick={() => console.log('')}>
+                    <DeleteIcon style={{ color: "grey" }} />
+                  </IconButton>
+                </Grid> */}
                 <Grid item>
-                  <IconButton onClick={() => removePalette()}>
-                    <FavoriteIcon style={{ color: "white" }} />
+                  <IconButton onClick={() => setHatLock(prev => !prev)}>
+                    <LockIcon style={{ color: hatLock ? "white" : "grey" }} />
                   </IconButton>
                 </Grid>
-              )}
-              {user && !heartFilled && (
-                <Grid item>
-                  <IconButton onClick={() => savePalette()}>
-                    <FavoriteBorderIcon style={{ color: "white" }} />
+              </Grid>
+              <Grid item container wrap="nowrap">
+                <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+                  {topSwatches.map((color) => (
+                    <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "top")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
+                  ))}
+                </Grid>
+                {/* <Grid item>
+                  <IconButton onClick={() => console.log('')}>
+                    <DeleteIcon style={{ color: "grey" }} />
                   </IconButton>
+                </Grid> */}
+                <Grid item>
+                  <IconButton onClick={() => setTopLock(prev => !prev)}>
+                    <LockIcon style={{ color: topLock ? "white" : "grey" }} />
+                  </IconButton>
+                </Grid>
+              </Grid>
+              <Grid item container wrap="nowrap">
+                <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+                  {bottomSwatches.map((color) => (
+                    <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "bottom")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
+                  ))}
+                </Grid>
+                {/* <Grid item>
+                  <IconButton onClick={() => console.log('')}>
+                    <DeleteIcon style={{ color: "grey" }} />
+                  </IconButton>
+                </Grid> */}
+                <Grid item>
+                  <IconButton onClick={() => setBottomLock(prev => !prev)}>
+                    <LockIcon style={{ color: bottomLock ? "white" : "grey" }} />
+                  </IconButton>
+                </Grid>
+              </Grid>
+              <Grid item container wrap="nowrap">
+                <Grid item container wrap="nowrap" style={{ maxWidth: "400px", overflowX: "auto" }}>
+                  {shoeSwatches.map((color) => (
+                    <Grid item key={color}><Button onClick={() => handleColorChangeSwatch(color, "shoes")} style={{ height: "30px", backgroundColor: color }}></Button></Grid>
+                  ))}
+                </Grid>
+                {/* <Grid item>
+                  <IconButton onClick={() => console.log('')}>
+                    <DeleteIcon style={{ color: "grey" }} />
+                  </IconButton>
+                </Grid> */}
+                <Grid item>
+                  <IconButton onClick={() => setShoeLock(prev => !prev)}>
+                    <LockIcon style={{ color: shoeLock ? "white" : "grey" }} />
+                  </IconButton>
+                </Grid>
+              </Grid>
+              <Grid item container>
+                <Grid item>
+                  <IconButton onClick={() => setShowPicker(prev => !prev)}>
+                    {showPicker ? <RemoveIcon style={{ color: "white" }} /> : <AddIcon style={{ color: "white" }} />}
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <IconButton onClick={() => randomizeOutfit()}>
+                    <ShuffleIcon style={{ color: "white" }} />
+                  </IconButton>
+                </Grid>
+              </Grid>
+              {showPicker && (
+                <Grid container flexWrap="nowrap">
+                  <Grid item>
+                    <div className="sketch-wrapper">
+                      <SketchPicker
+                        disableAlpha
+                        className="sketch-zoom"
+                        color={selectedColor}
+                        onChangeComplete={color => handleColorChangePicker(color.hex)} />
+                    </div>
+                  </Grid>
+                  <Grid item container direction="column">
+                    <Grid item>
+                      {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
+                      <Grid item container wrap="nowrap">
+                        <Grid item>
+                          <Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button>
+                        </Grid>
+                        <Grid item>
+                          <IconButton onClick={() => setHatLock(prev => !prev)}>
+                            <LockIcon style={{ color: hatLock ? "white" : "grey" }} />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                      <Grid item container wrap="nowrap">
+                        <Grid item>
+                          <Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button>
+                        </Grid>
+                        <Grid item>
+                          <IconButton onClick={() => setTopLock(prev => !prev)}>
+                            <LockIcon style={{ color: topLock ? "white" : "grey" }} />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                      <Grid item container wrap="nowrap">
+                        <Grid item>
+                          <Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button>
+                        </Grid>
+                        <Grid item>
+                          <IconButton onClick={() => setBottomLock(prev => !prev)}>
+                            <LockIcon style={{ color: bottomLock ? "white" : "grey" }} />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                      <Grid item container wrap="nowrap">
+                        <Grid item>
+                          <Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button>
+                        </Grid>
+                        <Grid item>
+                          <IconButton onClick={() => setShoeLock(prev => !prev)}>
+                            <LockIcon style={{ color: shoeLock ? "white" : "grey" }} />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid item>
+                      <IconButton onClick={() => randomizePalette()}>
+                        <ShuffleIcon style={{ color: "white" }} />
+                      </IconButton>
+                    </Grid>
+                    {user && heartFilled && (
+                      <Grid item>
+                        <IconButton onClick={() => removePalette()}>
+                          <FavoriteIcon style={{ color: "white" }} />
+                        </IconButton>
+                      </Grid>
+                    )}
+                  </Grid>
                 </Grid>
               )}
             </Grid>
           </Grid>
-          <br></br>
-          {user && (
-            <Grid container>
-              {/* <Grid item container spacing={0} wrap="nowrap" style={{ maxWidth: "300px", overflowX: "auto" }}>
-                {palettes.map((palette, i) => {
-                  const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
+        )}
 
-                  return (
-
-                    <Grid container key={i} direction="column" onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)} style={{
-                      cursor: "pointer",
-                      flexWrap: "nowrap",
-                      alignItems: "flex-start",
-                      margin: 0,
-                      padding: 0
-                    }}>
-                      <Grid item style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
-                      <Grid item style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
-                      <Grid item style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
-                      <Grid item style={{ backgroundColor: shoeColor, height: "27px", width: "30px", borderRadius: "0%" }}></Grid>
-                    </Grid>
-                  )
-                })}
-                <div></div>
-              </Grid> */}
-              <div style={{ display: "flex", maxWidth: "300px", overflowX: "auto" }}>
-                {palettes.map((palette, i) => {
-                  const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
-
-                  return (
-                    <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
-                      onClick={() => assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)}>
-                      <div style={{ backgroundColor: hatColor, height: "27px", width: "30px", borderRadius: "0%" }} />
-                      <div style={{ backgroundColor: topColor, height: "27px", width: "30px", borderRadius: "0%" }} />
-                      <div style={{ backgroundColor: bottomColor, height: "27px", width: "30px", borderRadius: "0%" }} />
-                      <div style={{ backgroundColor: shoeColor, height: "27px", width: "30px", borderRadius: "0%" }} />
-                    </div>
-                  );
-                })}
-              </div>
-            </Grid>
-          )}
-
-        </Grid>
       </Grid>
+      <div className="background-overlay"></div>
     </>
   )
 }
