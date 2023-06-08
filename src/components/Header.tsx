@@ -12,7 +12,9 @@ import { Auth } from 'aws-amplify';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface IHeaderProps {
-    handleModeChange: (toClosetMode: boolean) => void
+    closetMode: boolean,
+    handleModeChange: (toClosetMode: boolean) => void,
+    setClosetMode: Dispatch<SetStateAction<boolean>>
 }
 
 export default function Header(props: IHeaderProps) {
@@ -29,6 +31,7 @@ export default function Header(props: IHeaderProps) {
         try {
             await Auth.signOut();
             // Handle any additional sign-out logic or UI updates
+            props.setClosetMode(false);
         } catch (error) {
             // Handle the sign-out error
             console.log('Sign-out error:', error);
@@ -54,9 +57,9 @@ export default function Header(props: IHeaderProps) {
                     </Typography>
                     {user && (
                         <>
-                            <Button onClick={() => props.handleModeChange(false)} style={{ color: "white" }}>Lab</Button>
+                            <Button onClick={() => props.handleModeChange(false)} style={{ color: props.closetMode ? "white" : "black" }}>Lab</Button>
                             {/* <Button style={{ color: "white" }}>Palettes</Button> */}
-                            <Button onClick={() => props.handleModeChange(true)} style={{ color: "white", marginRight: "10px" }}>Closet</Button>
+                            <Button onClick={() => props.handleModeChange(true)} style={{ color: props.closetMode ? "black" : "white", marginRight: "10px" }}>Closet</Button>
                             <Button variant='contained' onClick={() => signUserOut()}>Sign Out</Button>
                         </>
                     )}
