@@ -445,14 +445,14 @@ export default function Home() {
       {/* {console.log("Closet Mode: ", closetMode)} */}
       <Header closetMode={closetMode} setClosetMode={setClosetMode} handleModeChange={handleModeChange} />
       <Grid container spacing={1} className="grid-container">
-        <Grid item xs={1}>
+        <Grid item sx={{ display: { xs: 'none', sm: 'block' } }} sm={1}>
           {/* <Palette handler={addColorSwatch} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
           <Grid item><Button onClick={() => addColorSwatch("hat")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: hatColor }}></Button></Grid>
           <Grid item><Button onClick={() => addColorSwatch("top")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: topColor }}></Button></Grid>
           <Grid item><Button onClick={() => addColorSwatch("bottom")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: bottomColor }}></Button></Grid>
           <Grid item><Button onClick={() => addColorSwatch("shoes")} style={{ height: "55px", width: "60px", borderRadius: "0%", backgroundColor: shoeColor }}></Button></Grid>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item sm={6} xs={12}>
           {/* <Avatar handler={handleAreaChange} showHat={showHat} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} /> */}
           <Grid container direction="column" alignItems="center">
             <Grid item>
@@ -473,7 +473,7 @@ export default function Home() {
           </Grid>
         </Grid>
         {!closetMode && (
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={3}>
             <Grid container flexWrap="nowrap">
               <Grid item>
                 <div className="sketch-wrapper">

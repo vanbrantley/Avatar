@@ -42,3 +42,9 @@
     /* Set the desired background color for the overlay on the right side */
     z-index: -1;
 }
+
+@media (max-width: 600px) {
+    .background-overlay {
+        display: none;
+    }
+}
