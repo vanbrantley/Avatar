@@ -1,7 +1,7 @@
 
 
 <p align="center">
-    <img src="public/avatar-logo-1.png" width="200" height="200" alt="Avatar Logo"/>
+    <img src="public/avatar-a1.png" width="200" height="200" alt="Avatar Logo"/>
 </p>
 
 <h1 align="center"><strong>Avatar</strong></h1>
