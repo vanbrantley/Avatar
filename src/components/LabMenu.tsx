@@ -66,22 +66,24 @@ export default function LabMenu(props: ILabMenuProps) {
             </div>
             <br></br>
             <br></br>
-            <div className="container mx-auto">
-                <div className="flex max-w-3xl overflow-x-auto">
-                    {props.palettes.map((palette, i) => {
-                        const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
+            {user && (
+                <div className="container mx-auto">
+                    <div className="flex max-w-3xl overflow-x-auto">
+                        {props.palettes.map((palette, i) => {
+                            const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
 
-                        return (
-                            <div key={i} className="flex flex-col items-center cursor-pointer" onClick={() => props.assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)}>
-                                <div className="h-8 w-8 rounded-none" style={{ backgroundColor: hatColor }}></div>
-                                <div className="h-8 w-8 rounded-none" style={{ backgroundColor: topColor }}></div>
-                                <div className="h-8 w-8 rounded-none" style={{ backgroundColor: bottomColor }}></div>
-                                <div className="h-8 w-8 rounded-none" style={{ backgroundColor: shoeColor }}></div>
-                            </div>
-                        );
-                    })}
+                            return (
+                                <div key={i} className="flex flex-col items-center cursor-pointer" onClick={() => props.assignAreaColorsFromPalatte(hatColor, topColor, bottomColor, shoeColor, id)}>
+                                    <div className="h-8 w-8 rounded-none" style={{ backgroundColor: hatColor }}></div>
+                                    <div className="h-8 w-8 rounded-none" style={{ backgroundColor: topColor }}></div>
+                                    <div className="h-8 w-8 rounded-none" style={{ backgroundColor: bottomColor }}></div>
+                                    <div className="h-8 w-8 rounded-none" style={{ backgroundColor: shoeColor }}></div>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
-            </div>
+            )}
         </>
     );
 
