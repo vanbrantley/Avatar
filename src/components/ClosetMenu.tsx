@@ -32,7 +32,6 @@ export interface IClosetMenuProps {
     setBottomLock: Dispatch<SetStateAction<boolean>>,
     shoeLock: boolean,
     setShoeLock: Dispatch<SetStateAction<boolean>>,
-
     showPicker: boolean,
     setShowPicker: Dispatch<SetStateAction<boolean>>,
 
