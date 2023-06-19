@@ -1,22 +1,44 @@
-import { Button, Grid } from "@mui/material";
-
 export interface IPaletteProps {
     hatColor: string,
     topColor: string,
     bottomColor: string,
     shoeColor: string,
-    handler: (color: string) => void
+    addColorSwatch: (color: string) => void
 }
 
-export default function Palette(props: IPaletteProps) {
+export default function PaletteComponent(props: IPaletteProps) {
 
 
     return (
         <>
-            <Grid item><Button onClick={() => props.handler("hat")} style={{ height: "55px", width: "60px", backgroundColor: props.hatColor }}></Button></Grid>
-            <Grid item><Button onClick={() => props.handler("top")} style={{ height: "55px", width: "60px", backgroundColor: props.topColor }}></Button></Grid>
-            <Grid item><Button onClick={() => props.handler("bottom")} style={{ height: "55px", width: "60px", backgroundColor: props.bottomColor }}></Button></Grid>
-            <Grid item><Button onClick={() => props.handler("shoes")} style={{ height: "55px", width: "60px", backgroundColor: props.shoeColor }}></Button></Grid>
+            <div className="">
+                <div
+                    onClick={() => props.addColorSwatch("hat")}
+                    className="h-14 w-16 rounded-none cursor-pointer"
+                    style={{ backgroundColor: props.hatColor }}
+                ></div>
+            </div>
+            <div className="">
+                <div
+                    onClick={() => props.addColorSwatch("top")}
+                    className="h-14 w-16 rounded-none cursor-pointer"
+                    style={{ backgroundColor: props.topColor }}
+                ></div>
+            </div>
+            <div className="">
+                <div
+                    onClick={() => props.addColorSwatch("bottom")}
+                    className="h-14 w-16 rounded-none cursor-pointer"
+                    style={{ backgroundColor: props.bottomColor }}
+                ></div>
+            </div>
+            <div className="">
+                <div
+                    onClick={() => props.addColorSwatch("shoes")}
+                    className="h-14 w-16 rounded-none cursor-pointer"
+                    style={{ backgroundColor: props.shoeColor }}
+                ></div>
+            </div>
         </>
     );
 
