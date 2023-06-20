@@ -18,8 +18,8 @@ export default function Avatar(props: IAvatarProps) {
             ></div>
             <div
                 onClick={() => props.handleAreaChange("face")}
-                className="mx-auto cursor-pointer"
-                style={{ backgroundColor: props.faceColor, height: "55px", width: "60px", borderBottomLeftRadius: "120%", borderBottomRightRadius: "120%" }}
+                className="h-14 w-16 mx-auto cursor-pointer"
+                style={{ backgroundColor: props.faceColor, borderBottomLeftRadius: "120%", borderBottomRightRadius: "120%" }}
             ></div>
             <div
                 onClick={() => props.handleAreaChange("top")}
