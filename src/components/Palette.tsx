@@ -1,45 +1,44 @@
-export interface IPaletteProps {
-    hatColor: string,
-    topColor: string,
-    bottomColor: string,
-    shoeColor: string,
-    addColorSwatch: (color: string) => void
-}
+import { observer } from 'mobx-react-lite';
+import { useContext } from 'react';
+import { AppStoreContext } from '../context/AppStoreContext';
 
-export default function PaletteComponent(props: IPaletteProps) {
-
+const PaletteComponent = observer(() => {
+    const store = useContext(AppStoreContext);
+    const { hatColor, topColor, bottomColor, shoeColor, addColorSwatch } = store;
 
     return (
         <>
             <div className="">
                 <div
-                    onClick={() => props.addColorSwatch("hat")}
+                    onClick={() => addColorSwatch("hat")}
                     className="h-14 w-16 rounded-none cursor-pointer"
-                    style={{ backgroundColor: props.hatColor }}
+                    style={{ backgroundColor: hatColor }}
                 ></div>
             </div>
             <div className="">
                 <div
-                    onClick={() => props.addColorSwatch("top")}
+                    onClick={() => addColorSwatch("top")}
                     className="h-14 w-16 rounded-none cursor-pointer"
-                    style={{ backgroundColor: props.topColor }}
+                    style={{ backgroundColor: topColor }}
                 ></div>
             </div>
             <div className="">
                 <div
-                    onClick={() => props.addColorSwatch("bottom")}
+                    onClick={() => addColorSwatch("bottom")}
                     className="h-14 w-16 rounded-none cursor-pointer"
-                    style={{ backgroundColor: props.bottomColor }}
+                    style={{ backgroundColor: bottomColor }}
                 ></div>
             </div>
             <div className="">
                 <div
-                    onClick={() => props.addColorSwatch("shoes")}
+                    onClick={() => addColorSwatch("shoes")}
                     className="h-14 w-16 rounded-none cursor-pointer"
-                    style={{ backgroundColor: props.shoeColor }}
+                    style={{ backgroundColor: shoeColor }}
                 ></div>
             </div>
         </>
     );
 
-}
+});
+
+export default PaletteComponent;

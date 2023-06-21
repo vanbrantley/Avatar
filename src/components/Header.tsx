@@ -1,4 +1,3 @@
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,15 +8,16 @@ import { useUser } from '../context/AuthContext';
 import { Button } from '@mui/material';
 import { useRouter } from 'next/router';
 import { Auth } from 'aws-amplify';
-import { Dispatch, SetStateAction } from 'react';
+import { observer } from 'mobx-react-lite';
 
-export interface IHeaderProps {
+interface IHeaderProps {
     closetMode: boolean,
     handleModeChange: (toClosetMode: boolean) => void,
-    setClosetMode: Dispatch<SetStateAction<boolean>>
+    setClosetMode: (mode: boolean) => void;
 }
 
-export default function Header(props: IHeaderProps) {
+
+const Header = observer(function Header(props: IHeaderProps) {
 
     const { user } = useUser();
     const router = useRouter();
@@ -27,16 +27,13 @@ export default function Header(props: IHeaderProps) {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
 
-        // Sign out the user using Amplify's Auth.signOut()
         try {
             await Auth.signOut();
-            // Handle any additional sign-out logic or UI updates
             props.setClosetMode(false);
         } catch (error) {
-            // Handle the sign-out error
             console.log('Sign-out error:', error);
         }
-    }
+    };
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -78,4 +75,8 @@ export default function Header(props: IHeaderProps) {
             </AppBar>
         </Box>
     );
-}
+
+
+});
+
+export default Header;

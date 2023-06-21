@@ -6,8 +6,11 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import theme from '../theme';
-import Header from '@/components/Header';
 import createEmotionCache from '../createEmotionCache';
+
+import appStore from "../store/store";
+import { AppStoreContext } from "../context/AppStoreContext";
+
 
 import AuthContext from '../context/AuthContext';
 import { Amplify, Auth } from 'aws-amplify';
@@ -35,8 +38,9 @@ export default function MyApp(props: MyAppProps) {
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          {/* <Header /> */}
-          <Component {...pageProps} />
+          <AppStoreContext.Provider value={appStore}>
+            <Component {...pageProps} />
+          </AppStoreContext.Provider>
         </ThemeProvider>
       </AuthContext>
     </CacheProvider>
