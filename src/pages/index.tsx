@@ -50,7 +50,7 @@ const Home = observer(() => {
 
       <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="hidden md:block col-span-1 grid gap-0">
-          <PaletteComponent />
+          <PaletteComponent lock={false} />
         </div>
         <div className="md:col-start-2 md:col-span-6">
           <Avatar />
