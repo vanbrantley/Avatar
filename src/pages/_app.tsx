@@ -15,6 +15,7 @@ import { AppStoreContext } from "../context/AppStoreContext";
 import AuthContext from '../context/AuthContext';
 import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from '../aws-exports';
+import Layout from '@/components/Layout';
 
 Amplify.configure({ ...awsconfig, ssr: true });
 Auth.configure(awsconfig);
@@ -39,7 +40,9 @@ export default function MyApp(props: MyAppProps) {
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           <AppStoreContext.Provider value={appStore}>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </AppStoreContext.Provider>
         </ThemeProvider>
       </AuthContext>
