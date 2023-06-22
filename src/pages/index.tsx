@@ -1,9 +1,9 @@
 import Header from '@/components/Header';
-import Palette from '@/components/Palette';
-import Avatar from '@/components/Avatar';
-import LabMenu from '@/components/LabMenu';
-import ClosetMenu from '@/components/ClosetMenu';
-import { useEffect, useContext } from 'react';
+import DesktopLayout from '@/components/DesktopLayout';
+import TabletLayout from '@/components/TabletLayout';
+import MobileLayout from '@/components/MobileLayout';
+
+import { useState, useEffect, useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { useUser } from '../context/AuthContext';
 import { observer } from 'mobx-react-lite';
@@ -14,9 +14,34 @@ const Home = observer(() => {
   const store = useContext(AppStoreContext);
   const { randomizePalette, fetchPalettes, closetMode, setClosetMode, handleModeChange } = store;
 
+  const [layout, setLayout] = useState<string>('desktop');
 
   useEffect(() => {
     randomizePalette();
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+
+      if (screenWidth >= 1024) {
+        setLayout('desktop');
+      } else if (screenWidth >= 768) {
+        setLayout('tablet');
+      } else {
+        setLayout('mobile');
+      }
+    };
+
+    handleResize(); // Initial check
+
+    // Attach the resize event listener
+    window.addEventListener('resize', handleResize);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -48,20 +73,10 @@ const Home = observer(() => {
         setClosetMode={setClosetMode}
         handleModeChange={handleModeChange} />
 
-      <div className="grid grid-cols-1 md:grid-cols-12">
-        <div className="hidden md:block col-span-1 grid gap-0">
-          <Palette lock={false} />
-        </div>
-        <div className="md:col-start-2 md:col-span-6">
-          <Avatar />
-        </div>
-        <div className="sm:col-span-3 xs:col-span-12">
-          {!closetMode && <LabMenu />}
-          {closetMode && <ClosetMenu />}
-        </div>
-      </div>
+      {layout === 'desktop' && <DesktopLayout />}
+      {layout === 'tablet' && <TabletLayout />}
+      {layout === 'mobile' && <MobileLayout />}
 
-      <div className="background-overlay hidden md:block"></div>
     </>
   );
 

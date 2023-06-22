@@ -25,6 +25,7 @@ const LabMenu = observer(() => {
 
     return (
         <>
+
             <div className="flex flex-row">
                 <div className="sketch-wrapper">
                     <SketchPicker
@@ -39,9 +40,6 @@ const LabMenu = observer(() => {
                         <Palette lock={true} />
                     </div>
                     <div className="flex flex-col float-left">
-                        <IconButton onClick={() => randomizePalette()}>
-                            <ShuffleIcon style={{ color: "white" }} />
-                        </IconButton>
                         {user && heartFilled && (
                             <IconButton onClick={() => removePalette()}>
                                 <FavoriteIcon style={{ color: "white" }} />
@@ -52,12 +50,17 @@ const LabMenu = observer(() => {
                                 <FavoriteBorderIcon style={{ color: "white" }} />
                             </IconButton>
                         )}
+                        <IconButton onClick={() => randomizePalette()}>
+                            <ShuffleIcon style={{ color: "white" }} />
+                        </IconButton>
                     </div>
                 </div>
             </div>
+
             <br></br>
             <br></br>
             {user && <PaletteList />}
+
         </>
     );
 
