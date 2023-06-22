@@ -9,7 +9,7 @@ const PaletteList = observer(() => {
 
     return (
         <div className="container mx-auto">
-            <div className="flex max-w-3xl overflow-x-auto">
+            <div className="flex max-w-xs overflow-x-auto">
                 {palettes.map((palette, i) => {
                     const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
 

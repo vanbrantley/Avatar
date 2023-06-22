@@ -181,7 +181,7 @@ class AppStore {
             case "bottom":
                 this.setSelectedColor(this.bottomColor);
                 break;
-            case "shoe":
+            case "shoes":
                 this.setSelectedColor(this.shoeColor);
                 break;
         }
