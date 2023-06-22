@@ -1,5 +1,5 @@
 import Header from '@/components/Header';
-import PaletteComponent from '@/components/Palette';
+import Palette from '@/components/Palette';
 import Avatar from '@/components/Avatar';
 import LabMenu from '@/components/LabMenu';
 import ClosetMenu from '@/components/ClosetMenu';
@@ -50,7 +50,7 @@ const Home = observer(() => {
 
       <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="hidden md:block col-span-1 grid gap-0">
-          <PaletteComponent lock={false} />
+          <Palette lock={false} />
         </div>
         <div className="md:col-start-2 md:col-span-6">
           <Avatar />
