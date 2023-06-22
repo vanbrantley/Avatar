@@ -1,12 +1,13 @@
 import { useUser } from '../context/AuthContext';
 import { IconButton } from '@mui/material';
-import PaletteComponent from '@/components/Palette';
+import Palette from '@/components/Palette';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
+import PaletteList from './PaletteList';
 import dynamic from 'next/dynamic';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),
@@ -16,9 +17,9 @@ const SketchPicker = dynamic(
 const LabMenu = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { selectedColor, palettes, heartFilled,
-        handleColorChangePicker, randomizePalette, removePalette, savePalette,
-        assignAreaColorsFromPalette } = store;
+    const { selectedColor, heartFilled,
+        handleColorChangePicker, randomizePalette, removePalette, savePalette
+    } = store;
 
     const { user } = useUser();
 
@@ -35,7 +36,7 @@ const LabMenu = observer(() => {
                 </div>
                 <div>
                     <div>
-                        <PaletteComponent lock={true} />
+                        <Palette lock={true} />
                     </div>
                     <div className="flex flex-col float-left">
                         <IconButton onClick={() => randomizePalette()}>
@@ -56,24 +57,7 @@ const LabMenu = observer(() => {
             </div>
             <br></br>
             <br></br>
-            {user && (
-                <div className="container mx-auto">
-                    <div className="flex max-w-3xl overflow-x-auto">
-                        {palettes.map((palette, i) => {
-                            const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
-
-                            return (
-                                <div key={i} className="flex flex-col items-center cursor-pointer" onClick={() => assignAreaColorsFromPalette(hatColor, topColor, bottomColor, shoeColor, id)}>
-                                    <div className="h-8 w-8 rounded-none" style={{ backgroundColor: hatColor }}></div>
-                                    <div className="h-8 w-8 rounded-none" style={{ backgroundColor: topColor }}></div>
-                                    <div className="h-8 w-8 rounded-none" style={{ backgroundColor: bottomColor }}></div>
-                                    <div className="h-8 w-8 rounded-none" style={{ backgroundColor: shoeColor }}></div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            )}
+            {user && <PaletteList />}
         </>
     );
 

@@ -4,12 +4,11 @@ import { AppStoreContext } from '../context/AppStoreContext';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 
-
-interface IPaletteComponentProps {
+interface IPaletteProps {
     lock: boolean
 }
 
-const PaletteComponent = observer(function PaletteComponent(props: IPaletteComponentProps) {
+const Palette = observer(function PaletteComponent(props: IPaletteProps) {
     const store = useContext(AppStoreContext);
     const { hatColor, topColor, bottomColor, shoeColor, addColorSwatch, closetMode,
         hatLock, setHatLock, topLock, setTopLock, bottomLock, setBottomLock, shoeLock, setShoeLock } = store;
@@ -79,4 +78,4 @@ const PaletteComponent = observer(function PaletteComponent(props: IPaletteCompo
 
 });
 
-export default PaletteComponent;
+export default Palette;
