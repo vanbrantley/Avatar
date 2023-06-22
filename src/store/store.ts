@@ -31,8 +31,10 @@ class AppStore {
     palettes: Palette[] = [];
     selectedPalette: string | null = null;
 
-    heartFilled = false;
     closetMode = false;
+    navbarOpen = false;
+
+    heartFilled = false;
     showPicker = false;
 
     constructor() {
@@ -57,8 +59,9 @@ class AppStore {
             shoeLock: observable,
             palettes: observable,
             selectedPalette: observable,
-            heartFilled: observable,
             closetMode: observable,
+            navbarOpen: observable,
+            heartFilled: observable,
             showPicker: observable,
 
         });
@@ -133,12 +136,16 @@ class AppStore {
         this.selectedPalette = id;
     });
 
-    setHeartFilled = action((filled: boolean) => {
-        this.heartFilled = filled;
-    });
-
     setClosetMode = action((closetMode: boolean) => {
         this.closetMode = closetMode;
+    });
+
+    setNavbarOpen = action((isOpen: boolean) => {
+        this.navbarOpen = isOpen;
+    });
+
+    setHeartFilled = action((filled: boolean) => {
+        this.heartFilled = filled;
     });
 
     setShowPicker = action((show: boolean) => {
@@ -229,15 +236,15 @@ class AppStore {
                     this.setTopSwatches(grouped["top"]);
                     this.setBottomSwatches(grouped["bottom"]);
                     this.setShoeSwatches(grouped["shoe"]);
-                })
-
-            // assign area colors to random colors in swatches - not implemented
+                });
 
             this.setShowPicker(false);
 
         }
 
         this.setClosetMode(toClosetMode);
+        this.setNavbarOpen(false);
+
     });
 
     handleAreaChange = action((area: string) => {
@@ -361,6 +368,27 @@ class AppStore {
 
         this.setHeartFilled(true);
         this.setSelectedPalette(id);
+
+        // assign selectedColor to the color of the selectedArea in the palette
+        switch (this.selectedArea) {
+            case "hat":
+                this.setSelectedColor(hatColor);
+                break;
+            case "face":
+                break;
+            case "top":
+                this.setSelectedColor(topColor);
+                break;
+            case "bottom":
+                this.setSelectedColor(bottomColor);
+                break;
+            case "shoes":
+                this.setSelectedColor(shoeColor);
+                break;
+            default:
+                break;
+        }
+
     });
 
     fetchGarmentsFromDB = action(async (): Promise<Garment[]> => {
