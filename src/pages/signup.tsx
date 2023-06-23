@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Alert, Button, Grid, Snackbar, TextField } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useUser } from "../context/AuthContext";
 import { Auth } from "aws-amplify";
 import { CognitoUser } from "@aws-amplify/auth";
 import { useRouter } from "next/router";
+import { observer } from 'mobx-react-lite';
+import { useContext } from 'react';
+import { AppStoreContext } from '../context/AppStoreContext';
 
 interface IFormInput {
     username: string;
@@ -13,8 +15,11 @@ interface IFormInput {
     code: string;
 }
 
-export default function Signup() {
-    const { user, setUser } = useUser();
+const Signup = observer(() => {
+
+    const store = useContext(AppStoreContext);
+    const { setNavbarOpen } = store;
+
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [signUpError, setSignUpError] = useState<string>("");
@@ -71,14 +76,15 @@ export default function Signup() {
         try {
             await Auth.confirmSignUp(username, code);
             const amplifyUser = await Auth.signIn(username, password);
-            if (amplifyUser) router.push(`/`);
+            if (amplifyUser) {
+                setNavbarOpen(false);
+                router.push(`/`);
+            }
             else throw new Error("Something went wrong.");
         } catch (error) {
             console.log('error confirming sign up', error);
         }
     }
-
-    console.log("The value of the user from the hook is: ", user);
 
     return (
 
@@ -152,5 +158,9 @@ export default function Signup() {
                 </Snackbar>
             </form>
         </div>
+
     );
-}
+
+});
+
+export default Signup;

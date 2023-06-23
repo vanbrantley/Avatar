@@ -37,6 +37,8 @@ class AppStore {
     heartFilled = false;
     showPicker = false;
 
+    layout = "desktop";
+
     constructor() {
 
         makeObservable(this, {
@@ -63,6 +65,7 @@ class AppStore {
             navbarOpen: observable,
             heartFilled: observable,
             showPicker: observable,
+            layout: observable
 
         });
     }
@@ -150,6 +153,10 @@ class AppStore {
 
     setShowPicker = action((show: boolean) => {
         this.showPicker = show;
+    });
+
+    setLayout = action((layout: string) => {
+        this.layout = layout;
     });
 
     // functions
@@ -369,25 +376,25 @@ class AppStore {
         this.setHeartFilled(true);
         this.setSelectedPalette(id);
 
-        // assign selectedColor to the color of the selectedArea in the palette
-        switch (this.selectedArea) {
-            case "hat":
-                this.setSelectedColor(hatColor);
-                break;
-            case "face":
-                break;
-            case "top":
-                this.setSelectedColor(topColor);
-                break;
-            case "bottom":
-                this.setSelectedColor(bottomColor);
-                break;
-            case "shoes":
-                this.setSelectedColor(shoeColor);
-                break;
-            default:
-                break;
-        }
+        // // assign selectedColor to the color of the selectedArea in the palette
+        // switch (this.selectedArea) {
+        //     case "hat":
+        //         this.setSelectedColor(hatColor);
+        //         break;
+        //     case "face":
+        //         break;
+        //     case "top":
+        //         this.setSelectedColor(topColor);
+        //         break;
+        //     case "bottom":
+        //         this.setSelectedColor(bottomColor);
+        //         break;
+        //     case "shoes":
+        //         this.setSelectedColor(shoeColor);
+        //         break;
+        //     default:
+        //         break;
+        // }
 
     });
 

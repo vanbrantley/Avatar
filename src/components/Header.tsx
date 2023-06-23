@@ -3,7 +3,7 @@ import { useUser } from '../context/AuthContext';
 import { useRouter } from 'next/router';
 import { Auth } from 'aws-amplify';
 import { observer } from 'mobx-react-lite';
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 
 interface IHeaderProps {
@@ -16,7 +16,7 @@ interface IHeaderProps {
 const Header = observer(function Header(props: IHeaderProps) {
 
     const store = useContext(AppStoreContext);
-    const { closetMode, handleModeChange, navbarOpen, setNavbarOpen } = store;
+    const { closetMode, handleModeChange, navbarOpen, setNavbarOpen, layout } = store;
 
     const { user } = useUser();
     const router = useRouter();
@@ -58,19 +58,22 @@ const Header = observer(function Header(props: IHeaderProps) {
                 </div>
                 <div className={`w-full block flex-grow lg:flex lg:items-center lg:w-auto ${navbarOpen ? 'block' : 'hidden'}`}>
 
-
                     {user ? (
                         <div className="text-sm lg:flex-grow">
-                            <button
-                                onClick={() => handleModeChange(false)}
-                                className={`${closetMode ? 'text-white' : 'text-black'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
-                                Lab
-                            </button>
-                            <button
-                                onClick={() => handleModeChange(true)}
-                                className={`${closetMode ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
-                                Closet
-                            </button>
+                            {(layout !== "mobile") && (
+                                <>
+                                    <button
+                                        onClick={() => handleModeChange(false)}
+                                        className={`${closetMode ? 'text-white' : 'text-black'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
+                                        Lab
+                                    </button>
+                                    <button
+                                        onClick={() => handleModeChange(true)}
+                                        className={`${closetMode ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
+                                        Closet
+                                    </button>
+                                </>
+                            )}
                             <button
                                 onClick={() => signUserOut()}
                                 className="block mt-4 lg:inline-block lg:mt-0 text-white">

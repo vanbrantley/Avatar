@@ -7,7 +7,7 @@ const MobileLayout = dynamic(() => import('@/components//MobileLayout'));
 // import TabletLayout from '@/components/TabletLayout';
 // import MobileLayout from '@/components/MobileLayout';
 
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { useUser } from '../context/AuthContext';
 import { observer } from 'mobx-react-lite';
@@ -16,9 +16,7 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { randomizePalette, fetchPalettes, closetMode, setClosetMode, handleModeChange } = store;
-
-  const [layout, setLayout] = useState<string>('desktop');
+  const { randomizePalette, fetchPalettes, closetMode, setClosetMode, handleModeChange, layout, setLayout } = store;
 
   useEffect(() => {
     randomizePalette();
