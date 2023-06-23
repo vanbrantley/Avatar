@@ -283,25 +283,36 @@ class AppStore {
         // sets the color of the selectedArea to the color picker color
         switch (this.selectedArea) {
             case "hat":
-                this.setHatColor(color);
+                if (!this.hatLock) {
+                    this.setHatColor(color);
+                    this.setSelectedColor(color);
+                }
                 break;
             case "face":
                 this.setFaceColor(color);
+                this.setSelectedColor(color);
                 break;
             case "top":
-                this.setTopColor(color);
+                if (!this.topLock) {
+                    this.setTopColor(color);
+                    this.setSelectedColor(color);
+                }
                 break;
             case "bottom":
-                this.setBottomColor(color);
+                if (!this.bottomLock) {
+                    this.setBottomColor(color);
+                    this.setSelectedColor(color);
+                }
                 break;
             case "shoes":
-                this.setShoeColor(color);
+                if (!this.shoeLock) {
+                    this.setShoeColor(color);
+                    this.setSelectedColor(color);
+                }
                 break;
             default:
                 break;
         }
-
-        this.setSelectedColor(color);
     });
 
     handleColorChangeSwatch = action((color: string, area: string) => {
