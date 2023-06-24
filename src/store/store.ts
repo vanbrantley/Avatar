@@ -297,6 +297,7 @@ class AppStore {
 
         // if its heartFilled and the area you're trying to change is not locked
         const isAreaLocked = this.checkAreaLock(this.selectedArea);
+        console.log(this.selectedArea);
         if (this.heartFilled && !isAreaLocked) this.setHeartFilled(false);
 
         if (!isAreaLocked) {
@@ -326,7 +327,7 @@ class AppStore {
                     break;
             };
 
-            this.setSelectedPalette("");
+            // this.setSelectedPalette("");
 
         }
     });
@@ -537,7 +538,7 @@ class AppStore {
 
     removePalette = action(async () => {
         try {
-
+            console.log("removing palette with id: ", this.selectedPalette);
             const paletteDetails: DeletePaletteInput = {
                 id: this.selectedPalette!,
             };
