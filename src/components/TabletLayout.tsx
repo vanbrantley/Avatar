@@ -31,7 +31,7 @@ const TabletLayout = observer(() => {
 
             <div className="grid grid-cols-12">
                 <div className="col-span-6">
-                    <Avatar />
+                    <Avatar mini={false} />
                 </div>
                 <div className="col-span-6">
                     {!closetMode && <LabMenu />}
