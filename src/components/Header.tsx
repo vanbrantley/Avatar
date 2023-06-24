@@ -98,7 +98,6 @@ const Header = observer(function Header(props: IHeaderProps) {
 
                 </div>
             </nav>
-            <br></br>
         </>
     );
 
