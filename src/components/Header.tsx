@@ -21,8 +21,6 @@ const Header = observer(function Header(props: IHeaderProps) {
     const { user } = useUser();
     const router = useRouter();
 
-    // const [navbarOpen, setNavbarOpen] = useState<boolean>(false);
-
     const signUserOut = async () => {
         // Clear the access and refresh tokens from local storage
         localStorage.removeItem('accessToken');
@@ -40,7 +38,7 @@ const Header = observer(function Header(props: IHeaderProps) {
 
         <>
 
-            <nav className="flex items-center justify-between flex-wrap p-3" style={{ backgroundColor: "#484848" }}>
+            <nav className="flex items-center justify-between flex-wrap p-3 zoom-125" style={{ backgroundColor: "#484848" }}>
                 <div className="flex items-center flex-shrink-0 text-white mr-6">
                     <button
                         type="button"
@@ -95,12 +93,10 @@ const Header = observer(function Header(props: IHeaderProps) {
                         </div>
                     )}
 
-
                 </div>
             </nav>
         </>
     );
-
 
 });
 

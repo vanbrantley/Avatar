@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.zoom-125 {
+    zoom: 1.25;
+}
+
 .sketch-wrapper {
     transform: scale(1.25);
     /* margin to create space between the SketchPicker and other content */
