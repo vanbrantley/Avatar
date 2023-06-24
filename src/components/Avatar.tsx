@@ -2,7 +2,11 @@ import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 
-const Avatar = observer(() => {
+interface IAvatarProps {
+    mini: boolean
+}
+
+const Avatar = observer((props: IAvatarProps) => {
     const store = useContext(AppStoreContext);
 
     const { hatColor, faceColor, topColor, bottomColor, shoeColor, handleAreaChange } = store;
@@ -11,7 +15,8 @@ const Avatar = observer(() => {
         <div className="grid gap-0">
             <div
                 onClick={() => handleAreaChange('hat')}
-                className="h-[50px] w-20 mx-auto cursor-pointer"
+                className="h-[25px] w-10 mx-auto cursor-pointer"
+                // className="h-[50px] w-20 mx-auto cursor-pointer"
                 style={{
                     backgroundColor: hatColor,
                     borderTopLeftRadius: '60% 90%',
@@ -22,7 +27,8 @@ const Avatar = observer(() => {
             ></div>
             <div
                 onClick={() => handleAreaChange('face')}
-                className="h-[60px] w-[70px] mx-auto cursor-pointer"
+                className="h-[30px] w-[35px] mx-auto cursor-pointer"
+                // className="h-[60px] w-[70px] mx-auto cursor-pointer"
                 style={{
                     backgroundColor: faceColor,
                     borderBottomLeftRadius: '120%',
@@ -31,7 +37,8 @@ const Avatar = observer(() => {
             ></div>
             <div
                 onClick={() => handleAreaChange('top')}
-                className="h-[220px] w-40 mx-auto cursor-pointer"
+                className="h-[110px] w-20 mx-auto cursor-pointer"
+                // className="h-[220px] w-40 mx-auto cursor-pointer"
                 style={{
                     backgroundColor: topColor,
                     borderTopLeftRadius: '30%',
@@ -40,12 +47,14 @@ const Avatar = observer(() => {
             ></div>
             <div
                 onClick={() => handleAreaChange('bottom')}
-                className="h-[220px] w-40 mx-auto cursor-pointer"
+                className="h-[110px] w-20 mx-auto cursor-pointer"
+                // className="h-[220px] w-40 mx-auto cursor-pointer"
                 style={{ backgroundColor: bottomColor }}
             ></div>
             <div
                 onClick={() => handleAreaChange('shoes')}
-                className="h-[72px] w-[220px] mx-auto rounded-full cursor-pointer"
+                className="h-[36px] w-[110px] mx-auto rounded-full cursor-pointer"
+                // className="h-[72px] w-[220px] mx-auto rounded-full cursor-pointer"
                 style={{ backgroundColor: shoeColor }}
             ></div>
         </div>

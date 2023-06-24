@@ -23,7 +23,7 @@ const DesktopLayout = observer(() => {
                     <Palette lock={false} />
                 </div>
                 <div className="col-start-2 col-span-6">
-                    <Avatar />
+                    <Avatar mini={false} />
                 </div>
                 <div className="col-span-5">
                     {!closetMode && <LabMenu />}
