@@ -20,7 +20,7 @@ const SwatchesMenu = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <IconButton onClick={() => setHatLock(!hatLock)}>
-                        <LockIcon style={{ color: hatLock ? "white" : "grey" }} />
+                        <LockIcon fontSize="large" style={{ color: hatLock ? "white" : "grey" }} />
                     </IconButton>
                 </div>
             </div>
@@ -32,7 +32,7 @@ const SwatchesMenu = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <IconButton onClick={() => setTopLock(!topLock)}>
-                        <LockIcon style={{ color: topLock ? "white" : "grey" }} />
+                        <LockIcon fontSize="large" style={{ color: topLock ? "white" : "grey" }} />
                     </IconButton>
                 </div>
             </div>
@@ -44,7 +44,7 @@ const SwatchesMenu = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <IconButton onClick={() => setBottomLock(!bottomLock)}>
-                        <LockIcon style={{ color: bottomLock ? "white" : "grey" }} />
+                        <LockIcon fontSize="large" style={{ color: bottomLock ? "white" : "grey" }} />
                     </IconButton>
                 </div>
             </div>
@@ -56,7 +56,7 @@ const SwatchesMenu = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <IconButton onClick={() => setShoeLock(!shoeLock)}>
-                        <LockIcon style={{ color: shoeLock ? "white" : "grey" }} />
+                        <LockIcon fontSize="large" style={{ color: shoeLock ? "white" : "grey" }} />
                     </IconButton>
                 </div>
             </div>

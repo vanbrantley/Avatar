@@ -20,27 +20,27 @@ const Palette = observer(function PaletteComponent(props: IPaletteProps) {
             {props.lock ? (
                 <div>
                     <div className="flex">
-                        <div onClick={closetMode ? (() => addColorSwatch("hat")) : undefined} className={`h-14 w-16 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: hatColor }} ></div>
-                        <IconButton onClick={() => setHatLock(!hatLock)}>
-                            <LockIcon style={{ color: hatLock ? "white" : "grey" }} />
+                        <div onClick={closetMode ? (() => addColorSwatch("hat")) : undefined} className={`h-[72px] w-20 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: hatColor }} ></div>
+                        <IconButton size="large" onClick={() => setHatLock(!hatLock)}>
+                            <LockIcon fontSize="large" style={{ color: hatLock ? "white" : "grey" }} />
                         </IconButton>
                     </div>
                     <div className="flex">
-                        <div onClick={closetMode ? (() => addColorSwatch("top")) : undefined} className={`h-14 w-16 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: topColor }} ></div>
-                        <IconButton onClick={() => setTopLock(!topLock)}>
-                            <LockIcon style={{ color: topLock ? "white" : "grey" }} />
+                        <div onClick={closetMode ? (() => addColorSwatch("top")) : undefined} className={`h-[72px] w-20 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: topColor }} ></div>
+                        <IconButton size="large" onClick={() => setTopLock(!topLock)}>
+                            <LockIcon fontSize="large" style={{ color: topLock ? "white" : "grey" }} />
                         </IconButton>
                     </div>
                     <div className="flex">
-                        <div onClick={closetMode ? (() => addColorSwatch("bottom")) : undefined} className={`h-14 w-16 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: bottomColor }} ></div>
-                        <IconButton onClick={() => setBottomLock(!bottomLock)}>
-                            <LockIcon style={{ color: bottomLock ? "white" : "grey" }} />
+                        <div onClick={closetMode ? (() => addColorSwatch("bottom")) : undefined} className={`h-[72px] w-20 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: bottomColor }} ></div>
+                        <IconButton size="large" onClick={() => setBottomLock(!bottomLock)}>
+                            <LockIcon fontSize="large" style={{ color: bottomLock ? "white" : "grey" }} />
                         </IconButton>
                     </div>
                     <div className="flex">
-                        <div onClick={closetMode ? (() => addColorSwatch("shoes")) : undefined} className={`h-14 w-16 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: shoeColor }} ></div>
-                        <IconButton onClick={() => setShoeLock(!shoeLock)}>
-                            <LockIcon style={{ color: shoeLock ? "white" : "grey" }} />
+                        <div onClick={closetMode ? (() => addColorSwatch("shoes")) : undefined} className={`h-[72px] w-20 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: shoeColor }} ></div>
+                        <IconButton size="large" onClick={() => setShoeLock(!shoeLock)}>
+                            <LockIcon fontSize="large" style={{ color: shoeLock ? "white" : "grey" }} />
                         </IconButton>
                     </div>
                 </div>
@@ -48,25 +48,25 @@ const Palette = observer(function PaletteComponent(props: IPaletteProps) {
                 <>
                     <div className="">
                         <div
-                            className="h-14 w-16 rounded-none"
+                            className="h-[72px] w-20 rounded-none"
                             style={{ backgroundColor: hatColor }}
                         ></div>
                     </div>
                     <div className="">
                         <div
-                            className="h-14 w-16 rounded-none"
+                            className="h-[72px] w-20 rounded-none"
                             style={{ backgroundColor: topColor }}
                         ></div>
                     </div>
                     <div className="">
                         <div
-                            className="h-14 w-16 rounded-none"
+                            className="h-[72px] w-20 rounded-none"
                             style={{ backgroundColor: bottomColor }}
                         ></div>
                     </div>
                     <div className="">
                         <div
-                            className="h-14 w-16 rounded-none"
+                            className="h-[72px] w-20 rounded-none"
                             style={{ backgroundColor: shoeColor }}
                         ></div>
                     </div>

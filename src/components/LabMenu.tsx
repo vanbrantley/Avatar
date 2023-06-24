@@ -41,23 +41,22 @@ const LabMenu = observer(() => {
                     </div>
                     <div className="flex flex-col float-left">
                         {user && heartFilled && (
-                            <IconButton onClick={() => removePalette()}>
-                                <FavoriteIcon style={{ color: "white" }} />
+                            <IconButton size="large" onClick={() => removePalette()}>
+                                <FavoriteIcon fontSize="large" style={{ color: "white" }} />
                             </IconButton>
                         )}
                         {user && !heartFilled && (
-                            <IconButton onClick={() => savePalette()}>
-                                <FavoriteBorderIcon style={{ color: "white" }} />
+                            <IconButton size="large" onClick={() => savePalette()}>
+                                <FavoriteBorderIcon fontSize="large" style={{ color: "white" }} />
                             </IconButton>
                         )}
-                        <IconButton onClick={() => randomizePalette()}>
-                            <ShuffleIcon style={{ color: "white" }} />
+                        <IconButton size="large" onClick={() => randomizePalette()}>
+                            <ShuffleIcon fontSize="large" style={{ color: "white" }} />
                         </IconButton>
                     </div>
                 </div>
             </div>
 
-            <br></br>
             <br></br>
             {user && <PaletteList />}
 

@@ -13,7 +13,7 @@ const Swatch = observer((props: ISwatchProps) => {
     const { handleColorChangeSwatch } = store;
 
     return (
-        <div onClick={() => handleColorChangeSwatch(props.color, props.area)} className="w-16 h-8 rounded-md cursor-pointer" style={{ backgroundColor: props.color }}></div>
+        <div onClick={() => handleColorChangeSwatch(props.color, props.area)} className="w-20 h-10 rounded-md cursor-pointer" style={{ backgroundColor: props.color }}></div>
     );
 
 });

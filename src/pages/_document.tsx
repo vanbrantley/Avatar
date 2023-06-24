@@ -15,7 +15,7 @@ export default class MyDocument extends Document {
           <meta name="emotion-insertion-point" content="" />
           {(this.props as any).emotionStyleTags}
         </Head>
-        <body className="zoom-125">
+        <body>
           <Main />
           <NextScript />
         </body>

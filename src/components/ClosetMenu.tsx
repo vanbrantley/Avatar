@@ -24,11 +24,11 @@ const ClosetMenu = observer(() => {
             <SwatchesMenu />
 
             <div className="flex">
-                <IconButton onClick={() => setShowPicker(!showPicker)}>
-                    {showPicker ? <RemoveIcon style={{ color: "white" }} /> : <AddIcon style={{ color: "white" }} />}
+                <IconButton size="large" onClick={() => setShowPicker(!showPicker)}>
+                    {showPicker ? <RemoveIcon fontSize="large" style={{ color: "white" }} /> : <AddIcon fontSize="large" style={{ color: "white" }} />}
                 </IconButton>
-                <IconButton onClick={() => randomizeOutfit()}>
-                    <ShuffleIcon style={{ color: "white" }} />
+                <IconButton size="large" onClick={() => randomizeOutfit()}>
+                    <ShuffleIcon fontSize="large" style={{ color: "white" }} />
                 </IconButton>
             </div>
 
@@ -40,16 +40,15 @@ const ClosetMenu = observer(() => {
                             <div className="sketch-wrapper">
                                 <SketchPicker
                                     disableAlpha
-                                    className="sketch-zoom"
                                     color={selectedColor}
                                     onChangeComplete={color => handleColorChangePicker(color.hex)}
                                 />
                             </div>
-                            <div className="pal+locks">
+                            <div>
                                 <Palette lock={true} />
                                 <div>
-                                    <IconButton onClick={() => randomizePalette()}>
-                                        <ShuffleIcon style={{ color: "white" }} />
+                                    <IconButton size="large" onClick={() => randomizePalette()}>
+                                        <ShuffleIcon fontSize="large" style={{ color: "white" }} />
                                     </IconButton>
                                 </div>
                             </div>

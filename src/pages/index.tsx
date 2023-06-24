@@ -16,7 +16,7 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { randomizePalette, fetchPalettes, closetMode, setClosetMode, handleModeChange, layout, setLayout, selectedPalette } = store;
+  const { randomizePalette, fetchPalettes, closetMode, setClosetMode, handleModeChange, layout, setLayout } = store;
 
   useEffect(() => {
     randomizePalette();
@@ -74,8 +74,6 @@ const Home = observer(() => {
       <Header closetMode={closetMode}
         setClosetMode={setClosetMode}
         handleModeChange={handleModeChange} />
-
-      {console.log(selectedPalette)}
 
       {layout === 'desktop' && <DesktopLayout />}
       {layout === 'tablet' && <TabletLayout />}

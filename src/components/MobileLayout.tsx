@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react-lite';
-import Avatar from './Avatar';
 // import { useContext } from 'react';
 // import { AppStoreContext } from '../context/AppStoreContext';
 
@@ -11,7 +10,10 @@ const MobileLayout = observer(() => {
 
     return (
         <>
-            <Avatar />
+            <div className="grid grid-rows-[75vh,25vh]">
+                <div className="bg-gray-200">Top Row</div>
+                <div className="bg-orange-600">Bottom Row</div>
+            </div>
         </>
     );
 });
