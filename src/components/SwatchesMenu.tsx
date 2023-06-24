@@ -3,10 +3,11 @@ import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
+import Swatch from './Swatch';
 
 const SwatchesMenu = observer(() => {
     const store = useContext(AppStoreContext);
-    const { hatSwatches, topSwatches, bottomSwatches, shoeSwatches, handleColorChangeSwatch,
+    const { hatSwatches, topSwatches, bottomSwatches, shoeSwatches,
         hatLock, setHatLock, topLock, setTopLock, bottomLock, setBottomLock, shoeLock, setShoeLock } = store;
 
     return (
@@ -14,7 +15,7 @@ const SwatchesMenu = observer(() => {
             <div className="flex">
                 <div className="flex max-w-3xl overflow-x-auto">
                     {hatSwatches.map((color) => (
-                        <div key={color} onClick={() => handleColorChangeSwatch(color, "hat")} className="w-16 h-8 rounded-md cursor-pointer" style={{ backgroundColor: color }}></div>
+                        <Swatch key={color} color={color} area="hat" />
                     ))}
                 </div>
                 <div className="flex items-center">
@@ -26,7 +27,7 @@ const SwatchesMenu = observer(() => {
             <div className="flex">
                 <div className="flex max-w-3xl overflow-x-auto">
                     {topSwatches.map((color) => (
-                        <div key={color} onClick={() => handleColorChangeSwatch(color, "top")} className="w-16 h-8 rounded-md cursor-pointer" style={{ backgroundColor: color }}></div>
+                        <Swatch key={color} color={color} area="top" />
                     ))}
                 </div>
                 <div className="flex items-center">
@@ -38,7 +39,7 @@ const SwatchesMenu = observer(() => {
             <div className="flex">
                 <div className="flex max-w-3xl overflow-x-auto">
                     {bottomSwatches.map((color) => (
-                        <div key={color} onClick={() => handleColorChangeSwatch(color, "bottom")} className="w-16 h-8 rounded-md cursor-pointer" style={{ backgroundColor: color }}></div>
+                        <Swatch key={color} color={color} area="bottom" />
                     ))}
                 </div>
                 <div className="flex items-center">
@@ -50,7 +51,7 @@ const SwatchesMenu = observer(() => {
             <div className="flex">
                 <div className="flex max-w-3xl overflow-x-auto">
                     {shoeSwatches.map((color) => (
-                        <div key={color} onClick={() => handleColorChangeSwatch(color, "shoes")} className="w-16 h-8 rounded-md cursor-pointer" style={{ backgroundColor: color }}></div>
+                        <Swatch key={color} color={color} area="shoes" />
                     ))}
                 </div>
                 <div className="flex items-center">

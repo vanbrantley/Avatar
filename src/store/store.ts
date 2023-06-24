@@ -29,7 +29,7 @@ class AppStore {
     shoeLock = false;
 
     palettes: Palette[] = [];
-    selectedPalette: string | null = null;
+    selectedPalette: string | null = "";
 
     closetMode = false;
     navbarOpen = false;
@@ -161,8 +161,10 @@ class AppStore {
 
     // functions
     randomizePalette = action(() => {
-        if (this.heartFilled) this.setHeartFilled(false);
-        if (this.selectedPalette) this.setSelectedPalette(null);
+
+        // unfill heart if you're on a saved palette and not all areas are locked
+        const allAreasLocked = this.hatLock && this.topLock && this.bottomLock && this.shoeLock;
+        if (this.heartFilled && !allAreasLocked) this.setHeartFilled(false);
 
         if (!this.hatLock) {
             const randomHatColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
@@ -276,42 +278,56 @@ class AppStore {
         }
     });
 
-    handleColorChangePicker = action((color: string) => {
-        if (this.heartFilled) this.setHeartFilled(false);
-        if (this.selectedPalette) this.setSelectedPalette(null);
-
-        // sets the color of the selectedArea to the color picker color
-        switch (this.selectedArea) {
+    checkAreaLock = (area: string) => {
+        switch (area) {
             case "hat":
-                if (!this.hatLock) {
+                return this.hatLock;
+            case "top":
+                return this.topLock;
+            case "bottom":
+                return this.bottomLock;
+            case "shoes":
+                return this.shoeLock;
+            default:
+                return false;
+        }
+    };
+
+    handleColorChangePicker = action((color: string) => {
+
+        // if its heartFilled and the area you're trying to change is not locked
+        const isAreaLocked = this.checkAreaLock(this.selectedArea);
+        if (this.heartFilled && !isAreaLocked) this.setHeartFilled(false);
+
+        if (!isAreaLocked) {
+
+            switch (this.selectedArea) {
+                case "hat":
                     this.setHatColor(color);
                     this.setSelectedColor(color);
-                }
-                break;
-            case "face":
-                this.setFaceColor(color);
-                this.setSelectedColor(color);
-                break;
-            case "top":
-                if (!this.topLock) {
+                    break;
+                case "face":
+                    this.setFaceColor(color);
+                    this.setSelectedColor(color);
+                    break;
+                case "top":
                     this.setTopColor(color);
                     this.setSelectedColor(color);
-                }
-                break;
-            case "bottom":
-                if (!this.bottomLock) {
+                    break;
+                case "bottom":
                     this.setBottomColor(color);
                     this.setSelectedColor(color);
-                }
-                break;
-            case "shoes":
-                if (!this.shoeLock) {
+                    break;
+                case "shoes":
                     this.setShoeColor(color);
                     this.setSelectedColor(color);
-                }
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            };
+
+            this.setSelectedPalette("");
+
         }
     });
 
@@ -379,33 +395,50 @@ class AppStore {
     });
 
     assignAreaColorsFromPalette = action((hatColor: string, topColor: string, bottomColor: string, shoeColor: string, id: string) => {
-        this.setHatColor(hatColor);
-        this.setTopColor(topColor);
-        this.setBottomColor(bottomColor);
-        this.setShoeColor(shoeColor);
 
-        this.setHeartFilled(true);
-        this.setSelectedPalette(id);
 
-        // // assign selectedColor to the color of the selectedArea in the palette
-        // switch (this.selectedArea) {
-        //     case "hat":
-        //         this.setSelectedColor(hatColor);
-        //         break;
-        //     case "face":
-        //         break;
-        //     case "top":
-        //         this.setSelectedColor(topColor);
-        //         break;
-        //     case "bottom":
-        //         this.setSelectedColor(bottomColor);
-        //         break;
-        //     case "shoes":
-        //         this.setSelectedColor(shoeColor);
-        //         break;
-        //     default:
-        //         break;
-        // }
+        const allAreasLocked = this.hatLock && this.topLock && this.bottomLock && this.shoeLock;
+        if (allAreasLocked) return;
+
+        // set area color to the palette color if it is not locked
+        if (!this.hatLock) this.setHatColor(hatColor);
+        if (!this.topLock) this.setTopColor(topColor);
+        if (!this.bottomLock) this.setBottomColor(bottomColor);
+        if (!this.shoeLock) this.setShoeColor(shoeColor);
+
+
+        // assign selectedColor to the color of the selectedArea in the palette
+        const isAreaLocked = this.checkAreaLock(this.selectedArea);
+        if (!isAreaLocked) {
+
+            switch (this.selectedArea) {
+                case "hat":
+                    this.setSelectedColor(hatColor);
+                    break;
+                case "face":
+                    break;
+                case "top":
+                    this.setSelectedColor(topColor);
+                    break;
+                case "bottom":
+                    this.setSelectedColor(bottomColor);
+                    break;
+                case "shoes":
+                    this.setSelectedColor(shoeColor);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        const anyAreaLocked = this.hatLock || this.topLock || this.bottomLock || this.shoeLock;
+
+        // a locked area stops us from assigning all area colors - thus palette isn't one that we've saved
+        if (anyAreaLocked && (this.selectedPalette !== id)) this.setHeartFilled(false);
+        else {
+            this.setHeartFilled(true);
+            this.setSelectedPalette(id);
+        }
 
     });
 
@@ -517,7 +550,7 @@ class AppStore {
             if (data && data.deletePalette) {
                 const removedPalette = data.deletePalette;
                 this.setPalettes(this.palettes.filter((palette) => palette.id !== removedPalette.id));
-                this.setSelectedPalette(null);
+                this.setSelectedPalette("");
                 this.setHeartFilled(false);
                 console.log("Palette removed successfully: ", removedPalette);
             }
