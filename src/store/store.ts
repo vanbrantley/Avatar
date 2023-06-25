@@ -197,7 +197,7 @@ class AppStore {
             case "bottom":
                 this.setSelectedColor(this.bottomColor);
                 break;
-            case "shoes":
+            case "shoe":
                 this.setSelectedColor(this.shoeColor);
                 break;
         }
@@ -272,7 +272,7 @@ class AppStore {
             case "bottom":
                 this.setSelectedColor(this.bottomColor);
                 break;
-            case "shoes":
+            case "shoe":
                 this.setSelectedColor(this.shoeColor);
                 break;
         }
@@ -286,7 +286,7 @@ class AppStore {
                 return this.topLock;
             case "bottom":
                 return this.bottomLock;
-            case "shoes":
+            case "shoe":
                 return this.shoeLock;
             default:
                 return false;
@@ -297,7 +297,6 @@ class AppStore {
 
         // if its heartFilled and the area you're trying to change is not locked
         const isAreaLocked = this.checkAreaLock(this.selectedArea);
-        console.log(this.selectedArea);
         if (this.heartFilled && !isAreaLocked) this.setHeartFilled(false);
 
         if (!isAreaLocked) {
@@ -319,7 +318,7 @@ class AppStore {
                     this.setBottomColor(color);
                     this.setSelectedColor(color);
                     break;
-                case "shoes":
+                case "shoe":
                     this.setShoeColor(color);
                     this.setSelectedColor(color);
                     break;
@@ -346,7 +345,7 @@ class AppStore {
             case "bottom":
                 this.setBottomColor(color);
                 break;
-            case "shoes":
+            case "shoe":
                 this.setShoeColor(color);
                 break;
             default:
@@ -381,7 +380,7 @@ class AppStore {
                 }
                 this.setSelectedColor(this.bottomColor);
                 break;
-            case "shoes":
+            case "shoe":
                 if (!(this.shoeSwatches.includes(this.shoeColor))) {
                     this.addGarmentToDB("shoe", this.shoeColor);
                     this.setShoeSwatches([this.shoeColor, ...this.shoeSwatches]);
@@ -424,7 +423,7 @@ class AppStore {
                 case "bottom":
                     this.setSelectedColor(bottomColor);
                     break;
-                case "shoes":
+                case "shoe":
                     this.setSelectedColor(shoeColor);
                     break;
                 default:

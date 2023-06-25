@@ -8,9 +8,7 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Avatar from './Avatar';
-import PaletteList from './PaletteList';
-
-
+import LabMenu from './LabMenu';
 
 const MobileLayout = observer(() => {
 
@@ -25,8 +23,8 @@ const MobileLayout = observer(() => {
             <div className="grid grid-rows-[65vh,35vh]">
                 <div className="flex justify-between items-center">
                     <div className="flex-1 flex flex-col items-center justify-center">
-                        <IconButton size="large">
-                            <ShuffleIcon fontSize="large" onClick={() => randomizePalette()} style={{ color: "white" }} />
+                        <IconButton size="large" onClick={() => randomizePalette()} >
+                            <ShuffleIcon fontSize="large" style={{ color: "white" }} />
                         </IconButton>
                         {user && heartFilled && (
                             <IconButton size="large" onClick={() => removePalette()}>
@@ -65,8 +63,8 @@ const MobileLayout = observer(() => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-orange-600 flex-1">
-                    <PaletteList />
+                <div className="flex-1 flex-1 grid place-items-center">
+                    <LabMenu />
                 </div>
             </div>
         </>
