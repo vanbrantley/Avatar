@@ -18,7 +18,7 @@ const LabMenu = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { selectedColor, heartFilled,
-        handleColorChangePicker, randomizePalette, removePalette, savePalette
+        handleColorChangePicker, randomizePalette, removePalette, savePalette, layout
     } = store;
 
     const { user } = useUser();
@@ -27,10 +27,9 @@ const LabMenu = observer(() => {
         <>
 
             <div className="flex flex-row">
-                <div className="sketch-wrapper">
+                <div className={`${(layout === 'mobile') ? "" : "sketch-wrapper"}`}>
                     <SketchPicker
                         disableAlpha
-                        className="sketch-zoom"
                         color={selectedColor}
                         onChangeComplete={(color) => handleColorChangePicker(color.hex)}
                     />

@@ -1,4 +1,3 @@
-import Palette from './Palette';
 import Avatar from './Avatar';
 import LabMenu from './LabMenu';
 import ClosetMenu from './ClosetMenu';

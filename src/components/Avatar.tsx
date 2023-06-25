@@ -48,7 +48,7 @@ const Avatar = observer((props: IAvatarProps) => {
                 style={{ backgroundColor: bottomColor }}
             ></div>
             <div
-                onClick={() => handleAreaChange('shoes')}
+                onClick={() => handleAreaChange('shoe')}
                 className={`${props.mini ? 'h-[36px] w-[110px]' : 'h-[72px] w-[220px]'} mx-auto rounded-full cursor-pointer`}
                 style={{ backgroundColor: shoeColor }}
             ></div>
