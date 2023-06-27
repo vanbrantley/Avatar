@@ -71,9 +71,9 @@ const Home = observer(() => {
 
   return (
     <>
-      <Header closetMode={closetMode}
+      {/* <Header closetMode={closetMode}
         setClosetMode={setClosetMode}
-        handleModeChange={handleModeChange} />
+        handleModeChange={handleModeChange} /> */}
 
       {layout === 'desktop' && <DesktopLayout />}
       {layout === 'tablet' && <TabletLayout />}
