@@ -143,26 +143,26 @@ const MobileLayout = observer(() => {
                     <div className="col-span-4 flex flex-col items-center justify-center">
                         <div className="flex">
                             <div style={{ height: "59px", width: "65px", backgroundColor: hatColor }} ></div>
-                            <IconButton size="large" onClick={() => setHatLock(!hatLock)}>
-                                <LockIcon fontSize="large" style={{ color: hatLock ? "white" : "grey" }} />
+                            <IconButton size="medium" onClick={() => setHatLock(!hatLock)}>
+                                <LockIcon fontSize="medium" style={{ color: hatLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
                             <div style={{ height: "59px", width: "65px", backgroundColor: topColor }} ></div>
-                            <IconButton size="large" onClick={() => setTopLock(!topLock)}>
-                                <LockIcon fontSize="large" style={{ color: topLock ? "white" : "grey" }} />
+                            <IconButton size="medium" onClick={() => setTopLock(!topLock)}>
+                                <LockIcon fontSize="medium" style={{ color: topLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
                             <div style={{ height: "59px", width: "65px", backgroundColor: bottomColor }} ></div>
-                            <IconButton size="large" onClick={() => setBottomLock(!bottomLock)}>
-                                <LockIcon fontSize="large" style={{ color: bottomLock ? "white" : "grey" }} />
+                            <IconButton size="medium" onClick={() => setBottomLock(!bottomLock)}>
+                                <LockIcon fontSize="medium" style={{ color: bottomLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
                             <div style={{ height: "59px", width: "65px", backgroundColor: shoeColor }} ></div>
-                            <IconButton size="large" onClick={() => setShoeLock(!shoeLock)}>
-                                <LockIcon fontSize="large" style={{ color: shoeLock ? "white" : "grey" }} />
+                            <IconButton size="medium" onClick={() => setShoeLock(!shoeLock)}>
+                                <LockIcon fontSize="medium" style={{ color: shoeLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
 
