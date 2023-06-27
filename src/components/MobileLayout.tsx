@@ -103,8 +103,8 @@ const MobileLayout = observer(() => {
                     <LabMenu />
                 </div> */}
                 <div style={{ height: "5%" }}></div>
-                <div className="grid grid-cols-12 bg-orange-600" style={{ height: "55%" }}>
-                    <div className="col-span-8 flex justify-center items-center bg-red-600">
+                <div className="grid grid-cols-12" style={{ height: "55%" }}>
+                    <div className="col-span-8 flex justify-center items-center">
                         <SketchPicker
                             disableAlpha
                             color={selectedColor}
@@ -142,25 +142,25 @@ const MobileLayout = observer(() => {
                     </div> */}
                     <div className="col-span-4 flex flex-col items-center justify-center">
                         <div className="flex">
-                            <div style={{ height: "72px", width: "80px", backgroundColor: hatColor }} ></div>
+                            <div style={{ height: "59px", width: "65px", backgroundColor: hatColor }} ></div>
                             <IconButton size="large" onClick={() => setHatLock(!hatLock)}>
                                 <LockIcon fontSize="large" style={{ color: hatLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
-                            <div style={{ height: "72px", width: "80px", backgroundColor: topColor }} ></div>
+                            <div style={{ height: "59px", width: "65px", backgroundColor: topColor }} ></div>
                             <IconButton size="large" onClick={() => setTopLock(!topLock)}>
                                 <LockIcon fontSize="large" style={{ color: topLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
-                            <div style={{ height: "72px", width: "80px", backgroundColor: bottomColor }} ></div>
+                            <div style={{ height: "59px", width: "65px", backgroundColor: bottomColor }} ></div>
                             <IconButton size="large" onClick={() => setBottomLock(!bottomLock)}>
                                 <LockIcon fontSize="large" style={{ color: bottomLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
-                            <div style={{ height: "72px", width: "80px", backgroundColor: shoeColor }} ></div>
+                            <div style={{ height: "59px", width: "65px", backgroundColor: shoeColor }} ></div>
                             <IconButton size="large" onClick={() => setShoeLock(!shoeLock)}>
                                 <LockIcon fontSize="large" style={{ color: shoeLock ? "white" : "grey" }} />
                             </IconButton>
@@ -188,7 +188,7 @@ const MobileLayout = observer(() => {
                         </div> */}
                     </div>
                 </div>
-                <div className="flex flex-col items-center justify-center" style={{ height: "20%" }}>
+                <div className="flex flex-col items-center justify-center" style={{ height: "19%" }}>
                     <div className="flex flex-row justify-center">
                         <div className="flex-1">
                             <IconButton onClick={() => randomizePalette()} >
@@ -211,7 +211,7 @@ const MobileLayout = observer(() => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-blue-600" style={{ height: "25%" }}>
+                <div style={{ height: "26%", overflowX: "auto" }}>
                     <PaletteList />
                 </div>
             </div>
