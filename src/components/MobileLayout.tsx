@@ -26,7 +26,7 @@ const MobileLayout = observer(() => {
     const { heartFilled, randomizePalette, removePalette, savePalette,
         hatLock, setHatLock, topLock, setTopLock, bottomLock, setBottomLock, shoeLock, setShoeLock,
         closetMode, setClosetMode, handleModeChange, selectedColor, handleColorChangePicker,
-        hatColor, topColor, bottomColor, shoeColor, handleAreaChange
+        hatColor, faceColor, topColor, bottomColor, shoeColor, handleAreaChange
     } = store;
 
     return (
@@ -99,9 +99,6 @@ const MobileLayout = observer(() => {
             </div>
 
             <div className="flex flex-col h-screen">
-                {/* <div className="overflow-x-auto">
-                    <LabMenu />
-                </div> */}
                 <div style={{ height: "5%" }}></div>
                 <div className="grid grid-cols-12" style={{ height: "55%" }}>
                     <div className="col-span-8 flex justify-center items-center">
@@ -111,40 +108,17 @@ const MobileLayout = observer(() => {
                             onChangeComplete={(color) => handleColorChangePicker(color.hex)}
                         />
                     </div>
-                    {/* <div className="col-span-2 flex justify-center items-center bg-purple-600">
-                        <div>
-                            <div className="">
-                                <div
-                                    className="h-[52px] w-[62.5px] rounded-none"
-                                    style={{ backgroundColor: hatColor }}
-                                ></div>
-                            </div>
-                            <div className="">
-                                <div
-                                    className="h-[52px] w-[62.5px] rounded-none"
-                                    style={{ backgroundColor: topColor }}
-                                ></div>
-                            </div>
-                            <div className="">
-                                <div
-                                    className="h-[52px] w-[62.5px] rounded-none"
-                                    style={{ backgroundColor: bottomColor }}
-                                ></div>
-                            </div>
-                            <div className="">
-                                <div
-                                    className="h-[52px] w-[62.5px] rounded-none"
-                                    style={{ backgroundColor: shoeColor }}
-                                ></div>
-                            </div>
-                        </div>
-
-                    </div> */}
                     <div className="col-span-4 flex flex-col items-center justify-center">
                         <div className="flex">
                             <div onClick={() => handleAreaChange("hat")} style={{ height: "59px", width: "65px", backgroundColor: hatColor }}></div>
                             <IconButton size="medium" onClick={() => setHatLock(!hatLock)}>
                                 <LockIcon fontSize="medium" style={{ color: hatLock ? "white" : "grey" }} />
+                            </IconButton>
+                        </div>
+                        <div className="flex">
+                            <div onClick={() => handleAreaChange("face")} style={{ height: "59px", width: "65px", backgroundColor: faceColor }}></div>
+                            <IconButton size="medium">
+                                <LockIcon fontSize="medium" style={{ color: "white", opacity: "0" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
@@ -165,27 +139,6 @@ const MobileLayout = observer(() => {
                                 <LockIcon fontSize="medium" style={{ color: shoeLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
-
-                        {/* <div className="my-auto text-center">
-                            <IconButton size="large" onClick={() => setHatLock(!hatLock)}>
-                                <LockIcon fontSize="large" style={{ color: hatLock ? "white" : "grey" }} />
-                            </IconButton>
-                        </div>
-                        <div className="my-auto text-center">
-                            <IconButton size="large" onClick={() => setTopLock(!topLock)}>
-                                <LockIcon fontSize="large" style={{ color: topLock ? "white" : "grey" }} />
-                            </IconButton>
-                        </div>
-                        <div className="my-auto text-center">
-                            <IconButton size="large" onClick={() => setBottomLock(!bottomLock)}>
-                                <LockIcon fontSize="large" style={{ color: bottomLock ? "white" : "grey" }} />
-                            </IconButton>
-                        </div>
-                        <div className="my-auto text-center">
-                            <IconButton size="large" onClick={() => setShoeLock(!shoeLock)}>
-                                <LockIcon fontSize="large" style={{ color: shoeLock ? "white" : "grey" }} />
-                            </IconButton>
-                        </div> */}
                     </div>
                 </div>
                 <div className="flex flex-col items-center justify-center" style={{ height: "19%" }}>
