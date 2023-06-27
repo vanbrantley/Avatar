@@ -5,16 +5,21 @@ import ClosetMenu from './ClosetMenu';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
+import Header from './Header';
 
 
 const DesktopLayout = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { closetMode } = store;
+    const { closetMode, setClosetMode, handleModeChange } = store;
 
     return (
 
         <>
+
+            <Header closetMode={closetMode}
+                setClosetMode={setClosetMode}
+                handleModeChange={handleModeChange} />
             <br></br>
             <br></br>
 
