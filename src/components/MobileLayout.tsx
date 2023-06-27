@@ -32,7 +32,7 @@ const MobileLayout = observer(() => {
 
                 <div className="flex justify-between items-center flex-grow">
                     <div className="w-full h-full mx-auto">
-                        <div className="grid grid-cols-12" style={{ height: "60%" }}>
+                        <div className="grid grid-cols-12" style={{ height: "65%" }}>
                             <div className="col-span-3">
                             </div>
                             <div className="col-span-6 flex justify-center items-center">
@@ -84,7 +84,7 @@ const MobileLayout = observer(() => {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ height: "15%" }}></div>
+                        <div style={{ height: "10%" }}></div>
                     </div>
 
                 </div>
