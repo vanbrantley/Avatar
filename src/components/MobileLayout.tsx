@@ -26,7 +26,7 @@ const MobileLayout = observer(() => {
     const { heartFilled, randomizePalette, removePalette, savePalette,
         hatLock, setHatLock, topLock, setTopLock, bottomLock, setBottomLock, shoeLock, setShoeLock,
         closetMode, setClosetMode, handleModeChange, selectedColor, handleColorChangePicker,
-        hatColor, topColor, bottomColor, shoeColor
+        hatColor, topColor, bottomColor, shoeColor, handleAreaChange
     } = store;
 
     return (
@@ -142,25 +142,25 @@ const MobileLayout = observer(() => {
                     </div> */}
                     <div className="col-span-4 flex flex-col items-center justify-center">
                         <div className="flex">
-                            <div style={{ height: "59px", width: "65px", backgroundColor: hatColor }} ></div>
+                            <div onClick={() => handleAreaChange("hat")} style={{ height: "59px", width: "65px", backgroundColor: hatColor }}></div>
                             <IconButton size="medium" onClick={() => setHatLock(!hatLock)}>
                                 <LockIcon fontSize="medium" style={{ color: hatLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
-                            <div style={{ height: "59px", width: "65px", backgroundColor: topColor }} ></div>
+                            <div onClick={() => handleAreaChange("top")} style={{ height: "59px", width: "65px", backgroundColor: topColor }} ></div>
                             <IconButton size="medium" onClick={() => setTopLock(!topLock)}>
                                 <LockIcon fontSize="medium" style={{ color: topLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
-                            <div style={{ height: "59px", width: "65px", backgroundColor: bottomColor }} ></div>
+                            <div onClick={() => handleAreaChange("bottom")} style={{ height: "59px", width: "65px", backgroundColor: bottomColor }} ></div>
                             <IconButton size="medium" onClick={() => setBottomLock(!bottomLock)}>
                                 <LockIcon fontSize="medium" style={{ color: bottomLock ? "white" : "grey" }} />
                             </IconButton>
                         </div>
                         <div className="flex">
-                            <div style={{ height: "59px", width: "65px", backgroundColor: shoeColor }} ></div>
+                            <div onClick={() => handleAreaChange("shoe")} style={{ height: "59px", width: "65px", backgroundColor: shoeColor }} ></div>
                             <IconButton size="medium" onClick={() => setShoeLock(!shoeLock)}>
                                 <LockIcon fontSize="medium" style={{ color: shoeLock ? "white" : "grey" }} />
                             </IconButton>
