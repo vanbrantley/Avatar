@@ -6,17 +6,17 @@ import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 
-interface IHeaderProps {
-    closetMode: boolean,
-    handleModeChange: (toClosetMode: boolean) => void,
-    setClosetMode: (mode: boolean) => void;
-}
+// interface IHeaderProps {
+//     closetMode: boolean,
+//     handleModeChange: (toClosetMode: boolean) => void,
+//     setClosetMode: (mode: boolean) => void;
+// }
 
 
-const Header = observer(function Header(props: IHeaderProps) {
+const Header = observer(function Header() {
 
     const store = useContext(AppStoreContext);
-    const { closetMode, handleModeChange, navbarOpen, setNavbarOpen, layout } = store;
+    const { mode, handleModeChange, navbarOpen, setNavbarOpen, layout } = store;
 
     const { user } = useUser();
     const router = useRouter();
@@ -28,7 +28,7 @@ const Header = observer(function Header(props: IHeaderProps) {
 
         try {
             await Auth.signOut();
-            props.setClosetMode(false);
+            handleModeChange("lab");
         } catch (error) {
             console.log('Sign-out error:', error);
         }
@@ -58,20 +58,30 @@ const Header = observer(function Header(props: IHeaderProps) {
 
                     {user ? (
                         <div className="text-sm lg:flex-grow">
+                            <button
+                                onClick={() => handleModeChange("lab")}
+                                className={`${(mode === "lab") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
+                                Lab
+                            </button>
+
                             {(layout !== "mobile") && (
                                 <>
+
                                     <button
-                                        onClick={() => handleModeChange(false)}
-                                        className={`${closetMode ? 'text-white' : 'text-black'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
-                                        Lab
-                                    </button>
-                                    <button
-                                        onClick={() => handleModeChange(true)}
-                                        className={`${closetMode ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
+                                        onClick={() => handleModeChange("closet")}
+                                        className={`${(mode === "closet") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
                                         Closet
                                     </button>
+
                                 </>
                             )}
+
+                            <button
+                                onClick={() => handleModeChange("mockup")}
+                                className={`${(mode === "mockup") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}>
+                                Mockups
+                            </button>
+
                             <button
                                 onClick={() => signUserOut()}
                                 className="block mt-4 lg:inline-block lg:mt-0 text-white">

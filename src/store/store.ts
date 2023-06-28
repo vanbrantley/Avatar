@@ -31,12 +31,12 @@ class AppStore {
     palettes: Palette[] = [];
     selectedPalette: string | null = "";
 
-    closetMode = false;
     navbarOpen = false;
 
     heartFilled = false;
     showPicker = false;
 
+    mode = "lab";
     layout = "desktop";
 
     constructor() {
@@ -61,10 +61,10 @@ class AppStore {
             shoeLock: observable,
             palettes: observable,
             selectedPalette: observable,
-            closetMode: observable,
             navbarOpen: observable,
             heartFilled: observable,
             showPicker: observable,
+            mode: observable,
             layout: observable
 
         });
@@ -139,10 +139,6 @@ class AppStore {
         this.selectedPalette = id;
     });
 
-    setClosetMode = action((closetMode: boolean) => {
-        this.closetMode = closetMode;
-    });
-
     setNavbarOpen = action((isOpen: boolean) => {
         this.navbarOpen = isOpen;
     });
@@ -153,6 +149,10 @@ class AppStore {
 
     setShowPicker = action((show: boolean) => {
         this.showPicker = show;
+    });
+
+    setMode = action((mode: string) => {
+        this.mode = mode;
     });
 
     setLayout = action((layout: string) => {
@@ -228,30 +228,14 @@ class AppStore {
         }
     });
 
-    handleModeChange = action((toClosetMode: boolean) => {
+    handleModeChange = action((newMode: string) => {
 
-        // check if mode is switching
-        const modeSwitch: boolean = ((toClosetMode && !this.closetMode) || (!toClosetMode && this.closetMode));
+        // if you aren't changing mdoes, don't do anything
+        if (newMode === this.mode) return;
 
-        if (!modeSwitch) return;
+        // switching to mockup mode
 
-        if (toClosetMode) {
-
-            // fetch garments & set swatches
-            this.fetchGarmentsFromDB()
-                .then((userGarments) => {
-                    const grouped = groupByArea(userGarments);
-                    this.setHatSwatches(grouped["hat"]);
-                    this.setTopSwatches(grouped["top"]);
-                    this.setBottomSwatches(grouped["bottom"]);
-                    this.setShoeSwatches(grouped["shoe"]);
-                });
-
-            this.setShowPicker(false);
-
-        }
-
-        this.setClosetMode(toClosetMode);
+        this.setMode(newMode);
         this.setNavbarOpen(false);
 
     });
@@ -537,7 +521,6 @@ class AppStore {
 
     removePalette = action(async () => {
         try {
-            console.log("removing palette with id: ", this.selectedPalette);
             const paletteDetails: DeletePaletteInput = {
                 id: this.selectedPalette!,
             };
