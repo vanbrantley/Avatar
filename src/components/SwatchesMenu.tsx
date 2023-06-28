@@ -51,7 +51,7 @@ const SwatchesMenu = observer(() => {
             <div className="flex">
                 <div className="flex max-w-3xl overflow-x-auto">
                     {shoeSwatches.map((color) => (
-                        <Swatch key={color} color={color} area="shoes" />
+                        <Swatch key={color} color={color} area="shoe" />
                     ))}
                 </div>
                 <div className="flex items-center">

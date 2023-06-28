@@ -2,6 +2,7 @@ import Palette from './Palette';
 import Avatar from './Avatar';
 import LabMenu from './LabMenu';
 import ClosetMenu from './ClosetMenu';
+import MockupMenu from './MockupMenu';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
@@ -11,15 +12,13 @@ import Header from './Header';
 const DesktopLayout = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { closetMode, setClosetMode, handleModeChange } = store;
+    const { mode } = store;
 
     return (
 
         <>
 
-            <Header closetMode={closetMode}
-                setClosetMode={setClosetMode}
-                handleModeChange={handleModeChange} />
+            <Header />
             <br></br>
             <br></br>
 
@@ -31,8 +30,9 @@ const DesktopLayout = observer(() => {
                     <Avatar mini={false} />
                 </div>
                 <div className="col-span-5">
-                    {!closetMode && <LabMenu />}
-                    {closetMode && <ClosetMenu />}
+                    {mode === "lab" && <LabMenu />}
+                    {mode === "closet" && <ClosetMenu />}
+                    {mode === "mockup" && <MockupMenu />}
                 </div>
             </div>
 

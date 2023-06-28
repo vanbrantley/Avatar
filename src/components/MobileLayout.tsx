@@ -25,7 +25,7 @@ const MobileLayout = observer(() => {
     const store = useContext(AppStoreContext);
     const { heartFilled, randomizePalette, removePalette, savePalette,
         hatLock, setHatLock, topLock, setTopLock, bottomLock, setBottomLock, shoeLock, setShoeLock,
-        closetMode, setClosetMode, handleModeChange, selectedColor, handleColorChangePicker,
+        mode, selectedColor, handleColorChangePicker,
         hatColor, faceColor, topColor, bottomColor, shoeColor, handleAreaChange
     } = store;
 
@@ -33,9 +33,7 @@ const MobileLayout = observer(() => {
         <>
 
             <div className="flex flex-col h-screen">
-                <Header closetMode={closetMode}
-                    setClosetMode={setClosetMode}
-                    handleModeChange={handleModeChange} />
+                <Header />
 
                 <div className="flex justify-between items-center flex-grow">
                     <div className="w-full h-full mx-auto">
@@ -165,7 +163,7 @@ const MobileLayout = observer(() => {
                     </div>
                 </div>
                 <div style={{ height: "26%", overflowX: "auto" }}>
-                    <PaletteList />
+                    {user && <PaletteList />}
                 </div>
             </div>
 

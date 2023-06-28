@@ -10,7 +10,7 @@ interface IPaletteProps {
 
 const Palette = observer(function PaletteComponent(props: IPaletteProps) {
     const store = useContext(AppStoreContext);
-    const { hatColor, topColor, bottomColor, shoeColor, addColorSwatch, closetMode,
+    const { hatColor, topColor, bottomColor, shoeColor, addColorSwatch, mode,
         hatLock, setHatLock, topLock, setTopLock, bottomLock, setBottomLock, shoeLock, setShoeLock } = store;
 
     return (
@@ -20,25 +20,25 @@ const Palette = observer(function PaletteComponent(props: IPaletteProps) {
             {props.lock ? (
                 <div>
                     <div className="flex">
-                        <div onClick={closetMode ? (() => addColorSwatch("hat")) : undefined} className={`h-[72px] w-20 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: hatColor }} ></div>
+                        <div onClick={(mode === "closet") ? (() => addColorSwatch("hat")) : undefined} className={`h-[72px] w-20 rounded-none ${(mode === "closet") ? 'cursor-pointer' : ''}`} style={{ backgroundColor: hatColor }} ></div>
                         <IconButton size="large" onClick={() => setHatLock(!hatLock)}>
                             <LockIcon fontSize="large" style={{ color: hatLock ? "white" : "grey" }} />
                         </IconButton>
                     </div>
                     <div className="flex">
-                        <div onClick={closetMode ? (() => addColorSwatch("top")) : undefined} className={`h-[72px] w-20 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: topColor }} ></div>
+                        <div onClick={(mode === "closet") ? (() => addColorSwatch("top")) : undefined} className={`h-[72px] w-20 rounded-none ${(mode === "closet") ? 'cursor-pointer' : ''}`} style={{ backgroundColor: topColor }} ></div>
                         <IconButton size="large" onClick={() => setTopLock(!topLock)}>
                             <LockIcon fontSize="large" style={{ color: topLock ? "white" : "grey" }} />
                         </IconButton>
                     </div>
                     <div className="flex">
-                        <div onClick={closetMode ? (() => addColorSwatch("bottom")) : undefined} className={`h-[72px] w-20 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: bottomColor }} ></div>
+                        <div onClick={(mode === "closet") ? (() => addColorSwatch("bottom")) : undefined} className={`h-[72px] w-20 rounded-none ${(mode === "closet") ? 'cursor-pointer' : ''}`} style={{ backgroundColor: bottomColor }} ></div>
                         <IconButton size="large" onClick={() => setBottomLock(!bottomLock)}>
                             <LockIcon fontSize="large" style={{ color: bottomLock ? "white" : "grey" }} />
                         </IconButton>
                     </div>
                     <div className="flex">
-                        <div onClick={closetMode ? (() => addColorSwatch("shoes")) : undefined} className={`h-[72px] w-20 rounded-none ${closetMode ? 'cursor-pointer' : ''}`} style={{ backgroundColor: shoeColor }} ></div>
+                        <div onClick={(mode === "closet") ? (() => addColorSwatch("shoe")) : undefined} className={`h-[72px] w-20 rounded-none ${(mode === "closet") ? 'cursor-pointer' : ''}`} style={{ backgroundColor: shoeColor }} ></div>
                         <IconButton size="large" onClick={() => setShoeLock(!shoeLock)}>
                             <LockIcon fontSize="large" style={{ color: shoeLock ? "white" : "grey" }} />
                         </IconButton>
