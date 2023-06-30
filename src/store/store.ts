@@ -18,6 +18,8 @@ class AppStore {
     selectedArea = "top";
     selectedColor = this.topColor;
 
+    shirt = "";
+
     hatSwatches = ["#fff"];
     topSwatches = ["#fff"];
     bottomSwatches = ["#fff"];
@@ -51,6 +53,7 @@ class AppStore {
             shoeColor: observable,
             selectedArea: observable,
             selectedColor: observable,
+            shirt: observable,
             hatSwatches: observable,
             topSwatches: observable,
             bottomSwatches: observable,
@@ -97,6 +100,10 @@ class AppStore {
 
     setSelectedColor = action((color: string) => {
         this.selectedColor = color;
+    });
+
+    setShirt = action((shirtPath: string) => {
+        this.shirt = shirtPath;
     });
 
     setHatSwatches = action((swatches: string[]) => {
@@ -232,6 +239,8 @@ class AppStore {
 
         // if you aren't changing mdoes, don't do anything
         if (newMode === this.mode) return;
+
+        if (newMode !== "mockup") this.setShirt("");
 
         // switching to mockup mode
 
