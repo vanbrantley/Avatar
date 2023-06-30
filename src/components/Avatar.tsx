@@ -9,9 +9,10 @@ interface IAvatarProps {
 const Avatar = observer((props: IAvatarProps) => {
     const store = useContext(AppStoreContext);
 
-    const { hatColor, faceColor, topColor, bottomColor, shoeColor, handleAreaChange } = store;
+    const { hatColor, faceColor, topColor, bottomColor, shoeColor, shirt, handleAreaChange } = store;
 
     return (
+
         <div className="grid gap-0">
             <div
                 onClick={() => handleAreaChange('hat')}
@@ -33,15 +34,22 @@ const Avatar = observer((props: IAvatarProps) => {
                     borderBottomRightRadius: '120%',
                 }}
             ></div>
-            <div
-                onClick={() => handleAreaChange('top')}
-                className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}
-                style={{
-                    backgroundColor: topColor,
-                    borderTopLeftRadius: '30%',
-                    borderTopRightRadius: '30%',
-                }}
-            ></div>
+
+            {shirt ? (
+                <img src={`/${shirt}`} className="max-w-full h-auto mx-auto my-0" style={{ maxWidth: "45%" }} />
+            ) : (
+                <div
+                    onClick={() => handleAreaChange('top')}
+                    className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}
+                    style={{
+                        backgroundColor: topColor,
+                        borderTopLeftRadius: '30%',
+                        borderTopRightRadius: '30%',
+                    }}
+                ></div>
+            )}
+
+
             <div
                 onClick={() => handleAreaChange('bottom')}
                 className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}

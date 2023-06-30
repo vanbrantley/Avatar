@@ -13,6 +13,7 @@ import LabMenu from './LabMenu';
 import Header from './Header';
 import dynamic from 'next/dynamic';
 import PaletteList from './PaletteList';
+import MockupMenu from './MockupMenu';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),
     { ssr: false }
@@ -96,76 +97,82 @@ const MobileLayout = observer(() => {
 
             </div>
 
-            <div className="flex flex-col h-screen">
-                <div style={{ height: "5%" }}></div>
-                <div className="grid grid-cols-12" style={{ height: "55%" }}>
-                    <div className="col-span-8 flex justify-center items-center">
-                        <SketchPicker
-                            disableAlpha
-                            color={selectedColor}
-                            onChangeComplete={(color) => handleColorChangePicker(color.hex)}
-                        />
-                    </div>
-                    <div className="col-span-4 flex flex-col items-center justify-center">
-                        <div className="flex">
-                            <div onClick={() => handleAreaChange("hat")} style={{ height: "59px", width: "65px", backgroundColor: hatColor }}></div>
-                            <IconButton size="medium" onClick={() => setHatLock(!hatLock)}>
-                                <LockIcon fontSize="medium" style={{ color: hatLock ? "white" : "grey" }} />
-                            </IconButton>
-                        </div>
-                        <div className="flex">
-                            <div onClick={() => handleAreaChange("face")} style={{ height: "59px", width: "65px", backgroundColor: faceColor }}></div>
-                            <IconButton size="medium">
-                                <LockIcon fontSize="medium" style={{ color: "white", opacity: "0" }} />
-                            </IconButton>
-                        </div>
-                        <div className="flex">
-                            <div onClick={() => handleAreaChange("top")} style={{ height: "59px", width: "65px", backgroundColor: topColor }} ></div>
-                            <IconButton size="medium" onClick={() => setTopLock(!topLock)}>
-                                <LockIcon fontSize="medium" style={{ color: topLock ? "white" : "grey" }} />
-                            </IconButton>
-                        </div>
-                        <div className="flex">
-                            <div onClick={() => handleAreaChange("bottom")} style={{ height: "59px", width: "65px", backgroundColor: bottomColor }} ></div>
-                            <IconButton size="medium" onClick={() => setBottomLock(!bottomLock)}>
-                                <LockIcon fontSize="medium" style={{ color: bottomLock ? "white" : "grey" }} />
-                            </IconButton>
-                        </div>
-                        <div className="flex">
-                            <div onClick={() => handleAreaChange("shoe")} style={{ height: "59px", width: "65px", backgroundColor: shoeColor }} ></div>
-                            <IconButton size="medium" onClick={() => setShoeLock(!shoeLock)}>
-                                <LockIcon fontSize="medium" style={{ color: shoeLock ? "white" : "grey" }} />
-                            </IconButton>
-                        </div>
-                    </div>
+            {(mode === "mockup") ? (
+                <div className="h-screen overflow-y-auto">
+                    <MockupMenu />
                 </div>
-                <div className="flex flex-col items-center justify-center" style={{ height: "19%" }}>
-                    <div className="flex flex-row justify-center">
-                        <div className="flex-1">
-                            <IconButton onClick={() => randomizePalette()} >
-                                <ShuffleIcon fontSize="large" style={{ color: "white", fontSize: "4rem" }} />
-                            </IconButton>
+            ) : (
+                <div className="flex flex-col h-screen">
+                    <div style={{ height: "5%" }}></div>
+                    <div className="grid grid-cols-12" style={{ height: "55%" }}>
+                        <div className="col-span-8 flex justify-center items-center">
+                            <SketchPicker
+                                disableAlpha
+                                color={selectedColor}
+                                onChangeComplete={(color) => handleColorChangePicker(color.hex)}
+                            />
                         </div>
+                        <div className="col-span-4 flex flex-col items-center justify-center">
+                            <div className="flex">
+                                <div onClick={() => handleAreaChange("hat")} style={{ height: "59px", width: "65px", backgroundColor: hatColor }}></div>
+                                <IconButton size="medium" onClick={() => setHatLock(!hatLock)}>
+                                    <LockIcon fontSize="medium" style={{ color: hatLock ? "white" : "grey" }} />
+                                </IconButton>
+                            </div>
+                            <div className="flex">
+                                <div onClick={() => handleAreaChange("face")} style={{ height: "59px", width: "65px", backgroundColor: faceColor }}></div>
+                                <IconButton size="medium">
+                                    <LockIcon fontSize="medium" style={{ color: "white", opacity: "0" }} />
+                                </IconButton>
+                            </div>
+                            <div className="flex">
+                                <div onClick={() => handleAreaChange("top")} style={{ height: "59px", width: "65px", backgroundColor: topColor }} ></div>
+                                <IconButton size="medium" onClick={() => setTopLock(!topLock)}>
+                                    <LockIcon fontSize="medium" style={{ color: topLock ? "white" : "grey" }} />
+                                </IconButton>
+                            </div>
+                            <div className="flex">
+                                <div onClick={() => handleAreaChange("bottom")} style={{ height: "59px", width: "65px", backgroundColor: bottomColor }} ></div>
+                                <IconButton size="medium" onClick={() => setBottomLock(!bottomLock)}>
+                                    <LockIcon fontSize="medium" style={{ color: bottomLock ? "white" : "grey" }} />
+                                </IconButton>
+                            </div>
+                            <div className="flex">
+                                <div onClick={() => handleAreaChange("shoe")} style={{ height: "59px", width: "65px", backgroundColor: shoeColor }} ></div>
+                                <IconButton size="medium" onClick={() => setShoeLock(!shoeLock)}>
+                                    <LockIcon fontSize="medium" style={{ color: shoeLock ? "white" : "grey" }} />
+                                </IconButton>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center justify-center" style={{ height: "19%" }}>
+                        <div className="flex flex-row justify-center">
+                            <div className="flex-1">
+                                <IconButton onClick={() => randomizePalette()} >
+                                    <ShuffleIcon fontSize="large" style={{ color: "white", fontSize: "4rem" }} />
+                                </IconButton>
+                            </div>
 
-                        <div className="flex-1">
-                            {user && (
-                                heartFilled ? (
-                                    <IconButton size="large" onClick={() => removePalette()}>
-                                        <FavoriteIcon fontSize="large" style={{ color: "white", fontSize: "4rem" }} />
-                                    </IconButton>
-                                ) : (
-                                    <IconButton size="large" onClick={() => savePalette()}>
-                                        <FavoriteBorderIcon fontSize="large" style={{ color: "white", fontSize: "4rem" }} />
-                                    </IconButton>
-                                )
-                            )}
+                            <div className="flex-1">
+                                {user && (
+                                    heartFilled ? (
+                                        <IconButton size="large" onClick={() => removePalette()}>
+                                            <FavoriteIcon fontSize="large" style={{ color: "white", fontSize: "4rem" }} />
+                                        </IconButton>
+                                    ) : (
+                                        <IconButton size="large" onClick={() => savePalette()}>
+                                            <FavoriteBorderIcon fontSize="large" style={{ color: "white", fontSize: "4rem" }} />
+                                        </IconButton>
+                                    )
+                                )}
+                            </div>
                         </div>
                     </div>
+                    <div style={{ height: "26%", overflowX: "auto" }}>
+                        {user && <PaletteList />}
+                    </div>
                 </div>
-                <div style={{ height: "26%", overflowX: "auto" }}>
-                    {user && <PaletteList />}
-                </div>
-            </div>
+            )}
 
         </>
     );

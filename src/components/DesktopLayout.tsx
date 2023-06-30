@@ -16,29 +16,31 @@ const DesktopLayout = observer(() => {
 
     return (
 
-        <>
+        <div className="h-screen flex flex-col">
 
             <Header />
             <br></br>
             <br></br>
 
-            <div className="grid grid-cols-12">
-                <div className="md:block col-span-1 grid gap-0">
-                    <Palette lock={false} />
-                </div>
-                <div className="col-start-2 col-span-6">
-                    <Avatar mini={false} />
-                </div>
-                <div className="col-span-5">
-                    {mode === "lab" && <LabMenu />}
-                    {mode === "closet" && <ClosetMenu />}
-                    {mode === "mockup" && <MockupMenu />}
+            <div className="flex-grow flex overflow-y-auto">
+                <div className="grid grid-cols-12 w-full">
+                    <div className="md:block col-span-1 grid gap-0">
+                        <Palette lock={false} />
+                    </div>
+                    <div className="col-start-2 col-span-6">
+                        <Avatar mini={false} />
+                    </div>
+                    <div className="col-span-5 overflow-auto flex flex-col items-center">
+                        {mode === "lab" && <LabMenu />}
+                        {mode === "closet" && <ClosetMenu />}
+                        {mode === "mockup" && <MockupMenu />}
+                    </div>
                 </div>
             </div>
 
             <div className="background-overlay md:block"></div>
 
-        </>
+        </div>
     );
 });
 
