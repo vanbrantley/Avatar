@@ -7,9 +7,12 @@ interface IAvatarProps {
 }
 
 const Avatar = observer((props: IAvatarProps) => {
+
     const store = useContext(AppStoreContext);
 
-    const { hatColor, faceColor, topColor, bottomColor, shoeColor, shirt, handleAreaChange } = store;
+    const { hatColor, faceColor, topColor, bottomColor, shoeColor, selectedShirt, handleAreaChange } = store;
+
+    const URL_PREFIX = "https://avatarb886f49d0baa41e28fcf4484f402480e164949-dev.s3.amazonaws.com/public";
 
     return (
 
@@ -35,8 +38,8 @@ const Avatar = observer((props: IAvatarProps) => {
                 }}
             ></div>
 
-            {shirt ? (
-                <img src={`/${shirt}`} className="max-w-full h-auto mx-auto my-0" style={{ maxWidth: "45%" }} />
+            {selectedShirt ? (
+                <img src={`${URL_PREFIX}/${selectedShirt}`} className="max-w-full h-auto mx-auto my-0" style={{ maxWidth: "40%" }} />
             ) : (
                 <div
                     onClick={() => handleAreaChange('top')}

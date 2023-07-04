@@ -9,8 +9,9 @@ const PaletteList = observer(() => {
     const { palettes } = store;
 
     return (
-        <div className="container mx-auto">
-            <div className="flex max-w-sm overflow-x-auto">
+
+        <div className="w-full overflow-x-auto whitespace-no-wrap">
+            <div className="flex w-auto">
                 {palettes.map((palette, i) => {
                     const { hatColor, topColor, bottomColor, shoeColor, id } = palette;
                     return <PaletteMini key={i} hatColor={hatColor} topColor={topColor} bottomColor={bottomColor} shoeColor={shoeColor} paletteId={id} />;

@@ -1,7 +1,7 @@
 import { observable, action, makeObservable } from 'mobx';
 import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
 import groupByArea from '@/lib/groupByArea';
-import { API } from 'aws-amplify';
+import { API, Storage, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
 import { listGarments, listPalettes } from '@/graphql/queries';
 import { createGarment, createPalette, deletePalette } from '@/graphql/mutations';
@@ -18,7 +18,8 @@ class AppStore {
     selectedArea = "top";
     selectedColor = this.topColor;
 
-    shirt = "";
+    shirts: string[] = [];
+    selectedShirt = "";
 
     hatSwatches = ["#fff"];
     topSwatches = ["#fff"];
@@ -53,7 +54,8 @@ class AppStore {
             shoeColor: observable,
             selectedArea: observable,
             selectedColor: observable,
-            shirt: observable,
+            shirts: observable,
+            selectedShirt: observable,
             hatSwatches: observable,
             topSwatches: observable,
             bottomSwatches: observable,
@@ -102,8 +104,16 @@ class AppStore {
         this.selectedColor = color;
     });
 
-    setShirt = action((shirtPath: string) => {
-        this.shirt = shirtPath;
+    addShirt = action((filePath: string) => {
+        this.shirts.push(filePath);
+    });
+
+    setShirts = action((shirts: string[]) => {
+        this.shirts = shirts;
+    });
+
+    setSelectedShirt = action((shirtPath: string) => {
+        this.selectedShirt = shirtPath;
     });
 
     setHatSwatches = action((swatches: string[]) => {
@@ -164,6 +174,25 @@ class AppStore {
 
     setLayout = action((layout: string) => {
         this.layout = layout;
+    });
+
+    fetchShirts = action(async () => {
+        try {
+
+            const currentUser = await Auth.currentAuthenticatedUser();
+            const userId = currentUser.getUsername() ?? ''; // Provide a default value if `getUsername()` returns undefined
+            const shirtsFolder = `${userId}/`;
+            const shirtsList = await Storage.list(shirtsFolder);
+
+            const shirtUrls = shirtsList.results
+                .map((shirt) => shirt.key)
+                .filter((url) => url !== undefined) as string[];
+
+            this.setShirts(shirtUrls);
+
+        } catch (error) {
+            console.error('Error fetching user shirts:', error);
+        }
     });
 
     // functions
@@ -240,7 +269,7 @@ class AppStore {
         // if you aren't changing mdoes, don't do anything
         if (newMode === this.mode) return;
 
-        if (newMode !== "mockup") this.setShirt("");
+        if (newMode !== "mockup") this.setSelectedShirt("");
 
         // switching to mockup mode
 
