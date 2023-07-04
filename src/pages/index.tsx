@@ -2,9 +2,6 @@ import dynamic from 'next/dynamic';
 const DesktopLayout = dynamic(() => import('@/components/DesktopLayout'));
 const TabletLayout = dynamic(() => import('@/components//TabletLayout'));
 const MobileLayout = dynamic(() => import('@/components//MobileLayout'));
-// import DesktopLayout from '@/components/DesktopLayout';
-// import TabletLayout from '@/components/TabletLayout';
-// import MobileLayout from '@/components/MobileLayout';
 
 import { useEffect, useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
