@@ -14,27 +14,27 @@ const TabletLayout = observer(() => {
     const { mode } = store;
 
     return (
-        <>
 
+        <div className="h-screen flex flex-col">
             <Header />
-
-            <br></br>
-            <br></br>
-
-            <div className="grid grid-cols-12">
-                <div className="col-span-6">
-                    <Avatar mini={false} />
-                </div>
-                <div className="col-span-6">
-                    {mode === "lab" && <LabMenu />}
-                    {mode === "closet" && <ClosetMenu />}
-                    {mode === "mockup" && <MockupMenu />}
+            <div className="flex-grow flex overflow-y-auto">
+                <div className="grid grid-cols-12 w-full h-full">
+                    <div className="col-span-6">
+                        <br></br>
+                        <br></br>
+                        <Avatar mini={false} />
+                    </div>
+                    <div className="col-span-6">
+                        <br></br>
+                        <br></br>
+                        {mode === "lab" && <LabMenu />}
+                        {mode === "closet" && <ClosetMenu />}
+                        {mode === "mockup" && <MockupMenu />}
+                    </div>
                 </div>
             </div>
+        </div>
 
-            {/* <div className="background-overlay md:block"></div> */}
-
-        </>
     );
 });
 

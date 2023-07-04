@@ -1,4 +1,3 @@
-import Header from '@/components/Header';
 import dynamic from 'next/dynamic';
 const DesktopLayout = dynamic(() => import('@/components/DesktopLayout'));
 const TabletLayout = dynamic(() => import('@/components//TabletLayout'));
@@ -16,7 +15,7 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { randomizePalette, fetchPalettes, fetchGarmentsFromDB, layout, setLayout } = store;
+  const { randomizePalette, fetchPalettes, fetchGarmentsFromDB, fetchShirts, layout, setLayout } = store;
 
   useEffect(() => {
     randomizePalette();
@@ -52,6 +51,7 @@ const Home = observer(() => {
     if (user) {
       fetchPalettes();
       fetchGarmentsFromDB();
+      fetchShirts();
     }
 
     // Register the beforeunload event listener to fetch palettes on page refresh
@@ -59,6 +59,7 @@ const Home = observer(() => {
       if (user) {
         fetchPalettes();
         fetchGarmentsFromDB();
+        fetchShirts();
       }
     };
 
@@ -73,11 +74,9 @@ const Home = observer(() => {
 
   return (
     <>
-
       {layout === 'desktop' && <DesktopLayout />}
       {layout === 'tablet' && <TabletLayout />}
       {layout === 'mobile' && <MobileLayout />}
-
     </>
   );
 

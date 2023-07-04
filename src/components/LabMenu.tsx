@@ -26,7 +26,44 @@ const LabMenu = observer(() => {
     return (
         <>
 
-            <div className="flex flex-row">
+            <div className="w-full h-full flex flex-col">
+                <div className="w-full h-1/2 flex items-center justify-center">
+                    <div className={`${(layout === 'mobile') ? "" : "sketch-wrapper"}`}>
+                        <SketchPicker
+                            disableAlpha
+                            color={selectedColor}
+                            onChangeComplete={(color) => handleColorChangePicker(color.hex)}
+                        />
+                    </div>
+                    <div>
+                        <div>
+                            <Palette lock={true} />
+                        </div>
+                        <div className="float-left">
+                            <IconButton size="large" onClick={() => randomizePalette()}>
+                                <ShuffleIcon fontSize="large" style={{ color: "white" }} />
+                            </IconButton>
+                            {user && heartFilled && (
+                                <IconButton size="large" onClick={() => removePalette()}>
+                                    <FavoriteIcon fontSize="large" style={{ color: "white" }} />
+                                </IconButton>
+                            )}
+                            {user && !heartFilled && (
+                                <IconButton size="large" onClick={() => savePalette()}>
+                                    <FavoriteBorderIcon fontSize="large" style={{ color: "white" }} />
+                                </IconButton>
+                            )}
+
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full h-1/2 flex items-center justify-center">
+                    {user && <PaletteList />}
+                </div>
+            </div>
+
+
+            {/* <div className="flex flex-row">
                 <div className={`${(layout === 'mobile') ? "" : "sketch-wrapper"}`}>
                     <SketchPicker
                         disableAlpha
@@ -38,7 +75,10 @@ const LabMenu = observer(() => {
                     <div>
                         <Palette lock={true} />
                     </div>
-                    <div className="flex flex-col float-left">
+                    <div className="float-left">
+                        <IconButton size="large" onClick={() => randomizePalette()}>
+                            <ShuffleIcon fontSize="large" style={{ color: "white" }} />
+                        </IconButton>
                         {user && heartFilled && (
                             <IconButton size="large" onClick={() => removePalette()}>
                                 <FavoriteIcon fontSize="large" style={{ color: "white" }} />
@@ -49,15 +89,18 @@ const LabMenu = observer(() => {
                                 <FavoriteBorderIcon fontSize="large" style={{ color: "white" }} />
                             </IconButton>
                         )}
-                        <IconButton size="large" onClick={() => randomizePalette()}>
-                            <ShuffleIcon fontSize="large" style={{ color: "white" }} />
-                        </IconButton>
+
                     </div>
                 </div>
             </div>
 
             <br></br>
-            {user && <PaletteList />}
+            <br></br>
+            <div className="flex flex-row">
+                <div className="">
+                    {user && <PaletteList />}
+                </div>
+            </div> */}
 
         </>
     );

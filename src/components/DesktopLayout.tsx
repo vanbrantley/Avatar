@@ -8,7 +8,6 @@ import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import Header from './Header';
 
-
 const DesktopLayout = observer(() => {
 
     const store = useContext(AppStoreContext);
@@ -17,30 +16,29 @@ const DesktopLayout = observer(() => {
     return (
 
         <div className="h-screen flex flex-col">
-
             <Header />
-            <br></br>
-            <br></br>
-
             <div className="flex-grow flex overflow-y-auto">
-                <div className="grid grid-cols-12 w-full">
+                <div className="grid grid-cols-12 w-full h-full">
                     <div className="md:block col-span-1 grid gap-0">
+                        <br></br>
+                        <br></br>
                         <Palette lock={false} />
                     </div>
-                    <div className="col-start-2 col-span-6">
+                    <div className="col-start-2 col-span-6 flex items-center justify-center">
                         <Avatar mini={false} />
                     </div>
-                    <div className="col-span-5 overflow-auto flex flex-col items-center">
+                    <div className="col-span-4 overflow-auto flex flex-col" style={{ backgroundColor: "#2b2b2b" }}>
+                        <br></br>
+                        <br></br>
                         {mode === "lab" && <LabMenu />}
                         {mode === "closet" && <ClosetMenu />}
                         {mode === "mockup" && <MockupMenu />}
                     </div>
                 </div>
             </div>
-
             <div className="background-overlay md:block"></div>
-
         </div>
+
     );
 });
 
