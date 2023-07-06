@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
 
 interface IFormInput {
     username: string;
@@ -88,11 +89,28 @@ const Signup = observer(() => {
 
     return (
 
-        <div style={{ paddingTop: "50px" }}>
+
+        <div className="flex flex-col h-screen mt-44">
+
+            <div className="flex flex-col items-center justify-center">
+                <AccessibilityIcon className="w-12 h-12" />
+                <br></br>
+            </div>
 
             <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 
                 <Grid container direction="column" alignItems="center" spacing={2} >
+                    <Grid item>
+                        <TextField
+                            id="email"
+                            label="Email"
+                            type="email"
+                            error={errors.email ? true : false}
+                            helperText={errors.email ? errors.email.message : null}
+                            {...register("email", {
+                                required: { value: true, message: "Please enter a valid email." },
+                            })} />
+                    </Grid>
                     <Grid item>
                         <TextField
                             id="username"
@@ -104,17 +122,6 @@ const Signup = observer(() => {
                                 required: { value: true, message: "Please enter a username." },
                                 minLength: { value: 3, message: "Please enter a username between 3 and 16 characters." },
                                 maxLength: { value: 16, message: "Please enter a username between 3 and 16 characters." },
-                            })} />
-                    </Grid>
-                    <Grid item>
-                        <TextField
-                            id="email"
-                            label="Email"
-                            type="email"
-                            error={errors.email ? true : false}
-                            helperText={errors.email ? errors.email.message : null}
-                            {...register("email", {
-                                required: { value: true, message: "Please enter a valid email." },
                             })} />
                     </Grid>
                     <Grid item>
@@ -146,7 +153,7 @@ const Signup = observer(() => {
                     )}
                     <br />
                     <Grid>
-                        <Button type="submit" variant="contained">
+                        <Button type="submit" variant="contained" size="large">
                             {showCode ? "Confirm Code" : "Sign Up"}
                         </Button>
                     </Grid>
@@ -157,6 +164,9 @@ const Signup = observer(() => {
                     </Alert>
                 </Snackbar>
             </form>
+
+
+
         </div>
 
     );
