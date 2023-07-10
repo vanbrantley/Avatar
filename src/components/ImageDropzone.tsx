@@ -6,6 +6,8 @@ import { useDropzone } from 'react-dropzone';
 import { Storage } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '../context/AuthContext';
+import { IconButton } from '@mui/material';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 const ImageDropzone = observer(() => {
 
@@ -31,16 +33,16 @@ const ImageDropzone = observer(() => {
         }
     }, []);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+    const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
     return (
-        <div {...getRootProps()} className={isDragActive ? 'dropzone-active' : 'dropzone'} style={{ cursor: "pointer" }}>
+        <div {...getRootProps()} className="flex justify-center float-right" style={{ cursor: 'pointer', width: "100%", backgroundColor: "#484848" }}>
             <input {...getInputProps()} />
-            {isDragActive ? (
-                <p>Drop the image here...</p>
-            ) : (
-                <p>Drag and drop an image here or click to select an image</p>
-            )}
+
+            <IconButton size="large">
+                <FileUploadIcon fontSize="large" />
+            </IconButton>
+
         </div>
     );
 });
