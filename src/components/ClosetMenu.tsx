@@ -16,7 +16,9 @@ const SketchPicker = dynamic(
 const ClosetMenu = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { selectedColor, handleColorChangePicker, randomizePalette, randomizeOutfit, showPicker, setShowPicker } = store;
+    const { selectedColor, handleColorChangePicker,
+        randomizePalette, randomizeOutfit, addColorSwatch,
+        showPicker, setShowPicker } = store;
 
     return (
         <div className="justify-center">
@@ -45,7 +47,7 @@ const ClosetMenu = observer(() => {
                                 />
                             </div>
                             <div>
-                                <Palette lock={true} />
+                                <Palette lock={true} handler={addColorSwatch} />
                                 <div>
                                     <IconButton size="large" onClick={() => randomizePalette()}>
                                         <ShuffleIcon fontSize="large" style={{ color: "white" }} />

@@ -39,7 +39,7 @@ const Avatar = observer((props: IAvatarProps) => {
             ></div>
 
             {selectedShirt ? (
-                <img src={`${URL_PREFIX}/${selectedShirt}`} className="max-w-full h-auto mx-auto my-0" style={{ maxWidth: "40%" }} />
+                <img src={`${URL_PREFIX}/${selectedShirt}`} onClick={() => handleAreaChange('top')} className="max-w-full h-auto mx-auto my-0" style={{ maxWidth: "40%" }} />
             ) : (
                 <div
                     onClick={() => handleAreaChange('top')}

@@ -18,7 +18,8 @@ const LabMenu = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { selectedColor, heartFilled,
-        handleColorChangePicker, randomizePalette, removePalette, savePalette, layout
+        handleColorChangePicker, randomizePalette, handleAreaChange,
+        removePalette, savePalette, layout
     } = store;
 
     const { user } = useUser();
@@ -37,7 +38,7 @@ const LabMenu = observer(() => {
                     </div>
                     <div>
                         <div>
-                            <Palette lock={true} />
+                            <Palette lock={true} handler={handleAreaChange} />
                         </div>
                         <div className="float-left">
                             <IconButton size="large" onClick={() => randomizePalette()}>
