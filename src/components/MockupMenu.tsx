@@ -29,11 +29,13 @@ const MockupMenu = observer(() => {
             <br></br>
 
             <div className="grid grid-cols-3 gap-4">
+
                 {shirts.map((path, index) => (
                     <div key={index} className="flex justify-center">
                         <MockupResult path={path} />
                     </div>
                 ))}
+
             </div>
 
         </>

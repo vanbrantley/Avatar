@@ -9,13 +9,13 @@ interface IMockupResultProps {
 const MockupResult = observer((props: IMockupResultProps) => {
 
     const store = useContext(AppStoreContext);
-    const { setSelectedShirt } = store;
+    const { displayMockupOnAvatar } = store;
 
     const URL_PREFIX = "https://avatarb886f49d0baa41e28fcf4484f402480e164949-dev.s3.amazonaws.com/public";
 
 
     return (
-        <div onClick={() => setSelectedShirt(props.path)} className="cursor-pointer">
+        <div onClick={() => displayMockupOnAvatar(props.path)} className="cursor-pointer">
             <img src={`${URL_PREFIX}/${props.path}`} className="max-w-full h-auto" />
         </div>
     );

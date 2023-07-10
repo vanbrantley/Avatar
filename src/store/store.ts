@@ -37,7 +37,8 @@ class AppStore {
     navbarOpen = false;
 
     heartFilled = false;
-    showPicker = false;
+
+    showPicker = true;
 
     mode = "lab";
     layout = "desktop";
@@ -176,6 +177,17 @@ class AppStore {
         this.layout = layout;
     });
 
+    displayMockupOnAvatar = action((imagePath: string) => {
+
+        // setSelectedShirt to path
+        this.setSelectedShirt(imagePath);
+
+        if (!this.topLock) this.setTopLock(true);
+
+        this.setTopColor('transparent');
+
+    });
+
     fetchShirts = action(async () => {
         try {
 
@@ -208,6 +220,7 @@ class AppStore {
         }
 
         if (!this.topLock) {
+            if (this.selectedShirt) this.setSelectedShirt("");
             const randomTopColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
             this.setTopColor(randomTopColor);
         }
@@ -249,6 +262,7 @@ class AppStore {
         }
 
         if (!this.topLock) {
+            if (this.selectedShirt) this.setSelectedShirt("");
             const topIndex = Math.floor(Math.random() * this.topSwatches.length);
             this.setTopColor(this.topSwatches[topIndex]);
         }
@@ -268,10 +282,6 @@ class AppStore {
 
         // if you aren't changing mdoes, don't do anything
         if (newMode === this.mode) return;
-
-        if (newMode !== "mockup") this.setSelectedShirt("");
-
-        // switching to mockup mode
 
         this.setMode(newMode);
         this.setNavbarOpen(false);
@@ -326,56 +336,62 @@ class AppStore {
             switch (this.selectedArea) {
                 case "hat":
                     this.setHatColor(color);
-                    this.setSelectedColor(color);
                     break;
                 case "face":
                     this.setFaceColor(color);
-                    this.setSelectedColor(color);
                     break;
                 case "top":
+                    if (this.selectedShirt) this.setSelectedShirt("");
                     this.setTopColor(color);
-                    this.setSelectedColor(color);
                     break;
                 case "bottom":
                     this.setBottomColor(color);
-                    this.setSelectedColor(color);
                     break;
                 case "shoe":
                     this.setShoeColor(color);
-                    this.setSelectedColor(color);
                     break;
                 default:
                     break;
             };
 
-            // this.setSelectedPalette("");
+            this.setSelectedColor(color);
 
         }
     });
 
     handleColorChangeSwatch = action((color: string, area: string) => {
-        switch (area) {
-            case "hat":
-                this.setHatColor(color);
-                break;
-            case "face":
-                this.setFaceColor(color);
-                break;
-            case "top":
-                this.setTopColor(color);
-                break;
-            case "bottom":
-                this.setBottomColor(color);
-                break;
-            case "shoe":
-                this.setShoeColor(color);
-                break;
-            default:
-                break;
+
+        const isAreaLocked = this.checkAreaLock(area);
+
+        if (!isAreaLocked) {
+
+            switch (area) {
+                case "hat":
+                    this.setHatColor(color);
+                    break;
+                case "face":
+                    this.setFaceColor(color);
+                    break;
+                case "top":
+                    if (this.selectedShirt) this.setSelectedShirt("");
+                    this.setTopColor(color);
+                    break;
+                case "bottom":
+                    this.setBottomColor(color);
+                    break;
+                case "shoe":
+                    this.setShoeColor(color);
+                    break;
+                default:
+                    break;
+            }
+
+            this.setSelectedArea(area);
+            this.setSelectedColor(color);
+
         }
 
-        this.setSelectedArea(area);
-        this.setSelectedColor(color);
+
     });
 
     addColorSwatch = action((area: string) => {
@@ -440,6 +456,7 @@ class AppStore {
                 case "face":
                     break;
                 case "top":
+                    if (this.selectedShirt) this.setSelectedShirt("");
                     this.setSelectedColor(topColor);
                     break;
                 case "bottom":
