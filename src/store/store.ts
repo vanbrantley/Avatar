@@ -1,10 +1,11 @@
 import { observable, action, makeObservable } from 'mobx';
-import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
+import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
 import groupByArea from '@/lib/groupByArea';
 import { API, Storage, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
 import { listGarments, listPalettes } from '@/graphql/queries';
-import { createGarment, createPalette, deletePalette } from '@/graphql/mutations';
+import { createGarment, createPalette, deleteGarment, deletePalette } from '@/graphql/mutations';
+import { SwatchObject } from '@/lib/types';
 
 class AppStore {
 
@@ -21,10 +22,10 @@ class AppStore {
     shirts: string[] = [];
     selectedShirt = "";
 
-    hatSwatches = ["#fff"];
-    topSwatches = ["#fff"];
-    bottomSwatches = ["#fff"];
-    shoeSwatches = ["#fff"];
+    hatSwatches: SwatchObject[] = [];
+    topSwatches: SwatchObject[] = [];
+    bottomSwatches: SwatchObject[] = [];
+    shoeSwatches: SwatchObject[] = [];
 
     hatLock = false;
     topLock = false;
@@ -117,19 +118,19 @@ class AppStore {
         this.selectedShirt = shirtPath;
     });
 
-    setHatSwatches = action((swatches: string[]) => {
+    setHatSwatches = action((swatches: SwatchObject[]) => {
         this.hatSwatches = swatches;
     });
 
-    setTopSwatches = action((swatches: string[]) => {
+    setTopSwatches = action((swatches: SwatchObject[]) => {
         this.topSwatches = swatches;
     });
 
-    setBottomSwatches = action((swatches: string[]) => {
+    setBottomSwatches = action((swatches: SwatchObject[]) => {
         this.bottomSwatches = swatches;
     });
 
-    setShoeSwatches = action((swatches: string[]) => {
+    setShoeSwatches = action((swatches: SwatchObject[]) => {
         this.shoeSwatches = swatches;
     });
 
@@ -256,25 +257,25 @@ class AppStore {
         // generate a random number between 0 and length of each swatch array
         // set each area color to the swatchArray[index]
 
-        if (!this.hatLock) {
+        if (!this.hatLock && (this.hatSwatches.length !== 0)) {
             const hatIndex = Math.floor(Math.random() * this.hatSwatches.length);
-            this.setHatColor(this.hatSwatches[hatIndex]);
+            this.setHatColor(this.hatSwatches[hatIndex].color);
         }
 
-        if (!this.topLock) {
+        if (!this.topLock && (this.topSwatches.length !== 0)) {
             if (this.selectedShirt) this.setSelectedShirt("");
             const topIndex = Math.floor(Math.random() * this.topSwatches.length);
-            this.setTopColor(this.topSwatches[topIndex]);
+            this.setTopColor(this.topSwatches[topIndex].color);
         }
 
-        if (!this.bottomLock) {
+        if (!this.bottomLock && (this.bottomSwatches.length !== 0)) {
             const bottomIndex = Math.floor(Math.random() * this.bottomSwatches.length);
-            this.setBottomColor(this.bottomSwatches[bottomIndex]);
+            this.setBottomColor(this.bottomSwatches[bottomIndex].color);
         }
 
-        if (!this.shoeLock) {
+        if (!this.shoeLock && (this.shoeSwatches.length !== 0)) {
             const shoeIndex = Math.floor(Math.random() * this.shoeSwatches.length);
-            this.setShoeColor(this.shoeSwatches[shoeIndex]);
+            this.setShoeColor(this.shoeSwatches[shoeIndex].color);
         }
     });
 
@@ -394,37 +395,55 @@ class AppStore {
 
     });
 
-    addColorSwatch = action((area: string) => {
+    getSwatchId = (colorToFind: string, stateArray: SwatchObject[]): string | null => {
+        const foundObject = stateArray.find((obj: SwatchObject) => obj.color === colorToFind);
+        if (foundObject) {
+            return foundObject.id;
+        }
+        return null; // Return null when there is no match
+    };
+
+    handleColorSwatch = action((area: string) => {
+
         // add color to the corresponding swatches array if it isn't already
         switch (area) {
-            case "hat":
-                if (!(this.hatSwatches.includes(this.hatColor))) {
-                    this.addGarmentToDB("hat", this.hatColor);
-                    this.setHatSwatches([this.hatColor, ...this.hatSwatches]);
-                }
+            case "hat": {
+
+                const id = this.getSwatchId(this.hatColor, this.hatSwatches);
+
+                if (id) this.removeGarment(id, area);
+                else this.addGarmentToDB("hat", this.hatColor);
+
                 this.setSelectedColor(this.hatColor);
                 break;
-            case "top":
-                if (!(this.topSwatches.includes(this.topColor))) {
-                    this.addGarmentToDB("top", this.topColor);
-                    this.setTopSwatches([this.topColor, ...this.topSwatches]);
-                }
+            }
+            case "top": {
+                const id = this.getSwatchId(this.topColor, this.topSwatches);
+
+                if (id) this.removeGarment(id, area);
+                else this.addGarmentToDB(area, this.topColor);
+
                 this.setSelectedColor(this.topColor);
                 break;
-            case "bottom":
-                if (!(this.bottomSwatches.includes(this.bottomColor))) {
-                    this.addGarmentToDB("bottom", this.bottomColor);
-                    this.setBottomSwatches([this.bottomColor, ...this.bottomSwatches]);
-                }
+            }
+            case "bottom": {
+                const id = this.getSwatchId(this.bottomColor, this.bottomSwatches);
+
+                if (id) this.removeGarment(id, area);
+                else this.addGarmentToDB(area, this.bottomColor);
+
                 this.setSelectedColor(this.bottomColor);
                 break;
-            case "shoe":
-                if (!(this.shoeSwatches.includes(this.shoeColor))) {
-                    this.addGarmentToDB("shoe", this.shoeColor);
-                    this.setShoeSwatches([this.shoeColor, ...this.shoeSwatches]);
-                }
+            }
+            case "shoe": {
+                const id = this.getSwatchId(this.shoeColor, this.shoeSwatches);
+
+                if (id) this.removeGarment(id, area);
+                else this.addGarmentToDB(area, this.shoeColor);
+
                 this.setSelectedColor(this.shoeColor);
                 break;
+            }
             default:
                 break;
         }
@@ -515,14 +534,73 @@ class AppStore {
             const { data } = response;
             if (data && data.createGarment) {
                 const createdGarment = data.createGarment;
-                console.log("Garment added successfully: ", createdGarment);
                 // add createdGarment to swatches
+                const newSwatch: SwatchObject = { color: createdGarment.color, id: createdGarment.id };
+
+                switch (area) {
+                    case "hat":
+                        this.setHatSwatches([newSwatch, ...this.hatSwatches]);
+                        break;
+                    case "top":
+                        this.setTopSwatches([newSwatch, ...this.topSwatches]);
+                        break;
+                    case "bottom":
+                        this.setBottomSwatches([newSwatch, ...this.bottomSwatches]);
+                        break;
+                    case "shoe":
+                        this.setShoeSwatches([newSwatch, ...this.shoeSwatches]);
+                        break;
+                }
+
+                console.log("Garment added successfully: ", createdGarment);
             } else {
                 throw new Error("Could not add garment")
             }
 
         } catch (error: any) {
             console.error("Error adding garment: ", error);
+        }
+    });
+
+
+
+    removeGarment = action(async (garmentId: string, area: string) => {
+        try {
+            const garmentDetails: DeleteGarmentInput = {
+                id: garmentId,
+            };
+
+            const response = await API.graphql<GraphQLQuery<DeleteGarmentMutation>>(graphqlOperation(deleteGarment, {
+                input: garmentDetails
+            })) as GraphQLResult<DeleteGarmentMutation>;
+            const { data } = response;
+
+            if (data && data.deleteGarment) {
+                const removedGarment = data.deleteGarment;
+                // remove removedGarment from swatches array
+
+                switch (area) {
+                    case "hat":
+                        this.setHatSwatches(this.hatSwatches.filter((swatch) => swatch.id !== removedGarment.id));
+                        break;
+                    case "top":
+                        this.setTopSwatches(this.topSwatches.filter((swatch) => swatch.id !== removedGarment.id));
+                        break;
+                    case "bottom":
+                        this.setBottomSwatches(this.bottomSwatches.filter((swatch) => swatch.id !== removedGarment.id));
+                        break;
+                    case "shoe":
+                        this.setShoeSwatches(this.shoeSwatches.filter((swatch) => swatch.id !== removedGarment.id));
+                        break;
+                }
+
+
+                // this.setPalettes(this.palettes.filter((swatch) => swatch.id !== removedGarment.id));
+                console.log("Garment removed successfully: ", removedGarment);
+            }
+
+        } catch (error: any) {
+            console.error("Error removing palette: ", error);
         }
     });
 
