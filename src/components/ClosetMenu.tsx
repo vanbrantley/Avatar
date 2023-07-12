@@ -17,7 +17,7 @@ const ClosetMenu = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { selectedColor, handleColorChangePicker,
-        randomizePalette, randomizeOutfit, addColorSwatch,
+        randomizePalette, randomizeOutfit,
         showPicker, setShowPicker } = store;
 
     return (
@@ -49,7 +49,7 @@ const ClosetMenu = observer(() => {
                             />
                         </div>
                         <div>
-                            <Palette lock={true} handler={addColorSwatch} />
+                            <Palette lock={true} />
                             <div>
                                 <IconButton size="large" onClick={() => randomizePalette()}>
                                     <ShuffleIcon fontSize="large" style={{ color: "white" }} />

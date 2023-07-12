@@ -37,12 +37,12 @@ const SwatchesMenu = observer(() => {
                 <div>
                     <div className="flex">
                         <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                            {hatSwatches.map((color) => (
+                            {hatSwatches.map((swatch) => (
                                 <div
-                                    key={color}
+                                    key={swatch.id}
                                     className="w-20 h-10"
                                 >
-                                    <Swatch key={color} color={color} area="hat" />
+                                    <Swatch key={swatch.id} color={swatch.color} area="hat" />
                                 </div>
                             ))}
                         </div>
@@ -57,12 +57,12 @@ const SwatchesMenu = observer(() => {
                     </div>
                     <div className="flex">
                         <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                            {topSwatches.map((color) => (
+                            {topSwatches.map((swatch) => (
                                 <div
-                                    key={color}
+                                    key={swatch.id}
                                     className="w-20 h-10"
                                 >
-                                    <Swatch key={color} color={color} area="top" />
+                                    <Swatch key={swatch.id} color={swatch.color} area="top" />
                                 </div>
                             ))}
                         </div>
@@ -77,12 +77,12 @@ const SwatchesMenu = observer(() => {
                     </div>
                     <div className="flex">
                         <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                            {bottomSwatches.map((color) => (
+                            {bottomSwatches.map((swatch) => (
                                 <div
-                                    key={color}
+                                    key={swatch.id}
                                     className="w-20 h-10"
                                 >
-                                    <Swatch key={color} color={color} area="bottom" />
+                                    <Swatch key={swatch.id} color={swatch.color} area="bottom" />
                                 </div>
                             ))}
                         </div>
@@ -97,12 +97,12 @@ const SwatchesMenu = observer(() => {
                     </div>
                     <div className="flex">
                         <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                            {shoeSwatches.map((color) => (
+                            {shoeSwatches.map((swatch) => (
                                 <div
-                                    key={color}
+                                    key={swatch.id}
                                     className="w-20 h-10"
                                 >
-                                    <Swatch key={color} color={color} area="shoe" />
+                                    <Swatch key={swatch.id} color={swatch.color} area="shoe" />
                                 </div>
                             ))}
                         </div>
