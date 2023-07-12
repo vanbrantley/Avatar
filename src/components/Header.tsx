@@ -6,33 +6,13 @@ import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 
-// interface IHeaderProps {
-//     closetMode: boolean,
-//     handleModeChange: (toClosetMode: boolean) => void,
-//     setClosetMode: (mode: boolean) => void;
-// }
-
-
 const Header = observer(function Header() {
 
     const store = useContext(AppStoreContext);
-    const { mode, handleModeChange, navbarOpen, setNavbarOpen, layout } = store;
+    const { mode, handleModeChange, navbarOpen, setNavbarOpen, layout, signUserOut } = store;
 
     const { user } = useUser();
     const router = useRouter();
-
-    const signUserOut = async () => {
-        // Clear the access and refresh tokens from local storage
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-
-        try {
-            await Auth.signOut();
-            handleModeChange("lab");
-        } catch (error) {
-            console.log('Sign-out error:', error);
-        }
-    };
 
     return (
 

@@ -33,7 +33,7 @@ class AppStore {
     shoeLock = false;
 
     palettes: Palette[] = [];
-    selectedPalette: string | null = "";
+    selectedPalette = "";
 
     navbarOpen = false;
 
@@ -154,7 +154,7 @@ class AppStore {
         this.palettes = palettes;
     });
 
-    setSelectedPalette = action((id: string | null) => {
+    setSelectedPalette = action((id: string) => {
         this.selectedPalette = id;
     });
 
@@ -691,6 +691,39 @@ class AppStore {
 
         } catch (error: any) {
             console.error("Error removing palette: ", error);
+        }
+    });
+
+    signUserOut = action(async () => {
+
+        // Clear the access and refresh tokens from local storage
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+
+        try {
+            await Auth.signOut();
+            this.handleModeChange("lab");
+
+            // handle clean-up
+            if (this.hatLock) this.setHatLock(false);
+            if (this.topLock) this.setTopLock(false);
+            if (this.bottomLock) this.setBottomLock(false);
+            if (this.shoeLock) this.setShoeLock(false);
+
+            if (this.selectedShirt) {
+                const randomTopColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+                this.setSelectedShirt("");
+                this.setTopColor(randomTopColor);
+            }
+
+            this.setSelectedArea("top");
+            this.setSelectedColor(this.topColor);
+
+            this.setShirts([]);
+            this.setPalettes([]);
+
+        } catch (error) {
+            console.log('Sign-out error:', error);
         }
     });
 
