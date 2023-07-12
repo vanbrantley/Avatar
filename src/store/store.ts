@@ -208,6 +208,24 @@ class AppStore {
         }
     });
 
+    removeShirt = action(async (shirtPath: string) => {
+
+        console.log("Removing:", shirtPath);
+
+        // remove file from bucket
+        try {
+            await Storage.remove(shirtPath);
+            console.log("Successfully removed file: ", shirtPath);
+            // remove shirt from shirts state array
+            this.setShirts(this.shirts.filter((shirt) => shirt !== shirtPath));
+            this.setSelectedShirt("");
+
+        } catch (error) {
+            console.log('File deletion failed:', error);
+        }
+
+    });
+
     // functions
     randomizePalette = action(() => {
 

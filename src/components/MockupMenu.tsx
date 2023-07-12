@@ -3,11 +3,13 @@ import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import MockupResult from './MockupResult';
 import ImageDropzone from './ImageDropzone';
+import { IconButton } from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const MockupMenu = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { shirts } = store;
+    const { shirts, selectedShirt, removeShirt } = store;
 
     // const m_paths = ["testuser1/21a80e9e-86a4-45a0-9afc-bdb62e8f1e98", "testuser1/6f3207e8-73e7-4e8e-8f1d-341fd3b01ff3",
     //     "testuser1/21a80e9e-86a4-45a0-9afc-bdb62e8f1e98", "testuser1/6f3207e8-73e7-4e8e-8f1d-341fd3b01ff3",
@@ -53,8 +55,20 @@ const MockupMenu = observer(() => {
 
                 </div>
 
-                <div className="h-1/6">
-                    <ImageDropzone />
+                <div className="h-1/6 flex">
+                    <div className="w-5/6">
+                        <ImageDropzone />
+
+                    </div>
+                    <div className="w-1/6 flex justify-center items-start">
+                        {(selectedShirt !== '') && (
+                            <IconButton onClick={() => removeShirt(selectedShirt)}>
+                                <DeleteOutlineIcon
+                                    fontSize="large"
+                                />
+                            </IconButton>
+                        )}
+                    </div>
                 </div>
 
             </div>
