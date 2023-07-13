@@ -1,7 +1,6 @@
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import { useUser } from '../context/AuthContext';
 import { useRouter } from 'next/router';
-import { Auth } from 'aws-amplify';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
