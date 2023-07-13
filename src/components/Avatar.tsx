@@ -10,9 +10,18 @@ const Avatar = observer((props: IAvatarProps) => {
 
     const store = useContext(AppStoreContext);
 
-    const { hatColor, faceColor, topColor, bottomColor, shoeColor, selectedShirt, handleAreaChange } = store;
+    const { layout, hatColor, faceColor, topColor, bottomColor, shoeColor, selectedShirt, handleAreaChange } = store;
 
     const URL_PREFIX = "https://avatarb886f49d0baa41e28fcf4484f402480e164949-dev.s3.amazonaws.com/public";
+
+    let shirtWidth;
+    if (layout === 'desktop') {
+        shirtWidth = '40%';
+    } else if (layout === 'tablet') {
+        shirtWidth = '68%';
+    } else {
+        shirtWidth = '75%';
+    }
 
     return (
 
@@ -39,7 +48,10 @@ const Avatar = observer((props: IAvatarProps) => {
             ></div>
 
             {selectedShirt ? (
-                <img src={`${URL_PREFIX}/${selectedShirt}`} onClick={() => handleAreaChange('top')} className="max-w-full h-auto mx-auto my-0" style={{ maxWidth: "40%" }} />
+                // Desktop - 40%, Tablet - 68%, Mobile - 75%
+                <img src={`${URL_PREFIX}/${selectedShirt}`} onClick={() => handleAreaChange('top')}
+                    className="max-w-full h-auto mx-auto my-0" style={{ maxWidth: shirtWidth }}
+                />
             ) : (
                 <div
                     onClick={() => handleAreaChange('top')}
