@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { AppStoreContext } from '../context/AppStoreContext';
+import { AppStoreContext } from '../../context/AppStoreContext';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 

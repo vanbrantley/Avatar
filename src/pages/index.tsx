@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
-const DesktopLayout = dynamic(() => import('@/components/DesktopLayout'));
-const TabletLayout = dynamic(() => import('@/components//TabletLayout'));
-const MobileLayout = dynamic(() => import('@/components//MobileLayout'));
+const DesktopLayout = dynamic(() => import('@/components/DesktopLayout/DesktopLayout'));
+const TabletLayout = dynamic(() => import('@/components/TabletLayout/TabletLayout'));
+const MobileLayout = dynamic(() => import('@/components/MobileLayout/MobileLayout'));
 
 import { useEffect, useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
