@@ -1,19 +1,19 @@
-import { useUser } from '../context/AuthContext';
+import { useUser } from '../../context/AuthContext';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { AppStoreContext } from '../context/AppStoreContext';
+import { AppStoreContext } from '../../context/AppStoreContext';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Avatar from './Avatar';
-import LabMenu from './LabMenu';
-import Header from './Header';
+import Avatar from '../Avatar/Avatar';
+import LabMenu from '../LabMenu/LabMenu';
+import Header from '../Header/Header';
 import dynamic from 'next/dynamic';
-import PaletteList from './PaletteList';
-import MockupMenu from './MockupMenu';
+import PaletteList from '../PaletteList/PaletteList';
+import MockupMenu from '../MockupMenu/MockupMenu';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),
     { ssr: false }
