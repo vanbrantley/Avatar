@@ -1,11 +1,11 @@
-import Avatar from '../Avatar/Avatar';
-import LabMenu from '../LabMenu/LabMenu';
-import ClosetMenu from '../ClosetMenu/ClosetMenu';
-import MockupMenu from '../MockupMenu/MockupMenu';
+import Avatar from './Avatar';
+import LabMenu from './LabMenu';
+import ClosetMenu from './ClosetMenu';
+import MockupMenu from './MockupMenu';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { AppStoreContext } from '../../context/AppStoreContext';
-import Header from '../Header/Header';
+import { AppStoreContext } from '../context/AppStoreContext';
+import Header from './Header';
 
 
 const TabletLayout = observer(() => {

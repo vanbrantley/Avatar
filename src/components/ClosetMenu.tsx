@@ -4,10 +4,10 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { AppStoreContext } from '../../context/AppStoreContext';
+import { AppStoreContext } from '../context/AppStoreContext';
 import dynamic from 'next/dynamic';
-import Palette from '../Palette/Palette';
-import SwatchesMenu from '../SwatchesMenu/SwatchesMenu';
+import Palette from './Palette';
+import SwatchesMenu from './SwatchesMenu';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),
     { ssr: false }
