@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { AppStoreContext } from '../../context/AppStoreContext';
+import { AppStoreContext } from '../context/AppStoreContext';
 
 interface IMockupResultProps {
     path: string,

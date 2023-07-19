@@ -1,9 +1,9 @@
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
-import { useUser } from '../../context/AuthContext';
+import { useUser } from '../context/AuthContext';
 import { useRouter } from 'next/router';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { AppStoreContext } from '../../context/AppStoreContext';
+import { AppStoreContext } from '../context/AppStoreContext';
 
 const Header = observer(function Header() {
 

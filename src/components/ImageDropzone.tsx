@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { AppStoreContext } from '../../context/AppStoreContext';
+import { AppStoreContext } from '../context/AppStoreContext';
 import { useDropzone } from 'react-dropzone';
 import { Storage } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
-import { useUser } from '../../context/AuthContext';
+import { useUser } from '../context/AuthContext';
 import { IconButton } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 

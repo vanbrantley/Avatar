@@ -1,13 +1,13 @@
-import { useUser } from '../../context/AuthContext';
+import { useUser } from '../context/AuthContext';
 import { IconButton } from '@mui/material';
-import Palette from '@/components/Palette/Palette';
+import Palette from './Palette';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { observer } from 'mobx-react-lite';
 import { useState, useContext } from 'react';
-import { AppStoreContext } from '../../context/AppStoreContext';
-import PaletteList from '../PaletteList/PaletteList';
+import { AppStoreContext } from '../context/AppStoreContext';
+import PaletteList from './PaletteList';
 import dynamic from 'next/dynamic';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),

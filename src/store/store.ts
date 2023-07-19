@@ -1,11 +1,11 @@
 import { observable, action, makeObservable } from 'mobx';
 import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
-import groupByArea from '@/lib/groupByArea';
+import groupByArea from '../lib/groupByArea';
 import { API, Storage, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
-import { listGarments, listPalettes } from '@/graphql/queries';
-import { createGarment, createPalette, deleteGarment, deletePalette } from '@/graphql/mutations';
-import { SwatchObject } from '@/lib/types';
+import { listGarments, listPalettes } from '../graphql/queries';
+import { createGarment, createPalette, deleteGarment, deletePalette } from '../graphql/mutations';
+import { SwatchObject } from '../lib/types';
 
 class AppStore {
 

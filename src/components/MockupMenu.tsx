@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { AppStoreContext } from '../../context/AppStoreContext';
-import MockupResult from '../MockupResult/MockupResult';
-import ImageDropzone from '../ImageDropzone/ImageDropzone';
+import { AppStoreContext } from '../context/AppStoreContext';
+import MockupResult from './MockupResult';
+import ImageDropzone from './ImageDropzone';
 import { IconButton } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
