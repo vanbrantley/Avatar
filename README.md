@@ -37,7 +37,7 @@ Identify colors that would integrate well into your wardrobe so you know what pi
 
 
 
-For documentation on the project's implementation, check out the writeup.md file!
+For documentation on the project's implementation, check out the [writeup.md](writeup.md) file!
 
 
 
