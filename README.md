@@ -35,7 +35,7 @@ Identify colors that would integrate well into your wardrobe so you know what pi
 
 ![Closet Mode](public/closet-mode.png)
 
-The Avatar character is made up of 5 different areas (hat, face, top, bottom, shoe), each of which you can assign the color of.
+The Avatar character is made up of 5 different areas (hat, face, top, bottom, shoe) - each of which you can assign the color of.
 
 Click an area on the Avatar to make it the selected area.
 
@@ -55,9 +55,9 @@ Click the randomize button to assign random colors to every area.
 
 Lock certain areas to prevent them from being changed by pressing the lock for the corresponding area on the palette.
 
-Save palettes with the heart button (must create an account to save).
+Save palettes with the heart button (must create an account to save). Saved palettes are shown below the color picker.
 
-Select saved palettes to display palette colors on the Avatar.
+Click on a saved palette to display the palette colors on the Avatar.
 
 ### Closet Mode
 
@@ -67,9 +67,13 @@ Use **Closet** mode to save swatches for garments that you own, and preview outf
 
 Click areas on the right palette to add or remove a color swatch.
 
+Color swatches are shown above the color picker.
+
 Clicking on a color swatch puts that color in the respective area on the Avatar.
 
-Find pieces that can fit into your wardrobe by locking colors that you own, and then using the randomize button and color picker to find colors that match - can then save palettes
+Click the randomize button to generate random outfit combinations out of your swatches.
+
+Lock areas to prevent their colors from being changed.
 
 ### Mockup Mode
 
@@ -77,7 +81,7 @@ Use **Mockup** mode to upload and manage images of clothing items which you can 
 
 ![Mockup Mode](public/mockup-mode.png)
 
-Upload a file to be displayed on the Avatar by pressing the upload button on the bottom right of the screen and selecting the a file woth your File Explorer.
+Upload a file to be displayed on the Avatar by pressing the upload button on the bottom right of the screen and selecting the a file with your File Explorer.
 
 Select an uploaded image from the results to preview it on the Avatar.
 
