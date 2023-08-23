@@ -35,12 +35,13 @@ Identify colors that would integrate well into your wardrobe so you know what pi
 
 ![Closet Mode](public/closet-mode.png)
 
-Avatar is made up of 5 different areas, each which you can assign the color of
-Click an area on the Avatar to make it the selected area (denoted by the outline around a square in the left palette)
-Use the color picker and swatches to change the color of the area
+The Avatar character is made up of 5 different areas (hat, face, top, bottom, shoe), each of which you can assign the color of.
+
+Click an area on the Avatar to make it the selected area.
+
+Use the color picker and color swatches to change the color of the selected area.
 
 ### Modes
-
 
 Avatar has three different modes: **Lab**, **Closet**, and **Mockup**.
 
@@ -50,34 +51,36 @@ Use **Lab** mode to experiment and find outfit color combinations that work well
 
 ![Lab Mode](public/lab-mode.png)
 
-Click randomize button to assign random colors to every area
-Lock certain areas to prevent them from being changed by pressing the lock for the corresponding area on the palette
-Save palettes with the heart button (must create an account to save)
-Select saved palettes to display palette colors on the Avatar
+Click the randomize button to assign random colors to every area.
+
+Lock certain areas to prevent them from being changed by pressing the lock for the corresponding area on the palette.
+
+Save palettes with the heart button (must create an account to save).
+
+Select saved palettes to display palette colors on the Avatar.
 
 ### Closet Mode
 
 Use **Closet** mode to save swatches for garments that you own, and preview outfit combinations.
 
-[[ Image of Closet Mode screen with black avatar ]]
+![Closet Mode](public/closet-mode-2.png)
 
-How to add and remove a swatch
-Clicking on Swatch puts that color on the Avatar in the respective area
+Click areas on the right palette to add or remove a color swatch.
+
+Clicking on a color swatch puts that color in the respective area on the Avatar.
+
 Find pieces that can fit into your wardrobe by locking colors that you own, and then using the randomize button and color picker to find colors that match - can then save palettes
 
 ### Mockup Mode
 
 Use **Mockup** mode to upload and manage images of clothing items which you can preview on the Avatar.
 
-[[ Image of Mockup Mode screen with lighter lightskin avatar lol ]]
+![Mockup Mode](public/mockup-mode.png)
 
-Upload button to upload image file
-Recommended image dimensions: nnn x mmm
-Select an image from the results to preview it on the Avatar
+Upload a file to be displayed on the Avatar by pressing the upload button on the bottom right of the screen and selecting the a file woth your File Explorer.
+
+Select an uploaded image from the results to preview it on the Avatar.
 
 ---
 
 For documentation on the project's implementation, check out the [writeup.md](writeup.md) file!
-
-
-
