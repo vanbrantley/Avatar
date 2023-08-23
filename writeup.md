@@ -73,14 +73,4 @@ MobX - used for state management
 
 Tailwind CSS - used for styling with ease -->
 
-## Challenges
-
-
-
-## Testing
-
-
-
-## Next Steps
-
 
