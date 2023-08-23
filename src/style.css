@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* shirt test */
+
+.tshirt {
+    position: relative;
+    width: 150px;
+    height: 200px;
+    background-color: white;
+    border: 2px solid #333;
+    border-radius: 10px;
+}
+
+.middle {
+    width: 100%;
+    height: 70%;
+    background-color: #00aaff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.sleeve-left,
+.sleeve-right {
+    position: absolute;
+    width: 60px;
+    height: 90px;
+    background-color: #00aaff;
+    /* border: 2px solid #333; */
+    border-radius: 0 0 5px 5px;
+}
+
+.sleeve-left {
+    left: -40px;
+    top: 5%;
+    transform: rotate(45deg);
+}
+
+.sleeve-right {
+    right: -40px;
+    top: 5%;
+    transform: rotate(-45deg);
+}
+
+/* end shirt test */
+
 .zoom-125 {
     zoom: 1.25;
 }
