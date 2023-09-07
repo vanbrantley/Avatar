@@ -1,8 +1,7 @@
 <p align="center">
     <img src="public/avatar-a1.png" width="25%" alt="Avatar Logo"/>
-    <img src="public/avatar-a4.png" width="25%" alt="Avatar Logo"/>
-    <img src="public/avatar-a3.png" width="25%" alt="Avatar Logo"/>
-<!--     <img src="public/avatar-a4.png" width="25%" alt="Avatar Logo"/> -->
+    <img src="public/avatar-a6.png" width="25%" alt="Avatar Logo"/>
+    <img src="public/avatar-a5.png" width="25%" alt="Avatar Logo"/>
 </p>
 
 <h1 align="center"><strong>Implementation Write-Up</strong></h1>

@@ -2,62 +2,6 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateOutfitInput = {
-  id?: string | null,
-};
-
-export type ModelOutfitConditionInput = {
-  and?: Array< ModelOutfitConditionInput | null > | null,
-  or?: Array< ModelOutfitConditionInput | null > | null,
-  not?: ModelOutfitConditionInput | null,
-};
-
-export type Outfit = {
-  __typename: "Outfit",
-  id: string,
-  garments?: ModelGarmentAssignmentsConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  owner?: string | null,
-};
-
-export type ModelGarmentAssignmentsConnection = {
-  __typename: "ModelGarmentAssignmentsConnection",
-  items:  Array<GarmentAssignments | null >,
-  nextToken?: string | null,
-};
-
-export type GarmentAssignments = {
-  __typename: "GarmentAssignments",
-  id: string,
-  outfitId: string,
-  garmentId: string,
-  outfit: Outfit,
-  garment: Garment,
-  createdAt: string,
-  updatedAt: string,
-  owner?: string | null,
-};
-
-export type Garment = {
-  __typename: "Garment",
-  id: string,
-  color: string,
-  area: string,
-  outfits?: ModelGarmentAssignmentsConnection | null,
-  createdAt: string,
-  updatedAt: string,
-  owner?: string | null,
-};
-
-export type UpdateOutfitInput = {
-  id: string,
-};
-
-export type DeleteOutfitInput = {
-  id: string,
-};
-
 export type CreateGarmentInput = {
   id?: string | null,
   color: string,
@@ -112,6 +56,16 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type Garment = {
+  __typename: "Garment",
+  id: string,
+  color: string,
+  area: string,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
 export type UpdateGarmentInput = {
   id: string,
   color?: string | null,
@@ -164,18 +118,43 @@ export type DeletePaletteInput = {
   id: string,
 };
 
-export type CreateGarmentAssignmentsInput = {
+export type CreateComplexionInput = {
   id?: string | null,
-  outfitId: string,
-  garmentId: string,
+  complexion: string,
 };
 
-export type ModelGarmentAssignmentsConditionInput = {
-  outfitId?: ModelIDInput | null,
-  garmentId?: ModelIDInput | null,
-  and?: Array< ModelGarmentAssignmentsConditionInput | null > | null,
-  or?: Array< ModelGarmentAssignmentsConditionInput | null > | null,
-  not?: ModelGarmentAssignmentsConditionInput | null,
+export type ModelComplexionConditionInput = {
+  complexion?: ModelStringInput | null,
+  and?: Array< ModelComplexionConditionInput | null > | null,
+  or?: Array< ModelComplexionConditionInput | null > | null,
+  not?: ModelComplexionConditionInput | null,
+};
+
+export type Complexion = {
+  __typename: "Complexion",
+  id: string,
+  complexion: string,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type UpdateComplexionInput = {
+  id: string,
+  complexion?: string | null,
+};
+
+export type DeleteComplexionInput = {
+  id: string,
+};
+
+export type ModelGarmentFilterInput = {
+  id?: ModelIDInput | null,
+  color?: ModelStringInput | null,
+  area?: ModelStringInput | null,
+  and?: Array< ModelGarmentFilterInput | null > | null,
+  or?: Array< ModelGarmentFilterInput | null > | null,
+  not?: ModelGarmentFilterInput | null,
 };
 
 export type ModelIDInput = {
@@ -192,38 +171,6 @@ export type ModelIDInput = {
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
   size?: ModelSizeInput | null,
-};
-
-export type UpdateGarmentAssignmentsInput = {
-  id: string,
-  outfitId?: string | null,
-  garmentId?: string | null,
-};
-
-export type DeleteGarmentAssignmentsInput = {
-  id: string,
-};
-
-export type ModelOutfitFilterInput = {
-  id?: ModelIDInput | null,
-  and?: Array< ModelOutfitFilterInput | null > | null,
-  or?: Array< ModelOutfitFilterInput | null > | null,
-  not?: ModelOutfitFilterInput | null,
-};
-
-export type ModelOutfitConnection = {
-  __typename: "ModelOutfitConnection",
-  items:  Array<Outfit | null >,
-  nextToken?: string | null,
-};
-
-export type ModelGarmentFilterInput = {
-  id?: ModelIDInput | null,
-  color?: ModelStringInput | null,
-  area?: ModelStringInput | null,
-  and?: Array< ModelGarmentFilterInput | null > | null,
-  or?: Array< ModelGarmentFilterInput | null > | null,
-  not?: ModelGarmentFilterInput | null,
 };
 
 export type ModelGarmentConnection = {
@@ -249,25 +196,26 @@ export type ModelPaletteConnection = {
   nextToken?: string | null,
 };
 
-export type ModelGarmentAssignmentsFilterInput = {
+export type ModelComplexionFilterInput = {
   id?: ModelIDInput | null,
-  outfitId?: ModelIDInput | null,
-  garmentId?: ModelIDInput | null,
-  and?: Array< ModelGarmentAssignmentsFilterInput | null > | null,
-  or?: Array< ModelGarmentAssignmentsFilterInput | null > | null,
-  not?: ModelGarmentAssignmentsFilterInput | null,
+  complexion?: ModelStringInput | null,
+  and?: Array< ModelComplexionFilterInput | null > | null,
+  or?: Array< ModelComplexionFilterInput | null > | null,
+  not?: ModelComplexionFilterInput | null,
 };
 
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
+export type ModelComplexionConnection = {
+  __typename: "ModelComplexionConnection",
+  items:  Array<Complexion | null >,
+  nextToken?: string | null,
+};
 
-
-export type ModelSubscriptionOutfitFilterInput = {
+export type ModelSubscriptionGarmentFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
-  or?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
+  color?: ModelSubscriptionStringInput | null,
+  area?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
+  or?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -283,14 +231,6 @@ export type ModelSubscriptionIDInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
-};
-
-export type ModelSubscriptionGarmentFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  color?: ModelSubscriptionStringInput | null,
-  area?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
-  or?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
 };
 
 export type ModelSubscriptionStringInput = {
@@ -318,96 +258,11 @@ export type ModelSubscriptionPaletteFilterInput = {
   or?: Array< ModelSubscriptionPaletteFilterInput | null > | null,
 };
 
-export type ModelSubscriptionGarmentAssignmentsFilterInput = {
+export type ModelSubscriptionComplexionFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  outfitId?: ModelSubscriptionIDInput | null,
-  garmentId?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionGarmentAssignmentsFilterInput | null > | null,
-  or?: Array< ModelSubscriptionGarmentAssignmentsFilterInput | null > | null,
-};
-
-export type CreateOutfitMutationVariables = {
-  input: CreateOutfitInput,
-  condition?: ModelOutfitConditionInput | null,
-};
-
-export type CreateOutfitMutation = {
-  createOutfit?:  {
-    __typename: "Outfit",
-    id: string,
-    garments?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    owner?: string | null,
-  } | null,
-};
-
-export type UpdateOutfitMutationVariables = {
-  input: UpdateOutfitInput,
-  condition?: ModelOutfitConditionInput | null,
-};
-
-export type UpdateOutfitMutation = {
-  updateOutfit?:  {
-    __typename: "Outfit",
-    id: string,
-    garments?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    owner?: string | null,
-  } | null,
-};
-
-export type DeleteOutfitMutationVariables = {
-  input: DeleteOutfitInput,
-  condition?: ModelOutfitConditionInput | null,
-};
-
-export type DeleteOutfitMutation = {
-  deleteOutfit?:  {
-    __typename: "Outfit",
-    id: string,
-    garments?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    owner?: string | null,
-  } | null,
+  complexion?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionComplexionFilterInput | null > | null,
+  or?: Array< ModelSubscriptionComplexionFilterInput | null > | null,
 };
 
 export type CreateGarmentMutationVariables = {
@@ -421,19 +276,6 @@ export type CreateGarmentMutation = {
     id: string,
     color: string,
     area: string,
-    outfits?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -451,19 +293,6 @@ export type UpdateGarmentMutation = {
     id: string,
     color: string,
     area: string,
-    outfits?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -481,19 +310,6 @@ export type DeleteGarmentMutation = {
     id: string,
     color: string,
     area: string,
-    outfits?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -557,177 +373,51 @@ export type DeletePaletteMutation = {
   } | null,
 };
 
-export type CreateGarmentAssignmentsMutationVariables = {
-  input: CreateGarmentAssignmentsInput,
-  condition?: ModelGarmentAssignmentsConditionInput | null,
+export type CreateComplexionMutationVariables = {
+  input: CreateComplexionInput,
+  condition?: ModelComplexionConditionInput | null,
 };
 
-export type CreateGarmentAssignmentsMutation = {
-  createGarmentAssignments?:  {
-    __typename: "GarmentAssignments",
+export type CreateComplexionMutation = {
+  createComplexion?:  {
+    __typename: "Complexion",
     id: string,
-    outfitId: string,
-    garmentId: string,
-    outfit:  {
-      __typename: "Outfit",
-      id: string,
-      garments?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
-    garment:  {
-      __typename: "Garment",
-      id: string,
-      color: string,
-      area: string,
-      outfits?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
+    complexion: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
   } | null,
 };
 
-export type UpdateGarmentAssignmentsMutationVariables = {
-  input: UpdateGarmentAssignmentsInput,
-  condition?: ModelGarmentAssignmentsConditionInput | null,
+export type UpdateComplexionMutationVariables = {
+  input: UpdateComplexionInput,
+  condition?: ModelComplexionConditionInput | null,
 };
 
-export type UpdateGarmentAssignmentsMutation = {
-  updateGarmentAssignments?:  {
-    __typename: "GarmentAssignments",
+export type UpdateComplexionMutation = {
+  updateComplexion?:  {
+    __typename: "Complexion",
     id: string,
-    outfitId: string,
-    garmentId: string,
-    outfit:  {
-      __typename: "Outfit",
-      id: string,
-      garments?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
-    garment:  {
-      __typename: "Garment",
-      id: string,
-      color: string,
-      area: string,
-      outfits?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
+    complexion: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
   } | null,
 };
 
-export type DeleteGarmentAssignmentsMutationVariables = {
-  input: DeleteGarmentAssignmentsInput,
-  condition?: ModelGarmentAssignmentsConditionInput | null,
+export type DeleteComplexionMutationVariables = {
+  input: DeleteComplexionInput,
+  condition?: ModelComplexionConditionInput | null,
 };
 
-export type DeleteGarmentAssignmentsMutation = {
-  deleteGarmentAssignments?:  {
-    __typename: "GarmentAssignments",
+export type DeleteComplexionMutation = {
+  deleteComplexion?:  {
+    __typename: "Complexion",
     id: string,
-    outfitId: string,
-    garmentId: string,
-    outfit:  {
-      __typename: "Outfit",
-      id: string,
-      garments?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
-    garment:  {
-      __typename: "Garment",
-      id: string,
-      color: string,
-      area: string,
-      outfits?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
+    complexion: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
-  } | null,
-};
-
-export type GetOutfitQueryVariables = {
-  id: string,
-};
-
-export type GetOutfitQuery = {
-  getOutfit?:  {
-    __typename: "Outfit",
-    id: string,
-    garments?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    owner?: string | null,
-  } | null,
-};
-
-export type ListOutfitsQueryVariables = {
-  filter?: ModelOutfitFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ListOutfitsQuery = {
-  listOutfits?:  {
-    __typename: "ModelOutfitConnection",
-    items:  Array< {
-      __typename: "Outfit",
-      id: string,
-      garments?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    } | null >,
-    nextToken?: string | null,
   } | null,
 };
 
@@ -741,19 +431,6 @@ export type GetGarmentQuery = {
     id: string,
     color: string,
     area: string,
-    outfits?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -774,10 +451,6 @@ export type ListGarmentsQuery = {
       id: string,
       color: string,
       area: string,
-      outfits?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
@@ -828,245 +501,39 @@ export type ListPalettesQuery = {
   } | null,
 };
 
-export type GetGarmentAssignmentsQueryVariables = {
+export type GetComplexionQueryVariables = {
   id: string,
 };
 
-export type GetGarmentAssignmentsQuery = {
-  getGarmentAssignments?:  {
-    __typename: "GarmentAssignments",
+export type GetComplexionQuery = {
+  getComplexion?:  {
+    __typename: "Complexion",
     id: string,
-    outfitId: string,
-    garmentId: string,
-    outfit:  {
-      __typename: "Outfit",
-      id: string,
-      garments?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
-    garment:  {
-      __typename: "Garment",
-      id: string,
-      color: string,
-      area: string,
-      outfits?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
+    complexion: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
   } | null,
 };
 
-export type ListGarmentAssignmentsQueryVariables = {
-  filter?: ModelGarmentAssignmentsFilterInput | null,
+export type ListComplexionsQueryVariables = {
+  filter?: ModelComplexionFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListGarmentAssignmentsQuery = {
-  listGarmentAssignments?:  {
-    __typename: "ModelGarmentAssignmentsConnection",
+export type ListComplexionsQuery = {
+  listComplexions?:  {
+    __typename: "ModelComplexionConnection",
     items:  Array< {
-      __typename: "GarmentAssignments",
+      __typename: "Complexion",
       id: string,
-      outfitId: string,
-      garmentId: string,
-      outfit:  {
-        __typename: "Outfit",
-        id: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      },
-      garment:  {
-        __typename: "Garment",
-        id: string,
-        color: string,
-        area: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      },
+      complexion: string,
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
     } | null >,
     nextToken?: string | null,
-  } | null,
-};
-
-export type GarmentAssignmentsByOutfitIdQueryVariables = {
-  outfitId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelGarmentAssignmentsFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type GarmentAssignmentsByOutfitIdQuery = {
-  garmentAssignmentsByOutfitId?:  {
-    __typename: "ModelGarmentAssignmentsConnection",
-    items:  Array< {
-      __typename: "GarmentAssignments",
-      id: string,
-      outfitId: string,
-      garmentId: string,
-      outfit:  {
-        __typename: "Outfit",
-        id: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      },
-      garment:  {
-        __typename: "Garment",
-        id: string,
-        color: string,
-        area: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      },
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    } | null >,
-    nextToken?: string | null,
-  } | null,
-};
-
-export type GarmentAssignmentsByGarmentIdQueryVariables = {
-  garmentId: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelGarmentAssignmentsFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type GarmentAssignmentsByGarmentIdQuery = {
-  garmentAssignmentsByGarmentId?:  {
-    __typename: "ModelGarmentAssignmentsConnection",
-    items:  Array< {
-      __typename: "GarmentAssignments",
-      id: string,
-      outfitId: string,
-      garmentId: string,
-      outfit:  {
-        __typename: "Outfit",
-        id: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      },
-      garment:  {
-        __typename: "Garment",
-        id: string,
-        color: string,
-        area: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      },
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    } | null >,
-    nextToken?: string | null,
-  } | null,
-};
-
-export type OnCreateOutfitSubscriptionVariables = {
-  filter?: ModelSubscriptionOutfitFilterInput | null,
-  owner?: string | null,
-};
-
-export type OnCreateOutfitSubscription = {
-  onCreateOutfit?:  {
-    __typename: "Outfit",
-    id: string,
-    garments?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    owner?: string | null,
-  } | null,
-};
-
-export type OnUpdateOutfitSubscriptionVariables = {
-  filter?: ModelSubscriptionOutfitFilterInput | null,
-  owner?: string | null,
-};
-
-export type OnUpdateOutfitSubscription = {
-  onUpdateOutfit?:  {
-    __typename: "Outfit",
-    id: string,
-    garments?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    owner?: string | null,
-  } | null,
-};
-
-export type OnDeleteOutfitSubscriptionVariables = {
-  filter?: ModelSubscriptionOutfitFilterInput | null,
-  owner?: string | null,
-};
-
-export type OnDeleteOutfitSubscription = {
-  onDeleteOutfit?:  {
-    __typename: "Outfit",
-    id: string,
-    garments?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1081,19 +548,6 @@ export type OnCreateGarmentSubscription = {
     id: string,
     color: string,
     area: string,
-    outfits?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -1111,19 +565,6 @@ export type OnUpdateGarmentSubscription = {
     id: string,
     color: string,
     area: string,
-    outfits?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -1141,19 +582,6 @@ export type OnDeleteGarmentSubscription = {
     id: string,
     color: string,
     area: string,
-    outfits?:  {
-      __typename: "ModelGarmentAssignmentsConnection",
-      items:  Array< {
-        __typename: "GarmentAssignments",
-        id: string,
-        outfitId: string,
-        garmentId: string,
-        createdAt: string,
-        updatedAt: string,
-        owner?: string | null,
-      } | null >,
-      nextToken?: string | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -1217,123 +645,48 @@ export type OnDeletePaletteSubscription = {
   } | null,
 };
 
-export type OnCreateGarmentAssignmentsSubscriptionVariables = {
-  filter?: ModelSubscriptionGarmentAssignmentsFilterInput | null,
+export type OnCreateComplexionSubscriptionVariables = {
+  filter?: ModelSubscriptionComplexionFilterInput | null,
   owner?: string | null,
 };
 
-export type OnCreateGarmentAssignmentsSubscription = {
-  onCreateGarmentAssignments?:  {
-    __typename: "GarmentAssignments",
+export type OnCreateComplexionSubscription = {
+  onCreateComplexion?:  {
+    __typename: "Complexion",
     id: string,
-    outfitId: string,
-    garmentId: string,
-    outfit:  {
-      __typename: "Outfit",
-      id: string,
-      garments?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
-    garment:  {
-      __typename: "Garment",
-      id: string,
-      color: string,
-      area: string,
-      outfits?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
+    complexion: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
   } | null,
 };
 
-export type OnUpdateGarmentAssignmentsSubscriptionVariables = {
-  filter?: ModelSubscriptionGarmentAssignmentsFilterInput | null,
+export type OnUpdateComplexionSubscriptionVariables = {
+  filter?: ModelSubscriptionComplexionFilterInput | null,
   owner?: string | null,
 };
 
-export type OnUpdateGarmentAssignmentsSubscription = {
-  onUpdateGarmentAssignments?:  {
-    __typename: "GarmentAssignments",
+export type OnUpdateComplexionSubscription = {
+  onUpdateComplexion?:  {
+    __typename: "Complexion",
     id: string,
-    outfitId: string,
-    garmentId: string,
-    outfit:  {
-      __typename: "Outfit",
-      id: string,
-      garments?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
-    garment:  {
-      __typename: "Garment",
-      id: string,
-      color: string,
-      area: string,
-      outfits?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
+    complexion: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
   } | null,
 };
 
-export type OnDeleteGarmentAssignmentsSubscriptionVariables = {
-  filter?: ModelSubscriptionGarmentAssignmentsFilterInput | null,
+export type OnDeleteComplexionSubscriptionVariables = {
+  filter?: ModelSubscriptionComplexionFilterInput | null,
   owner?: string | null,
 };
 
-export type OnDeleteGarmentAssignmentsSubscription = {
-  onDeleteGarmentAssignments?:  {
-    __typename: "GarmentAssignments",
+export type OnDeleteComplexionSubscription = {
+  onDeleteComplexion?:  {
+    __typename: "Complexion",
     id: string,
-    outfitId: string,
-    garmentId: string,
-    outfit:  {
-      __typename: "Outfit",
-      id: string,
-      garments?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
-    garment:  {
-      __typename: "Garment",
-      id: string,
-      color: string,
-      area: string,
-      outfits?:  {
-        __typename: "ModelGarmentAssignmentsConnection",
-        nextToken?: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      owner?: string | null,
-    },
+    complexion: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,

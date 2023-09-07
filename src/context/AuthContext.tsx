@@ -1,6 +1,6 @@
 import { CognitoUser } from "@aws-amplify/auth";
 import { Auth, Hub } from "aws-amplify";
-import { CognitoUserPool, CognitoUserSession, CognitoAccessToken, CognitoIdToken, CognitoRefreshToken } from 'amazon-cognito-identity-js';
+import { CognitoUserPool, CognitoUserSession, CognitoRefreshToken } from 'amazon-cognito-identity-js';
 import { createContext, Dispatch, ReactElement, SetStateAction, useContext, useEffect, useState } from "react";
 
 interface UserContextType {
@@ -35,7 +35,7 @@ export default function AuthContext({ children }: Props): ReactElement {
                     setUser(cognitoUser);
                 })
                 .catch((error: Error) => {
-                    // console.log('Authentication error:', error);
+                    console.log('Authentication error:', error);
                     setUser(null);
                 });
         } else {
@@ -72,6 +72,7 @@ export default function AuthContext({ children }: Props): ReactElement {
                             .then((user: CognitoUser) => {
                                 // console.log('Authenticated user:', user);
                                 setUser(user);
+
                             }).catch(() => {
                                 // console.log('Error retrieving authenticated user');
                                 setUser(null);
@@ -89,6 +90,7 @@ export default function AuthContext({ children }: Props): ReactElement {
         try {
             const amplifyUser = await Auth.currentAuthenticatedUser();
             if (amplifyUser) {
+
                 // Store user's authentication tokens
                 const session = amplifyUser.getSignInUserSession();
                 if (session) {

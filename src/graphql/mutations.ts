@@ -2,78 +2,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createOutfit = /* GraphQL */ `
-  mutation CreateOutfit(
-    $input: CreateOutfitInput!
-    $condition: ModelOutfitConditionInput
-  ) {
-    createOutfit(input: $input, condition: $condition) {
-      id
-      garments {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const updateOutfit = /* GraphQL */ `
-  mutation UpdateOutfit(
-    $input: UpdateOutfitInput!
-    $condition: ModelOutfitConditionInput
-  ) {
-    updateOutfit(input: $input, condition: $condition) {
-      id
-      garments {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const deleteOutfit = /* GraphQL */ `
-  mutation DeleteOutfit(
-    $input: DeleteOutfitInput!
-    $condition: ModelOutfitConditionInput
-  ) {
-    deleteOutfit(input: $input, condition: $condition) {
-      id
-      garments {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
 export const createGarment = /* GraphQL */ `
   mutation CreateGarment(
     $input: CreateGarmentInput!
@@ -83,20 +11,10 @@ export const createGarment = /* GraphQL */ `
       id
       color
       area
-      outfits {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -109,20 +27,10 @@ export const updateGarment = /* GraphQL */ `
       id
       color
       area
-      outfits {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -135,20 +43,10 @@ export const deleteGarment = /* GraphQL */ `
       id
       color
       area
-      outfits {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -166,6 +64,7 @@ export const createPalette = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -183,6 +82,7 @@ export const updatePalette = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -200,111 +100,52 @@ export const deletePalette = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
-export const createGarmentAssignments = /* GraphQL */ `
-  mutation CreateGarmentAssignments(
-    $input: CreateGarmentAssignmentsInput!
-    $condition: ModelGarmentAssignmentsConditionInput
+export const createComplexion = /* GraphQL */ `
+  mutation CreateComplexion(
+    $input: CreateComplexionInput!
+    $condition: ModelComplexionConditionInput
   ) {
-    createGarmentAssignments(input: $input, condition: $condition) {
+    createComplexion(input: $input, condition: $condition) {
       id
-      outfitId
-      garmentId
-      outfit {
-        id
-        garments {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
-      garment {
-        id
-        color
-        area
-        outfits {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      complexion
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
-export const updateGarmentAssignments = /* GraphQL */ `
-  mutation UpdateGarmentAssignments(
-    $input: UpdateGarmentAssignmentsInput!
-    $condition: ModelGarmentAssignmentsConditionInput
+export const updateComplexion = /* GraphQL */ `
+  mutation UpdateComplexion(
+    $input: UpdateComplexionInput!
+    $condition: ModelComplexionConditionInput
   ) {
-    updateGarmentAssignments(input: $input, condition: $condition) {
+    updateComplexion(input: $input, condition: $condition) {
       id
-      outfitId
-      garmentId
-      outfit {
-        id
-        garments {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
-      garment {
-        id
-        color
-        area
-        outfits {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      complexion
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
-export const deleteGarmentAssignments = /* GraphQL */ `
-  mutation DeleteGarmentAssignments(
-    $input: DeleteGarmentAssignmentsInput!
-    $condition: ModelGarmentAssignmentsConditionInput
+export const deleteComplexion = /* GraphQL */ `
+  mutation DeleteComplexion(
+    $input: DeleteComplexionInput!
+    $condition: ModelComplexionConditionInput
   ) {
-    deleteGarmentAssignments(input: $input, condition: $condition) {
+    deleteComplexion(input: $input, condition: $condition) {
       id
-      outfitId
-      garmentId
-      outfit {
-        id
-        garments {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
-      garment {
-        id
-        color
-        area
-        outfits {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      complexion
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
