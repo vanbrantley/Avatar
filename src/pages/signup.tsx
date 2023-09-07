@@ -19,7 +19,7 @@ interface IFormInput {
 const Signup = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { setNavbarOpen } = store;
+    const { setNavbarOpen, initializeComplexion } = store;
 
     const router = useRouter();
     const [open, setOpen] = useState(false);
@@ -78,6 +78,7 @@ const Signup = observer(() => {
             await Auth.confirmSignUp(username, code);
             const amplifyUser = await Auth.signIn(username, password);
             if (amplifyUser) {
+                initializeComplexion(amplifyUser.getUsername());
                 setNavbarOpen(false);
                 router.push(`/`);
             }

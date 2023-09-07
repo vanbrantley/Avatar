@@ -1,11 +1,12 @@
 import { observable, action, makeObservable } from 'mobx';
-import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette } from '@/API';
+import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation } from '@/API';
 import groupByArea from '../lib/groupByArea';
 import { API, Storage, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
-import { listGarments, listPalettes } from '../graphql/queries';
-import { createGarment, createPalette, deleteGarment, deletePalette } from '../graphql/mutations';
+import { listGarments, listPalettes, listComplexions } from '../graphql/queries';
+import { createGarment, createPalette, createComplexion, deleteGarment, deletePalette, updateComplexion } from '../graphql/mutations';
 import { SwatchObject } from '../lib/types';
+import { CognitoUser } from '@aws-amplify/auth';
 
 class AppStore {
 
@@ -44,6 +45,8 @@ class AppStore {
     mode = "lab";
     layout = "desktop";
 
+    user: CognitoUser | null = null;
+
     constructor() {
 
         makeObservable(this, {
@@ -72,7 +75,8 @@ class AppStore {
             heartFilled: observable,
             showPicker: observable,
             mode: observable,
-            layout: observable
+            layout: observable,
+            user: observable
 
         });
     }
@@ -176,6 +180,10 @@ class AppStore {
 
     setLayout = action((layout: string) => {
         this.layout = layout;
+    });
+
+    setUser = action((user: CognitoUser | null) => {
+        this.user = user;
     });
 
     displayMockupOnAvatar = action((imagePath: string) => {
@@ -358,6 +366,8 @@ class AppStore {
                     break;
                 case "face":
                     this.setFaceColor(color);
+                    // update complexion in DB
+                    if (this.user) this.updateDBComlpexion(color);
                     break;
                 case "top":
                     if (this.selectedShirt) this.setSelectedShirt("");
@@ -376,6 +386,26 @@ class AppStore {
             this.setSelectedColor(color);
 
         }
+    });
+
+    updateDBComlpexion = action(async (newComplexion: string) => {
+
+        try {
+            const username = this.user?.getUsername();
+            const complexionDetails: UpdateComplexionInput = {
+                id: username!,
+                complexion: newComplexion
+            };
+
+            await API.graphql<GraphQLQuery<UpdateComplexionMutation>>(graphqlOperation(updateComplexion, {
+                input: complexionDetails
+            })) as GraphQLResult<UpdateComplexionMutation>;
+
+        } catch (error) {
+            console.error('API call error:', error);
+            throw error;
+        }
+
     });
 
     handleColorChangeSwatch = action((color: string, area: string) => {
@@ -694,6 +724,47 @@ class AppStore {
         }
     });
 
+    initializeComplexion = action(async (username: string) => {
+
+        console.log(`Starting process to add new user ${username} with default complexion ${this.faceColor}`);
+
+        try {
+
+            const createNewComplexionInput: CreateComplexionInput = {
+                id: username,
+                complexion: this.faceColor
+            };
+
+            const response = await API.graphql<GraphQLQuery<CreateComplexionMutation>>(graphqlOperation(createComplexion, {
+                input: createNewComplexionInput
+            })) as GraphQLResult<CreateComplexionMutation>;
+            const { data } = response;
+            console.log(data);
+        } catch (error: any) {
+            console.error("Error adding palette: ", error);
+        }
+
+    });
+
+    fetchComplexion = action(async (username: string) => {
+
+        // console.log("Fetch complexion for: ", username);
+
+        try {
+            const response = await API.graphql<GraphQLQuery<ListComplexionsQuery>>(graphqlOperation(listComplexions)) as GraphQLResult<ListComplexionsQuery>;
+            const { data } = response;
+            if (data && data.listComplexions && data.listComplexions.items) {
+                const complexion = data.listComplexions.items[0]?.complexion;
+                if (complexion !== this.faceColor) this.setFaceColor(complexion!);
+            } else {
+                throw new Error("Could not get complexion.");
+            }
+        } catch (error: any) {
+            console.error(error);
+            throw new Error("Could not get complexion");
+        }
+    });
+
     signUserOut = action(async () => {
 
         // Clear the access and refresh tokens from local storage
@@ -705,6 +776,8 @@ class AppStore {
             this.handleModeChange("lab");
 
             // handle clean-up
+
+            this.setUser(null);
             if (this.hatLock) this.setHatLock(false);
             if (this.topLock) this.setTopLock(false);
             if (this.bottomLock) this.setBottomLock(false);
@@ -718,6 +791,8 @@ class AppStore {
 
             this.setSelectedArea("top");
             this.setSelectedColor(this.topColor);
+
+            this.setFaceColor("#a18057");
 
             this.setShirts([]);
             this.setPalettes([]);

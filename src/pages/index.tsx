@@ -12,7 +12,7 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { randomizePalette, fetchPalettes, fetchGarmentsFromDB, fetchShirts, layout, setLayout } = store;
+  const { randomizePalette, fetchPalettes, fetchGarmentsFromDB, fetchShirts, fetchComplexion, layout, setLayout, setUser } = store;
 
   useEffect(() => {
     randomizePalette();
@@ -46,17 +46,21 @@ const Home = observer(() => {
 
     // Execute the fetchPalettes function when the component mounts
     if (user) {
+      setUser(user);
       fetchPalettes();
       fetchGarmentsFromDB();
       fetchShirts();
+      fetchComplexion(user.getUsername());
     }
 
     // Register the beforeunload event listener to fetch palettes on page refresh
     const handlePageRefresh = () => {
       if (user) {
+        setUser(user);
         fetchPalettes();
         fetchGarmentsFromDB();
         fetchShirts();
+        fetchComplexion(user.getUsername());
       }
     };
 

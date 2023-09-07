@@ -2,78 +2,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateOutfit = /* GraphQL */ `
-  subscription OnCreateOutfit(
-    $filter: ModelSubscriptionOutfitFilterInput
-    $owner: String
-  ) {
-    onCreateOutfit(filter: $filter, owner: $owner) {
-      id
-      garments {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onUpdateOutfit = /* GraphQL */ `
-  subscription OnUpdateOutfit(
-    $filter: ModelSubscriptionOutfitFilterInput
-    $owner: String
-  ) {
-    onUpdateOutfit(filter: $filter, owner: $owner) {
-      id
-      garments {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onDeleteOutfit = /* GraphQL */ `
-  subscription OnDeleteOutfit(
-    $filter: ModelSubscriptionOutfitFilterInput
-    $owner: String
-  ) {
-    onDeleteOutfit(filter: $filter, owner: $owner) {
-      id
-      garments {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
 export const onCreateGarment = /* GraphQL */ `
   subscription OnCreateGarment(
     $filter: ModelSubscriptionGarmentFilterInput
@@ -83,20 +11,10 @@ export const onCreateGarment = /* GraphQL */ `
       id
       color
       area
-      outfits {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -109,20 +27,10 @@ export const onUpdateGarment = /* GraphQL */ `
       id
       color
       area
-      outfits {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -135,20 +43,10 @@ export const onDeleteGarment = /* GraphQL */ `
       id
       color
       area
-      outfits {
-        items {
-          id
-          outfitId
-          garmentId
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -166,6 +64,7 @@ export const onCreatePalette = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -183,6 +82,7 @@ export const onUpdatePalette = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -200,111 +100,52 @@ export const onDeletePalette = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
-export const onCreateGarmentAssignments = /* GraphQL */ `
-  subscription OnCreateGarmentAssignments(
-    $filter: ModelSubscriptionGarmentAssignmentsFilterInput
+export const onCreateComplexion = /* GraphQL */ `
+  subscription OnCreateComplexion(
+    $filter: ModelSubscriptionComplexionFilterInput
     $owner: String
   ) {
-    onCreateGarmentAssignments(filter: $filter, owner: $owner) {
+    onCreateComplexion(filter: $filter, owner: $owner) {
       id
-      outfitId
-      garmentId
-      outfit {
-        id
-        garments {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
-      garment {
-        id
-        color
-        area
-        outfits {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      complexion
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
-export const onUpdateGarmentAssignments = /* GraphQL */ `
-  subscription OnUpdateGarmentAssignments(
-    $filter: ModelSubscriptionGarmentAssignmentsFilterInput
+export const onUpdateComplexion = /* GraphQL */ `
+  subscription OnUpdateComplexion(
+    $filter: ModelSubscriptionComplexionFilterInput
     $owner: String
   ) {
-    onUpdateGarmentAssignments(filter: $filter, owner: $owner) {
+    onUpdateComplexion(filter: $filter, owner: $owner) {
       id
-      outfitId
-      garmentId
-      outfit {
-        id
-        garments {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
-      garment {
-        id
-        color
-        area
-        outfits {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      complexion
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
-export const onDeleteGarmentAssignments = /* GraphQL */ `
-  subscription OnDeleteGarmentAssignments(
-    $filter: ModelSubscriptionGarmentAssignmentsFilterInput
+export const onDeleteComplexion = /* GraphQL */ `
+  subscription OnDeleteComplexion(
+    $filter: ModelSubscriptionComplexionFilterInput
     $owner: String
   ) {
-    onDeleteGarmentAssignments(filter: $filter, owner: $owner) {
+    onDeleteComplexion(filter: $filter, owner: $owner) {
       id
-      outfitId
-      garmentId
-      outfit {
-        id
-        garments {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
-      garment {
-        id
-        color
-        area
-        outfits {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      complexion
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
