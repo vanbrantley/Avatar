@@ -1,7 +1,6 @@
 import Avatar from './Avatar';
 import LabMenu from './LabMenu';
 import ClosetMenu from './ClosetMenu';
-import MockupMenu from './MockupMenu';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
@@ -29,7 +28,6 @@ const TabletLayout = observer(() => {
                         <br></br>
                         {mode === "lab" && <LabMenu />}
                         {mode === "closet" && <ClosetMenu />}
-                        {mode === "mockup" && <MockupMenu />}
                     </div>
                 </div>
             </div>
