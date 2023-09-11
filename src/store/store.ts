@@ -41,6 +41,7 @@ class AppStore {
     heartFilled = false;
 
     showPicker = true;
+    showHelp = false;
 
     mode = "lab";
     layout = "desktop";
@@ -74,6 +75,7 @@ class AppStore {
             navbarOpen: observable,
             heartFilled: observable,
             showPicker: observable,
+            showHelp: observable,
             mode: observable,
             layout: observable,
             user: observable
@@ -172,6 +174,10 @@ class AppStore {
 
     setShowPicker = action((show: boolean) => {
         this.showPicker = show;
+    });
+
+    setShowHelp = action((show: boolean) => {
+        this.showHelp = show;
     });
 
     setMode = action((mode: string) => {
@@ -725,8 +731,6 @@ class AppStore {
     });
 
     initializeComplexion = action(async (username: string) => {
-
-        console.log(`Starting process to add new user ${username} with default complexion ${this.faceColor}`);
 
         try {
 

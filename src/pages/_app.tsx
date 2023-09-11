@@ -10,7 +10,7 @@ import createEmotionCache from '../createEmotionCache';
 
 import appStore from "../store/store";
 import { AppStoreContext } from "../context/AppStoreContext";
-
+import HelpModal from '../components/HelpModal';
 
 import AuthContext from '../context/AuthContext';
 import { Amplify, Auth, Storage } from 'aws-amplify';
@@ -41,6 +41,7 @@ export default function MyApp(props: MyAppProps) {
           <CssBaseline />
           <AppStoreContext.Provider value={appStore}>
             <Component {...pageProps} />
+            <HelpModal />
           </AppStoreContext.Provider>
         </ThemeProvider>
       </AuthContext>

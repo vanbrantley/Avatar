@@ -10,7 +10,7 @@ interface IPaletteProps {
 
 const Palette = observer(function PaletteComponent(props: IPaletteProps) {
     const store = useContext(AppStoreContext);
-    const { hatColor, topColor, bottomColor, shoeColor, mode, handleAreaChange, handleColorSwatch,
+    const { hatColor, topColor, bottomColor, shoeColor, mode, selectedArea, handleAreaChange, handleColorSwatch,
         hatLock, setHatLock, topLock, setTopLock, bottomLock, setBottomLock, shoeLock, setShoeLock } = store;
 
     return (
@@ -47,20 +47,24 @@ const Palette = observer(function PaletteComponent(props: IPaletteProps) {
             ) : (
                 <>
                     <div
-                        className="h-[72px] w-20 rounded-none"
+                        className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedArea === 'hat' ? 'border-2 border-white' : ''}`}
                         style={{ backgroundColor: hatColor }}
+                        onClick={() => handleAreaChange("hat")}
                     ></div>
                     <div
-                        className="h-[72px] w-20 rounded-none"
+                        className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedArea === 'top' ? 'border-2 border-white' : ''}`}
                         style={{ backgroundColor: topColor }}
+                        onClick={() => handleAreaChange("top")}
                     ></div>
                     <div
-                        className="h-[72px] w-20 rounded-none"
+                        className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedArea === 'bottom' ? 'border-2 border-white' : ''}`}
                         style={{ backgroundColor: bottomColor }}
+                        onClick={() => handleAreaChange("bottom")}
                     ></div>
                     <div
-                        className="h-[72px] w-20 rounded-none"
+                        className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedArea === 'shoe' ? 'border-2 border-white' : ''}`}
                         style={{ backgroundColor: shoeColor }}
+                        onClick={() => handleAreaChange("shoe")}
                     ></div>
                 </>
             )}
