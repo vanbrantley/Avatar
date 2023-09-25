@@ -60,11 +60,5 @@
       "service": "Cognito"
     }
   },
-  "storage": {
-    "mockups": {
-      "dependsOn": [],
-      "providerPlugin": "awscloudformation",
-      "service": "S3"
-    }
-  }
+  "storage": {}
 }

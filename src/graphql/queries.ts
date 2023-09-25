@@ -8,6 +8,7 @@ export const getGarment = /* GraphQL */ `
       id
       color
       area
+      own
       createdAt
       updatedAt
       owner
@@ -26,6 +27,7 @@ export const listGarments = /* GraphQL */ `
         id
         color
         area
+        own
         createdAt
         updatedAt
         owner

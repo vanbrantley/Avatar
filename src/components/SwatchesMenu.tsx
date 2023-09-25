@@ -30,9 +30,10 @@ const SwatchesMenu = observer(() => {
         <>
 
             {noSwatches ? (
-                <div>
-                    <p>Click a color on the palette below to save a swatch</p>
-                </div>
+                // <div>
+                //     <p>Click a color on the palette below to save a swatch</p>
+                // </div>
+                null
             ) : (
                 <div>
                     <div className="flex">

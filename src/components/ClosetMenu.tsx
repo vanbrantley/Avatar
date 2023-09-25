@@ -22,7 +22,7 @@ const ClosetMenu = observer(() => {
 
     return (
         <div className="w-full h-full flex flex-col">
-            <div className="w-full h-2/5 flex flex-col justify-center">
+            {/* <div className="w-full h-2/5 flex flex-col justify-center">
 
                 <SwatchesMenu />
 
@@ -34,9 +34,9 @@ const ClosetMenu = observer(() => {
                         <ShuffleIcon fontSize="large" style={{ color: "white" }} />
                     </IconButton>
                 </div>
-            </div >
+            </div> */}
 
-            < div className="w-full h-3/5 flex items-center" >
+            <div className="w-full h-3/5 flex items-center justify-center">
 
                 {showPicker && (
 
@@ -58,9 +58,15 @@ const ClosetMenu = observer(() => {
                         </div>
                     </div>
                 )}
-            </div >
+            </div>
 
-        </div >
+            <div className="w-full h-2/5 flex flex-col justify-center">
+
+                <SwatchesMenu />
+
+            </div>
+
+        </div>
     );
 
 

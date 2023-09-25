@@ -6,11 +6,13 @@ export type CreateGarmentInput = {
   id?: string | null,
   color: string,
   area: string,
+  own: boolean,
 };
 
 export type ModelGarmentConditionInput = {
   color?: ModelStringInput | null,
   area?: ModelStringInput | null,
+  own?: ModelBooleanInput | null,
   and?: Array< ModelGarmentConditionInput | null > | null,
   or?: Array< ModelGarmentConditionInput | null > | null,
   not?: ModelGarmentConditionInput | null,
@@ -56,11 +58,19 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type Garment = {
   __typename: "Garment",
   id: string,
   color: string,
   area: string,
+  own: boolean,
   createdAt: string,
   updatedAt: string,
   owner?: string | null,
@@ -70,6 +80,7 @@ export type UpdateGarmentInput = {
   id: string,
   color?: string | null,
   area?: string | null,
+  own?: boolean | null,
 };
 
 export type DeleteGarmentInput = {
@@ -152,6 +163,7 @@ export type ModelGarmentFilterInput = {
   id?: ModelIDInput | null,
   color?: ModelStringInput | null,
   area?: ModelStringInput | null,
+  own?: ModelBooleanInput | null,
   and?: Array< ModelGarmentFilterInput | null > | null,
   or?: Array< ModelGarmentFilterInput | null > | null,
   not?: ModelGarmentFilterInput | null,
@@ -214,6 +226,7 @@ export type ModelSubscriptionGarmentFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   color?: ModelSubscriptionStringInput | null,
   area?: ModelSubscriptionStringInput | null,
+  own?: ModelSubscriptionBooleanInput | null,
   and?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
   or?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
 };
@@ -248,6 +261,11 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+};
+
 export type ModelSubscriptionPaletteFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   hatColor?: ModelSubscriptionStringInput | null,
@@ -276,6 +294,7 @@ export type CreateGarmentMutation = {
     id: string,
     color: string,
     area: string,
+    own: boolean,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -293,6 +312,7 @@ export type UpdateGarmentMutation = {
     id: string,
     color: string,
     area: string,
+    own: boolean,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -310,6 +330,7 @@ export type DeleteGarmentMutation = {
     id: string,
     color: string,
     area: string,
+    own: boolean,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -431,6 +452,7 @@ export type GetGarmentQuery = {
     id: string,
     color: string,
     area: string,
+    own: boolean,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -451,6 +473,7 @@ export type ListGarmentsQuery = {
       id: string,
       color: string,
       area: string,
+      own: boolean,
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
@@ -548,6 +571,7 @@ export type OnCreateGarmentSubscription = {
     id: string,
     color: string,
     area: string,
+    own: boolean,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -565,6 +589,7 @@ export type OnUpdateGarmentSubscription = {
     id: string,
     color: string,
     area: string,
+    own: boolean,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -582,6 +607,7 @@ export type OnDeleteGarmentSubscription = {
     id: string,
     color: string,
     area: string,
+    own: boolean,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,

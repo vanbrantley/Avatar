@@ -1,7 +1,7 @@
 import { observable, action, makeObservable } from 'mobx';
 import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation } from '@/API';
 import groupByArea from '../lib/groupByArea';
-import { API, Storage, Auth } from 'aws-amplify';
+import { API, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
 import { listGarments, listPalettes, listComplexions } from '../graphql/queries';
 import { createGarment, createPalette, createComplexion, deleteGarment, deletePalette, updateComplexion } from '../graphql/mutations';
@@ -19,9 +19,6 @@ class AppStore {
 
     selectedArea = "top";
     selectedColor = this.topColor;
-
-    shirts: string[] = [];
-    selectedShirt = "";
 
     hatSwatches: SwatchObject[] = [];
     topSwatches: SwatchObject[] = [];
@@ -42,6 +39,7 @@ class AppStore {
 
     showPicker = true;
     showHelp = false;
+    showOnboard = false;
 
     mode = "lab";
     layout = "desktop";
@@ -60,8 +58,6 @@ class AppStore {
             shoeColor: observable,
             selectedArea: observable,
             selectedColor: observable,
-            shirts: observable,
-            selectedShirt: observable,
             hatSwatches: observable,
             topSwatches: observable,
             bottomSwatches: observable,
@@ -76,6 +72,7 @@ class AppStore {
             heartFilled: observable,
             showPicker: observable,
             showHelp: observable,
+            showOnboard: observable,
             mode: observable,
             layout: observable,
             user: observable
@@ -110,18 +107,6 @@ class AppStore {
 
     setSelectedColor = action((color: string) => {
         this.selectedColor = color;
-    });
-
-    addShirt = action((filePath: string) => {
-        this.shirts.push(filePath);
-    });
-
-    setShirts = action((shirts: string[]) => {
-        this.shirts = shirts;
-    });
-
-    setSelectedShirt = action((shirtPath: string) => {
-        this.selectedShirt = shirtPath;
     });
 
     setHatSwatches = action((swatches: SwatchObject[]) => {
@@ -180,6 +165,10 @@ class AppStore {
         this.showHelp = show;
     });
 
+    setShowOnboard = action((show: boolean) => {
+        this.showOnboard = show;
+    });
+
     setMode = action((mode: string) => {
         this.mode = mode;
     });
@@ -190,54 +179,6 @@ class AppStore {
 
     setUser = action((user: CognitoUser | null) => {
         this.user = user;
-    });
-
-    displayMockupOnAvatar = action((imagePath: string) => {
-
-        // setSelectedShirt to path
-        this.setSelectedShirt(imagePath);
-
-        if (!this.topLock) this.setTopLock(true);
-
-        this.setTopColor('transparent');
-
-    });
-
-    fetchShirts = action(async () => {
-        try {
-
-            const currentUser = await Auth.currentAuthenticatedUser();
-            const userId = currentUser.getUsername() ?? ''; // Provide a default value if `getUsername()` returns undefined
-            const shirtsFolder = `${userId}/`;
-            const shirtsList = await Storage.list(shirtsFolder);
-
-            const shirtUrls = shirtsList.results
-                .map((shirt) => shirt.key)
-                .filter((url) => url !== undefined) as string[];
-
-            this.setShirts(shirtUrls);
-
-        } catch (error) {
-            console.error('Error fetching user shirts:', error);
-        }
-    });
-
-    removeShirt = action(async (shirtPath: string) => {
-
-        console.log("Removing:", shirtPath);
-
-        // remove file from bucket
-        try {
-            await Storage.remove(shirtPath);
-            console.log("Successfully removed file: ", shirtPath);
-            // remove shirt from shirts state array
-            this.setShirts(this.shirts.filter((shirt) => shirt !== shirtPath));
-            this.setSelectedShirt("");
-
-        } catch (error) {
-            console.log('File deletion failed:', error);
-        }
-
     });
 
     // functions
@@ -253,7 +194,6 @@ class AppStore {
         }
 
         if (!this.topLock) {
-            if (this.selectedShirt) this.setSelectedShirt("");
             const randomTopColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
             this.setTopColor(randomTopColor);
         }
@@ -295,7 +235,6 @@ class AppStore {
         }
 
         if (!this.topLock && (this.topSwatches.length !== 0)) {
-            if (this.selectedShirt) this.setSelectedShirt("");
             const topIndex = Math.floor(Math.random() * this.topSwatches.length);
             this.setTopColor(this.topSwatches[topIndex].color);
         }
@@ -376,7 +315,6 @@ class AppStore {
                     if (this.user) this.updateDBComlpexion(color);
                     break;
                 case "top":
-                    if (this.selectedShirt) this.setSelectedShirt("");
                     this.setTopColor(color);
                     break;
                 case "bottom":
@@ -428,7 +366,6 @@ class AppStore {
                     this.setFaceColor(color);
                     break;
                 case "top":
-                    if (this.selectedShirt) this.setSelectedShirt("");
                     this.setTopColor(color);
                     break;
                 case "bottom":
@@ -466,7 +403,7 @@ class AppStore {
                 const id = this.getSwatchId(this.hatColor, this.hatSwatches);
 
                 if (id) this.removeGarment(id, area);
-                else this.addGarmentToDB("hat", this.hatColor);
+                else this.addGarmentToDB("hat", this.hatColor, true);
 
                 this.setSelectedColor(this.hatColor);
                 break;
@@ -475,7 +412,7 @@ class AppStore {
                 const id = this.getSwatchId(this.topColor, this.topSwatches);
 
                 if (id) this.removeGarment(id, area);
-                else this.addGarmentToDB(area, this.topColor);
+                else this.addGarmentToDB(area, this.topColor, true);
 
                 this.setSelectedColor(this.topColor);
                 break;
@@ -484,7 +421,7 @@ class AppStore {
                 const id = this.getSwatchId(this.bottomColor, this.bottomSwatches);
 
                 if (id) this.removeGarment(id, area);
-                else this.addGarmentToDB(area, this.bottomColor);
+                else this.addGarmentToDB(area, this.bottomColor, true);
 
                 this.setSelectedColor(this.bottomColor);
                 break;
@@ -493,7 +430,7 @@ class AppStore {
                 const id = this.getSwatchId(this.shoeColor, this.shoeSwatches);
 
                 if (id) this.removeGarment(id, area);
-                else this.addGarmentToDB(area, this.shoeColor);
+                else this.addGarmentToDB(area, this.shoeColor, true);
 
                 this.setSelectedColor(this.shoeColor);
                 break;
@@ -529,7 +466,6 @@ class AppStore {
                 case "face":
                     break;
                 case "top":
-                    if (this.selectedShirt) this.setSelectedShirt("");
                     this.setSelectedColor(topColor);
                     break;
                 case "bottom":
@@ -574,12 +510,13 @@ class AppStore {
         }
     });
 
-    addGarmentToDB = action(async (area: string, color: string) => {
+    addGarmentToDB = action(async (area: string, color: string, own: boolean) => {
         try {
 
             const createNewGarmentInput: CreateGarmentInput = {
                 color: color,
-                area: area
+                area: area,
+                own: own
             };
 
             const response = await API.graphql<GraphQLQuery<CreateGarmentMutation>>(graphqlOperation(createGarment, {
@@ -787,18 +724,11 @@ class AppStore {
             if (this.bottomLock) this.setBottomLock(false);
             if (this.shoeLock) this.setShoeLock(false);
 
-            if (this.selectedShirt) {
-                const randomTopColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-                this.setSelectedShirt("");
-                this.setTopColor(randomTopColor);
-            }
-
             this.setSelectedArea("top");
             this.setSelectedColor(this.topColor);
 
             this.setFaceColor("#a18057");
 
-            this.setShirts([]);
             this.setPalettes([]);
 
         } catch (error) {

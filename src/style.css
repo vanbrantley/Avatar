@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 /* shirt test */
-
 .tshirt {
     position: relative;
     width: 150px;
@@ -75,27 +74,3 @@
 .grid-container {
     position: relative;
 }
-
-.background-overlay {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 45%;
-    background-color: #2b2b2b;
-    z-index: -1;
-}
-
-/* @keyframes slide {
-    0% {
-        transform: translateX(0%);
-    }
-
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-.image-container {
-    animation: slide 10s linear infinite;
-} */

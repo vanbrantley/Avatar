@@ -14,100 +14,99 @@ const SketchPicker = dynamic(
     { ssr: false }
 );
 
-const HelpModal = observer(() => {
+const OnboardModal = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { showHelp, setShowHelp, selectedColor, handleColorChangePicker, layout } = store;
+    const { showOnboard, setShowOnboard, selectedColor, handleColorChangePicker, layout } = store;
 
     const [step, setStep] = useState<number>(0);
 
+    const complexions = ["#DCD6CD", "#C9B898", "#B59F78", "#937651", "#7A5D39", "#503D26", "#443420", "#3A2A16", "#251903"];
+
     const pages = [
         {
-            image: (
-                <>
-                    <Avatar mini={true} />
-                </>
-            ),
             text: (
                 <>
+                    This wizard will help onboard you to the application.
                     <br />
-                    Welcome to Avatar!
+                    <br />
+                    First let&apos;s create your Avatar!
                     <br />
                     <br />
-                    Here you can use the pixel Avatar chacter to model different outfit color combinations.
+                    Select the complexion that best matches yours from the options below:
+                    (Your complexion can be further fine tuned later within the app)
                     <br />
                     <br />
                 </>
             ),
-        },
-        {
             image: (
-                <div className="flex">
-                    <div className="flex-none">
-                        <Palette lock={false} />
-                    </div>
-                    <div className="flex-grow">
-                        <Avatar mini={true} />
-                    </div>
-                </div>
-            ),
-            text: (
                 <>
-                    <br />
-                    The character is made up of 5 areas that you can change the color of:
-                    <br />
-                    hat, face, top, bottom, and shoe.
-                    <br />
-                    <br />
-                    Click an area on the Avatar to make it the selected area.
-                    <br />
-                    <br />
-                    The selected area is denoted by the outlined square in the palette.
-                    <br />
-                    <br />
-                </>
-            ),
-        },
-        {
-            image: (
-                <div className="flex">
-                    {(layout !== "mobile") && (
-                        <div className="flex-none w-1/5">
-                            <Palette lock={false} />
+                    <div className="flex justify-center">
+                        <div className="grid grid-cols-3 gap-4">
+                            {complexions.map((complexion, i) => (
+                                <div key={i} style={{ backgroundColor: complexion }} className="bg-white p-4 shadow-md rounded-full w-24 h-24"></div>
+                            ))}
                         </div>
-                    )}
-                    <div className="flex-grow w-2/5">
-                        <Avatar mini={true} />
                     </div>
-                    <div className="flex-grow w-2/5">
-                        <SketchPicker
-                            disableAlpha
-                            color={selectedColor}
-                            onChangeComplete={color => handleColorChangePicker(color.hex)}
-                        />
-                    </div>
-                </div>
+                </>
+            ),
+        },
+        {
+            image: (
+                <>
+                    <p>Placeholder image</p>
+                </>
             ),
             text: (
                 <>
                     <br />
-                    Use the color picker and color swatches to change the color of the selected area.
+                    Let&apos;s add the colors of pants that you own.
                     <br />
                     <br />
                 </>
             ),
         },
         {
-            // image: 'avatar-a4.png',
             image: (
                 <>
+                    <p>Placeholder image</p>
+                </>
+            ),
+            text: (
+                <>
+                    <br />
+                    Let&apos;s add the colors of shoes that you own.
+                    <br />
+                    <br />
+                </>
+            ),
+        },
+        {
+            image: (
+                <>
+                    <p>Placeholder image</p>
+                </>
+            ),
+            text: (
+                <>
+                    <br />
+                    Let&apos;s add the colors of shirts that you own.
+                    <br />
+                    <br />
 
                 </>
             ),
+        },
+        {
+            image: (
+                <>
+                    <p>Placeholder image</p>
+                </>
+            ),
             text: (
                 <>
                     <br />
-                    Use the randomize button to generate some inspiration.
+                    Let&apos;s add the colors of hats that you own.
                     <br />
                     <br />
 
@@ -117,7 +116,7 @@ const HelpModal = observer(() => {
     ];
 
     const handleClose = () => {
-        setShowHelp(false);
+        setShowOnboard(false);
         setStep(0);
     };
 
@@ -137,12 +136,11 @@ const HelpModal = observer(() => {
         <div className="flex items-center justify-center mt-20">
             {/* <p>Help Modal</p> */}
 
-            <Modal open={showHelp} onClose={handleClose}>
+            <Modal open={showOnboard} onClose={handleClose}>
 
-                <Dialog open={showHelp} onClose={handleClose}>
-                    {/* <img src={pages[step].image} alt={`Page ${step + 1}`} /> */}
-                    <div>{pages[step].image}</div>
+                <Dialog open={showOnboard} onClose={handleClose}>
                     <p style={{ fontFamily: "Verdana" }}>{pages[step].text}</p>
+                    <div>{pages[step].image}</div>
                     <div>
                         <Button onClick={handlePrevPage} disabled={step === 0}>
                             Previous
@@ -159,4 +157,4 @@ const HelpModal = observer(() => {
 
 });
 
-export default HelpModal;
+export default OnboardModal;

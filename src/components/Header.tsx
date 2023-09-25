@@ -10,7 +10,7 @@ import { IconButton } from '@mui/material';
 const Header = observer(function Header() {
 
     const store = useContext(AppStoreContext);
-    const { mode, handleModeChange, navbarOpen, setNavbarOpen, layout, signUserOut, setShowHelp } = store;
+    const { mode, handleModeChange, navbarOpen, setNavbarOpen, layout, signUserOut, setShowHelp, setShowOnboard } = store;
 
     const { user } = useUser();
     const router = useRouter();
@@ -40,10 +40,10 @@ const Header = observer(function Header() {
                     {user ? (
                         <div className="text-sm lg:flex-grow">
                             <button
-                                onClick={() => handleModeChange("lab")}
-                                className={`${(mode === "lab") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
+                                onClick={() => handleModeChange("closet-full")}
+                                className={`${(mode === "closet-full") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
                                 style={{ fontFamily: "Verdana" }}>
-                                Lab
+                                Full
                             </button>
 
                             {(layout !== "mobile") && (
@@ -55,6 +55,13 @@ const Header = observer(function Header() {
                                         style={{ fontFamily: "Verdana" }}>
                                         Closet
                                     </button>
+                                    <button
+                                        onClick={() => handleModeChange("lab")}
+                                        className={`${(mode === "lab") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
+                                        style={{ fontFamily: "Verdana" }}>
+                                        Lab
+                                    </button>
+
 
                                 </>
                             )}
@@ -82,6 +89,10 @@ const Header = observer(function Header() {
                             </button>
                         </div>
                     )}
+
+                    <IconButton size="large" onClick={() => setShowOnboard(true)}>
+                        <InfoIcon fontSize="medium" style={{ color: "orange" }} />
+                    </IconButton>
 
                     <IconButton size="large" onClick={() => setShowHelp(true)}>
                         <InfoIcon fontSize="medium" style={{ color: "white" }} />
