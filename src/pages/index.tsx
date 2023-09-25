@@ -12,7 +12,7 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { randomizePalette, fetchPalettes, fetchGarmentsFromDB, fetchShirts, fetchComplexion, layout, setLayout, setUser } = store;
+  const { randomizePalette, fetchPalettes, fetchGarmentsFromDB, fetchComplexion, layout, setLayout, setUser } = store;
 
   useEffect(() => {
     randomizePalette();
@@ -49,7 +49,6 @@ const Home = observer(() => {
       setUser(user);
       fetchPalettes();
       fetchGarmentsFromDB();
-      fetchShirts();
       fetchComplexion(user.getUsername());
     }
 
@@ -59,7 +58,6 @@ const Home = observer(() => {
         setUser(user);
         fetchPalettes();
         fetchGarmentsFromDB();
-        fetchShirts();
         fetchComplexion(user.getUsername());
       }
     };

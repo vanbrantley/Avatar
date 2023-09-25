@@ -11,6 +11,7 @@ export const createGarment = /* GraphQL */ `
       id
       color
       area
+      own
       createdAt
       updatedAt
       owner
@@ -27,6 +28,7 @@ export const updateGarment = /* GraphQL */ `
       id
       color
       area
+      own
       createdAt
       updatedAt
       owner
@@ -43,6 +45,7 @@ export const deleteGarment = /* GraphQL */ `
       id
       color
       area
+      own
       createdAt
       updatedAt
       owner

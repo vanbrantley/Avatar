@@ -11,14 +11,14 @@ import createEmotionCache from '../createEmotionCache';
 import appStore from "../store/store";
 import { AppStoreContext } from "../context/AppStoreContext";
 import HelpModal from '../components/HelpModal';
+import OnboardModal from '../components/OnboardModal';
 
 import AuthContext from '../context/AuthContext';
-import { Amplify, Auth, Storage } from 'aws-amplify';
+import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from '../aws-exports';
 
 Amplify.configure({ ...awsconfig, ssr: true });
 Auth.configure(awsconfig);
-Storage.configure(awsconfig);
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -42,6 +42,7 @@ export default function MyApp(props: MyAppProps) {
           <AppStoreContext.Provider value={appStore}>
             <Component {...pageProps} />
             <HelpModal />
+            <OnboardModal />
           </AppStoreContext.Provider>
         </ThemeProvider>
       </AuthContext>

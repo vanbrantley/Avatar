@@ -6,6 +6,7 @@ type Garment @model @auth(rules: [{ allow: owner, operations: [create, update, d
   id: ID!
   color: String!
   area: String!
+  own: Boolean!
 }
 
 type Palette @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
