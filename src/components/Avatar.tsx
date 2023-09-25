@@ -10,7 +10,7 @@ const Avatar = observer((props: IAvatarProps) => {
 
     const store = useContext(AppStoreContext);
 
-    const { hatColor, faceColor, topColor, bottomColor, shoeColor, selectedShirt, handleAreaChange } = store;
+    const { hatColor, faceColor, topColor, bottomColor, shoeColor, handleAreaChange } = store;
 
     const URL_PREFIX = "https://avatarb886f49d0baa41e28fcf4484f402480e164949-dev.s3.amazonaws.com/public";
 
@@ -37,22 +37,15 @@ const Avatar = observer((props: IAvatarProps) => {
                     borderBottomRightRadius: '120%',
                 }}
             ></div>
-
-            {selectedShirt ? (
-                <img src={`${URL_PREFIX}/${selectedShirt}`} onClick={() => handleAreaChange('top')}
-                    className={`${props.mini ? 'w-[150px]' : 'w-[300px]'} h-auto mx-auto my-0`}
-                />
-            ) : (
-                <div
-                    onClick={() => handleAreaChange('top')}
-                    className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}
-                    style={{
-                        backgroundColor: topColor,
-                        borderTopLeftRadius: '30%',
-                        borderTopRightRadius: '30%',
-                    }}
-                ></div>
-            )}
+            <div
+                onClick={() => handleAreaChange('top')}
+                className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}
+                style={{
+                    backgroundColor: topColor,
+                    borderTopLeftRadius: '30%',
+                    borderTopRightRadius: '30%',
+                }}
+            ></div>
 
 
             <div
