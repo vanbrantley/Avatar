@@ -20,7 +20,78 @@ const Header = observer(function Header() {
 
         <>
 
-            <nav className="flex items-center justify-between flex-wrap p-3 zoom-125" style={{ backgroundColor: "#484848" }}>
+            <nav className="flex items-center justify-between p-3 zoom-125" style={{ backgroundColor: "#484848" }}>
+
+                <div className="flex items-center">
+                    <button
+                        type="button"
+                        className="p-2 text-gray-500"
+                        aria-label="menu"
+                    >
+                        <AccessibilityIcon className="w-6 h-6" />
+                    </button>
+                    <span className="font-semibold text-xl text-white tracking-tight" style={{ fontFamily: "Verdana" }}>Avatar</span>
+                    <div>
+
+                        <button
+                            onClick={() => handleModeChange(Mode.Preview)}
+                            className={`${(mode === Mode.Preview || mode === Mode.Add) ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4 ml-8`}
+                            style={{ fontFamily: "Verdana" }}>
+                            Preview
+                        </button>
+                        <button
+                            onClick={() => handleModeChange(Mode.Closet)}
+                            className={`${(mode === Mode.Closet || mode === Mode.Details) ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
+                            style={{ fontFamily: "Verdana" }}>
+                            Closet
+                        </button>
+
+                    </div>
+                </div>
+
+                <div className="flex items-center">
+
+                    {user ? (
+                        <div className="text-sm lg:flex-grow">
+                            <button
+                                onClick={() => signUserOut()}
+                                className="block mt-4 lg:inline-block lg:mt-0 text-white mr-4"
+                                style={{ fontFamily: "Verdana" }}>
+                                Sign Out
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="text-sm lg:flex-grow">
+                            <button
+                                onClick={() => router.push('/login')}
+                                className="text-white block mt-4 lg:inline-block lg:mt-0 mr-4"
+                                style={{ fontFamily: "Verdana" }}>
+                                Login
+                            </button>
+                            <button
+                                onClick={() => router.push('/signup')}
+                                className="text-white block mt-4 lg:inline-block lg:mt-0 mr-4"
+                                style={{ fontFamily: "Verdana" }}>
+                                Sign Up
+                            </button>
+                        </div>
+                    )}
+
+                    {/* <IconButton size="large" onClick={() => setShowOnboard(true)}>
+                        <InfoIcon fontSize="medium" style={{ color: "orange" }} />
+                    </IconButton>
+
+                    <IconButton size="large" onClick={() => setShowHelp(true)}>
+                        <InfoIcon fontSize="medium" style={{ color: "white" }} />
+                    </IconButton> */}
+
+                </div>
+
+            </nav>
+
+            {/* old navbar with the open/close navbar functionality for mobile navbar */}
+
+            {/* <nav className="flex items-center justify-between flex-wrap p-3 zoom-125" style={{ backgroundColor: "#484848" }}>
                 <div className="flex items-center flex-shrink-0 text-white mr-6">
                     <button
                         type="button"
@@ -86,7 +157,8 @@ const Header = observer(function Header() {
                     </IconButton>
 
                 </div>
-            </nav>
+            </nav> */}
+
         </>
     );
 

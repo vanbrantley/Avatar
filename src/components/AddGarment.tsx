@@ -1,8 +1,9 @@
 import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
-import { Mode } from '../lib/types';
+import { useUser } from '../context/AuthContext';
 
+import { Mode, GarmentType, GarmentTypeStrings } from '../lib/types';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -27,11 +28,40 @@ const AddGarment = observer((props: IAddGarmentProps) => {
     const [brand, setBrand] = useState<string>("");
     const [name, setName] = useState<string>("");
 
+    const { user } = useUser();
     const store = useContext(AppStoreContext);
-    const { selectedColor, handleColorChangePicker, selectedArea, handleAreaChange, addGarmentToDB, handleModeChange, setMode } = store;
+    const { selectedColor, handleColorChangePicker, selectedCategory, setSelectedCategory, handleAreaChange,
+        addGarmentToDB, addGarmentLocal, handleModeChange, setMode } = store;
 
     const handleAreaChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        handleAreaChange(event.target.value);
+
+        const area = event.target.value;
+        // console.log(area);
+        let category: GarmentType;
+
+        switch (area) {
+            case "hat":
+                category = GarmentType.Hat;
+                handleAreaChange(category);
+                setSelectedCategory(category);
+                break;
+            case "top":
+                category = GarmentType.Top;
+                handleAreaChange(category);
+                setSelectedCategory(category);
+                break;
+            case "bottom":
+                category = GarmentType.Bottom;
+                handleAreaChange(category);
+                setSelectedCategory(category);
+                break;
+            case "shoe":
+                category = GarmentType.Shoe;
+                handleAreaChange(category);
+                setSelectedCategory(category);
+                break;
+        }
+
     };
 
     const handleBrandChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,8 +73,9 @@ const AddGarment = observer((props: IAddGarmentProps) => {
     };
 
     const handleAddGarmentButtonClick = () => {
-        addGarmentToDB(selectedArea, selectedColor, brand, name);
-        handleModeChange(Mode.Preview);
+        if (user) addGarmentToDB(selectedCategory, selectedColor, brand, name);
+        else addGarmentLocal(selectedCategory, selectedColor, brand, name);
+        handleModeChange(Mode.Closet);
     };
 
     return (
@@ -60,11 +91,11 @@ const AddGarment = observer((props: IAddGarmentProps) => {
 
             {/* Area Dropdown */}
             <p style={{ fontFamily: "Verdana" }}>Area: </p>
-            <select value={selectedArea} onChange={handleAreaChangeSelect}>
-                <option value="hat">Hat</option>
-                <option value="top">Top</option>
-                <option value="bottom">Bottom</option>
-                <option value="shoe">Shoe</option>
+            <select value={GarmentTypeStrings[selectedCategory]} onChange={handleAreaChangeSelect}>
+                <option value={GarmentTypeStrings[GarmentType.Hat]}>Hat</option>
+                <option value={GarmentTypeStrings[GarmentType.Top]}>Top</option>
+                <option value={GarmentTypeStrings[GarmentType.Bottom]}>Bottom</option>
+                <option value={GarmentTypeStrings[GarmentType.Shoe]}>Shoe</option>
             </select>
             <br></br>
 

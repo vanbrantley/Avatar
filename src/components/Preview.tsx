@@ -5,6 +5,7 @@ import Swatch from './Swatch';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
+import { GarmentType } from '@/lib/types';
 
 const Preview = observer(() => {
 
@@ -24,7 +25,7 @@ const Preview = observer(() => {
                                 key={swatch.id}
                                 className="w-20 h-w0"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area="hat" />
+                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Hat} />
                             </div>
                         ))}
                     </div>
@@ -46,7 +47,7 @@ const Preview = observer(() => {
                                 key={swatch.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area="top" />
+                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Top} />
                             </div>
                         ))}
                     </div>
@@ -68,7 +69,7 @@ const Preview = observer(() => {
                                 key={swatch.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area="bottom" />
+                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Bottom} />
                             </div>
                         ))}
                     </div>
@@ -90,7 +91,7 @@ const Preview = observer(() => {
                                 key={swatch.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area="shoe" />
+                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Shoe} />
                             </div>
                         ))}
                     </div>
