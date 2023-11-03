@@ -18,8 +18,7 @@ const ChromePicker = dynamic(
 const OnboardModal = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { showOnboard, setShowOnboard, selectedColor, handleColorChangePicker,
-        setHatSwatches, setTopSwatches, setBottomSwatches, setShoeSwatches, setFaceColor, setMode } = store;
+    const { showOnboard, setShowOnboard, selectedColor, handleColorChangePicker, setFaceColor } = store;
 
     const [step, setStep] = useState<number>(0);
 
@@ -69,25 +68,25 @@ const OnboardModal = observer(() => {
             color: hat,
             id: '',
         }));
-        setHatSwatches(initialHatSwatches);
+        // setHatSwatches(initialHatSwatches);
 
         const initialTopSwatches = initialTops.map((top) => ({
             color: top,
             id: '',
         }));
-        setTopSwatches(initialTopSwatches);
+        // setTopSwatches(initialTopSwatches);
 
         const initialBottomSwatches = initialBottoms.map((bottom) => ({
             color: bottom,
             id: '',
         }));
-        setBottomSwatches(initialBottomSwatches);
+        // setBottomSwatches(initialBottomSwatches);
 
         const initialShoeSwatches = initialShoes.map((shoe) => ({
             color: shoe,
             id: '',
         }));
-        setShoeSwatches(initialShoeSwatches);
+        // setShoeSwatches(initialShoeSwatches);
 
         // close modal
         handleClose();
