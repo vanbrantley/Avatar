@@ -14,11 +14,7 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { randomizePalette, fetchPalettes, fetchGarmentsFromDB, fetchComplexion, layout, setLayout, setUser } = store;
-
-  useEffect(() => {
-    randomizePalette();
-  }, []);
+  const { fetchPalettes, fetchGarmentsFromDB, fetchComplexion, layout, setLayout, setUser } = store;
 
   useEffect(() => {
     const handleResize = () => {

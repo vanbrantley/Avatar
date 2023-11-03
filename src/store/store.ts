@@ -6,7 +6,8 @@ import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api'
 import { listGarments, listPalettes, listComplexions } from '../graphql/queries';
 import { createGarment, createPalette, createComplexion, deleteGarment, deletePalette, updateComplexion, updateGarment } from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
-import { Layout, Mode } from '../lib/types';
+import { Layout, Mode, GarmentType, GarmentTypeStrings } from '../lib/types';
+import { v4 as uuidv4 } from 'uuid';
 
 class AppStore {
 
@@ -14,10 +15,10 @@ class AppStore {
     hatColor = "#000000";
     faceColor = "#a18057";
     topColor = "#ffffff";
-    bottomColor = "#000000";
+    bottomColor = "#5687b8";
     shoeColor = "#000000";
 
-    selectedArea = "top";
+    selectedCategory: GarmentType = GarmentType.Top;
     selectedColor = this.topColor;
 
     selectedGarment: Garment | null = null;
@@ -58,7 +59,7 @@ class AppStore {
             topColor: observable,
             bottomColor: observable,
             shoeColor: observable,
-            selectedArea: observable,
+            selectedCategory: observable,
             selectedColor: observable,
             selectedGarment: observable,
             userHats: observable,
@@ -81,6 +82,7 @@ class AppStore {
             user: observable
 
         });
+
     }
 
     // setter functions
@@ -104,8 +106,8 @@ class AppStore {
         this.shoeColor = color;
     });
 
-    setSelectedArea = action((area: string) => {
-        this.selectedArea = area;
+    setSelectedCategory = action((category: GarmentType) => {
+        this.selectedCategory = category;
     });
 
     setSelectedColor = action((color: string) => {
@@ -189,48 +191,6 @@ class AppStore {
     });
 
     // functions
-    randomizePalette = action(() => {
-
-        // unfill heart if you're on a saved palette and not all areas are locked
-        const allAreasLocked = this.hatLock && this.topLock && this.bottomLock && this.shoeLock;
-        if (this.heartFilled && !allAreasLocked) this.setHeartFilled(false);
-
-        if (!this.hatLock) {
-            const randomHatColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-            this.setHatColor(randomHatColor);
-        }
-
-        if (!this.topLock) {
-            const randomTopColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-            this.setTopColor(randomTopColor);
-        }
-
-        if (!this.bottomLock) {
-            const randomBottomColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-            this.setBottomColor(randomBottomColor);
-        }
-
-        if (!this.shoeLock) {
-            const randomShoeColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
-            this.setShoeColor(randomShoeColor);
-        }
-
-        // set the selected color to the color of the selected area
-        switch (this.selectedArea) {
-            case "hat":
-                this.setSelectedColor(this.hatColor);
-                break;
-            case "top":
-                this.setSelectedColor(this.topColor);
-                break;
-            case "bottom":
-                this.setSelectedColor(this.bottomColor);
-                break;
-            case "shoe":
-                this.setSelectedColor(this.shoeColor);
-                break;
-        }
-    });
 
     handleModeChange = action((newMode: Mode) => {
 
@@ -242,76 +202,78 @@ class AppStore {
 
     });
 
-    handleAreaChange = action((area: string) => {
-        this.setSelectedArea(area);
+    handleAreaChange = action((area: GarmentType) => {
+        this.setSelectedCategory(area);
 
         switch (area) {
-            case "hat":
+            case GarmentType.Hat:
                 this.setSelectedColor(this.hatColor);
                 break;
-            case "face":
-                this.setSelectedColor(this.faceColor);
-                break;
-            case "top":
+            // case "face":
+            //     this.setSelectedColor(this.faceColor);
+            //     break;
+            case GarmentType.Top:
                 this.setSelectedColor(this.topColor);
                 break;
-            case "bottom":
+            case GarmentType.Bottom:
                 this.setSelectedColor(this.bottomColor);
                 break;
-            case "shoe":
+            case GarmentType.Shoe:
                 this.setSelectedColor(this.shoeColor);
                 break;
         }
     });
 
-    checkAreaLock = (area: string) => {
-        switch (area) {
-            case "hat":
-                return this.hatLock;
-            case "top":
-                return this.topLock;
-            case "bottom":
-                return this.bottomLock;
-            case "shoe":
-                return this.shoeLock;
-            default:
-                return false;
-        }
-    };
+    // checkAreaLock = (area: string) => {
+    //     switch (area) {
+    //         case "hat":
+    //             return this.hatLock;
+    //         case "top":
+    //             return this.topLock;
+    //         case "bottom":
+    //             return this.bottomLock;
+    //         case "shoe":
+    //             return this.shoeLock;
+    //         default:
+    //             return false;
+    //     }
+    // };
 
     handleColorChangePicker = action((color: string) => {
 
+        // lock logic is commented out
+
         // if its heartFilled and the area you're trying to change is not locked
-        const isAreaLocked = this.checkAreaLock(this.selectedArea);
-        if (this.heartFilled && !isAreaLocked) this.setHeartFilled(false);
+        // const isAreaLocked = this.checkAreaLock(this.selectedArea);
+        // if (this.heartFilled && !isAreaLocked) this.setHeartFilled(false);
 
-        if (!isAreaLocked) {
+        // if (!isAreaLocked) {
 
-            switch (this.selectedArea) {
-                case "hat":
-                    this.setHatColor(color);
-                    break;
-                case "face":
-                    this.setFaceColor(color);
-                    // update complexion in DB
-                    if (this.user) this.updateDBComlpexion(color);
-                    break;
-                case "top":
-                    this.setTopColor(color);
-                    break;
-                case "bottom":
-                    this.setBottomColor(color);
-                    break;
-                case "shoe":
-                    this.setShoeColor(color);
-                    break;
-                default:
-                    break;
-            };
+        switch (this.selectedCategory) {
+            case GarmentType.Hat:
+                this.setHatColor(color);
+                break;
+            // case "face":
+            //     this.setFaceColor(color);
+            //     // update complexion in DB
+            //     if (this.user) this.updateDBComlpexion(color);
+            //     break;
+            case GarmentType.Top:
+                this.setTopColor(color);
+                break;
+            case GarmentType.Bottom:
+                this.setBottomColor(color);
+                break;
+            case GarmentType.Shoe:
+                this.setShoeColor(color);
+                break;
+            default:
+                break;
+        };
 
-            this.setSelectedColor(color);
+        this.setSelectedColor(color);
 
-        }
+        // }
     });
 
     updateDBComlpexion = action(async (newComplexion: string) => {
@@ -334,36 +296,36 @@ class AppStore {
 
     });
 
-    handleColorChangeSwatch = action((color: string, area: string) => {
+    handleColorChangeSwatch = action((color: string, area: GarmentType) => {
 
-        const isAreaLocked = this.checkAreaLock(area);
+        // const isAreaLocked = this.checkAreaLock(area);
 
-        if (!isAreaLocked) {
+        // if (!isAreaLocked) {
 
-            switch (area) {
-                case "hat":
-                    this.setHatColor(color);
-                    break;
-                case "face":
-                    this.setFaceColor(color);
-                    break;
-                case "top":
-                    this.setTopColor(color);
-                    break;
-                case "bottom":
-                    this.setBottomColor(color);
-                    break;
-                case "shoe":
-                    this.setShoeColor(color);
-                    break;
-                default:
-                    break;
-            }
-
-            this.setSelectedArea(area);
-            this.setSelectedColor(color);
-
+        switch (area) {
+            case GarmentType.Hat:
+                this.setHatColor(color);
+                break;
+            // case "face":
+            //     this.setFaceColor(color);
+            //     break;
+            case GarmentType.Top:
+                this.setTopColor(color);
+                break;
+            case GarmentType.Bottom:
+                this.setBottomColor(color);
+                break;
+            case GarmentType.Shoe:
+                this.setShoeColor(color);
+                break;
+            default:
+                break;
         }
+
+        this.setSelectedCategory(area);
+        this.setSelectedColor(color);
+
+        // }
 
 
     });
@@ -382,29 +344,30 @@ class AppStore {
 
 
         // assign selectedColor to the color of the selectedArea in the palette
-        const isAreaLocked = this.checkAreaLock(this.selectedArea);
-        if (!isAreaLocked) {
+        // const isAreaLocked = this.checkAreaLock(this.selectedArea);
+        // if (!isAreaLocked) {
 
-            switch (this.selectedArea) {
-                case "hat":
-                    this.setSelectedColor(hatColor);
-                    break;
-                case "face":
-                    break;
-                case "top":
-                    this.setSelectedColor(topColor);
-                    break;
-                case "bottom":
-                    this.setSelectedColor(bottomColor);
-                    break;
-                case "shoe":
-                    this.setSelectedColor(shoeColor);
-                    break;
-                default:
-                    break;
-            }
-
+        switch (this.selectedCategory) {
+            case GarmentType.Hat:
+                this.setSelectedColor(hatColor);
+                break;
+            // case "face":
+            //     break;
+            case GarmentType.Top:
+                this.setSelectedColor(topColor);
+                break;
+            case GarmentType.Bottom:
+                this.setSelectedColor(bottomColor);
+                break;
+            case GarmentType.Shoe:
+                this.setSelectedColor(shoeColor);
+                break;
+            default:
+                break;
         }
+
+        // }
+
         const anyAreaLocked = this.hatLock || this.topLock || this.bottomLock || this.shoeLock;
 
         // a locked area stops us from assigning all area colors - thus palette isn't one that we've saved
@@ -436,17 +399,54 @@ class AppStore {
         }
     });
 
-    addGarmentToDB = action(async (area: string, color: string, brand: string, name: string) => {
+    addGarmentLocal = action((area: GarmentType, color: string, brand: string, name: string) => {
+
+        if (!name) {
+            name = color + " " + brand + " " + GarmentTypeStrings[area]
+        }
+
+        // make a Garment Object with placeholder data for id, createdAt, updatedAt, owner
+        const newGarment: Garment = {
+            __typename: "Garment",
+            id: uuidv4(),
+            area: GarmentTypeStrings[area],
+            color: color,
+            brand: brand,
+            name: name,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            owner: null
+        }
+
+        // add createdGarment to user garment group
+        switch (area) {
+            case GarmentType.Hat:
+                this.setUserHats([newGarment, ...this.userHats]);
+                break;
+            case GarmentType.Top:
+                this.setUserTops([newGarment, ...this.userTops]);
+                break;
+            case GarmentType.Bottom:
+                this.setUserBottoms([newGarment, ...this.userBottoms]);
+                break;
+            case GarmentType.Shoe:
+                this.setUserShoes([newGarment, ...this.userShoes]);
+                break;
+        }
+
+    });
+
+    addGarmentToDB = action(async (area: GarmentType, color: string, brand: string, name: string) => {
         try {
 
             // handle case when passed name is the empty string
             if (!name) {
-                name = color + " " + brand + " " + area
+                name = color + " " + brand + " " + GarmentTypeStrings[area]
             }
 
             const createNewGarmentInput: CreateGarmentInput = {
                 color: color,
-                area: area,
+                area: GarmentTypeStrings[area],
                 brand: brand,
                 name: name
             };
@@ -459,16 +459,16 @@ class AppStore {
                 const createdGarment = data.createGarment;
                 // add createdGarment to user garment group
                 switch (area) {
-                    case "hat":
+                    case GarmentType.Hat:
                         this.setUserHats([createdGarment, ...this.userHats]);
                         break;
-                    case "top":
+                    case GarmentType.Top:
                         this.setUserTops([createdGarment, ...this.userTops]);
                         break;
-                    case "bottom":
+                    case GarmentType.Bottom:
                         this.setUserBottoms([createdGarment, ...this.userBottoms]);
                         break;
-                    case "shoe":
+                    case GarmentType.Shoe:
                         this.setUserShoes([createdGarment, ...this.userShoes]);
                         break;
                 }
@@ -566,8 +566,7 @@ class AppStore {
 
             if (data && data.deleteGarment) {
                 const removedGarment = data.deleteGarment;
-                // remove removedGarment from swatches array
-
+                // remove removedGarment from garments array
                 switch (area) {
                     case "hat":
                         this.setUserHats(this.userHats.filter((swatch) => swatch.id !== removedGarment.id));
@@ -720,10 +719,19 @@ class AppStore {
             if (this.bottomLock) this.setBottomLock(false);
             if (this.shoeLock) this.setShoeLock(false);
 
-            this.setSelectedArea("top");
+            this.setSelectedCategory(GarmentType.Top);
             this.setSelectedColor(this.topColor);
 
+            this.setHatColor("#000000");
             this.setFaceColor("#a18057");
+            this.setTopColor("#ffffff");
+            this.setBottomColor("#5687b8");
+            this.setShoeColor("#000000");
+
+            this.setUserHats([]);
+            this.setUserTops([]);
+            this.setUserBottoms([]);
+            this.setUserShoes([]);
 
             this.setPalettes([]);
 

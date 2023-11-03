@@ -1,27 +1,19 @@
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { Garment } from '@/API';
 import { Mode } from '@/lib/types';
+import { GarmentType, GarmentTypeStrings } from '@/lib/types';
 
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
-enum GarmentType {
-    Hat,
-    Top,
-    Bottom,
-    Shoe
-}
-
 const Closet = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { userHats, userTops, userBottoms, userShoes, setMode, setSelectedGarment,
-        setHatColor, setTopColor, setBottomColor, setShoeColor } = store;
-
-    const [selectedCategory, setSelectedCategory] = useState<GarmentType>(GarmentType.Top)
+    const { userHats, userTops, userBottoms, userShoes, setMode, setSelectedGarment, handleAreaChange,
+        setHatColor, setTopColor, setBottomColor, setShoeColor, selectedCategory, setSelectedColor } = store;
 
     let selectedArray: Garment[] = [];
 
@@ -38,8 +30,6 @@ const Closet = observer(() => {
         case GarmentType.Shoe:
             selectedArray = userShoes;
             break;
-        default:
-            selectedArray = [];
     };
 
     const openGarmentDetails = (garment: Garment) => {
@@ -58,6 +48,9 @@ const Closet = observer(() => {
 
         // switch based on garment's area
         // set that area's color to the garment's color
+
+        // setSelectedColor
+
         switch (area) {
 
             case "hat":
@@ -76,6 +69,8 @@ const Closet = observer(() => {
                 break;
         }
 
+        setSelectedColor(color);
+
     };
 
     return (
@@ -85,27 +80,27 @@ const Closet = observer(() => {
             <div className="grid grid-cols-4 gap-2">
                 <div
                     className="col-span-1 flex justify-center cursor-pointer"
-                    onClick={() => setSelectedCategory(GarmentType.Hat)}
+                    onClick={() => handleAreaChange(GarmentType.Hat)}
                 >
                     <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px", color: selectedCategory == GarmentType.Hat ? '#d4650b' : 'white' }}>Hats</p>
                 </div>
                 <div
                     className="col-span-1 flex justify-center cursor-pointer"
-                    onClick={() => setSelectedCategory(GarmentType.Top)}
+                    onClick={() => handleAreaChange(GarmentType.Top)}
                 >
                     <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px", color: selectedCategory == GarmentType.Top ? '#d4650b' : 'white' }}>Tops</p>
 
                 </div>
                 <div
                     className="col-span-1 flex justify-center cursor-pointer"
-                    onClick={() => setSelectedCategory(GarmentType.Bottom)}
+                    onClick={() => handleAreaChange(GarmentType.Bottom)}
                 >
                     <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px", color: selectedCategory == GarmentType.Bottom ? '#d4650b' : 'white' }}>Bottoms</p>
 
                 </div>
                 <div
                     className="col-span-1 flex justify-center cursor-pointer"
-                    onClick={() => setSelectedCategory(GarmentType.Shoe)}
+                    onClick={() => handleAreaChange(GarmentType.Shoe)}
                 >
                     <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px", color: selectedCategory == GarmentType.Shoe ? '#d4650b' : 'white' }}>Shoes</p>
 
@@ -116,22 +111,32 @@ const Closet = observer(() => {
             <br />
 
             <div className="flex flex-col flex-grow">
-                {selectedArray.map((garment, index) => (
-                    <div key={index} className="grid grid-cols-10 cursor-pointer">
-                        <div className="col-span-3"
-                            style={{ height: "100px", width: "100px", backgroundColor: garment.color }}
-                            onClick={() => handleGarmentClick(garment)}></div>
-                        <div className="col-span-6 flex items-center"
-                            onClick={() => handleGarmentClick(garment)}>
-                            <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "18px" }}>{garment.name}</p>
+
+                {(selectedArray.length > 0) ? (
+                    selectedArray.map((garment, index) => (
+                        <div key={index} className="grid grid-cols-10 cursor-pointer">
+                            <div className="col-span-3"
+                                style={{ height: "100px", width: "100px", backgroundColor: garment.color }}
+                                onClick={() => handleGarmentClick(garment)}></div>
+                            <div className="col-span-6 flex items-center"
+                                onClick={() => handleGarmentClick(garment)}>
+                                <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "18px" }}>{garment.name}</p>
+                            </div>
+                            <div className="col-span-1 flex items-center">
+                                <IconButton size="large" onClick={() => openGarmentDetails(garment)}>
+                                    <EditIcon fontSize="large" style={{ color: "#484848" }} />
+                                </IconButton>
+                            </div>
                         </div>
-                        <div className="col-span-1 flex items-center">
-                            <IconButton size="large" onClick={() => openGarmentDetails(garment)}>
-                                <EditIcon fontSize="large" style={{ color: "#484848" }} />
-                            </IconButton>
-                        </div>
+                    ))
+                ) : (
+                    <div className="flex items-center justify-center h-full">
+                        <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>
+                            Click the plus button below to add a {GarmentTypeStrings[selectedCategory]} to your closet.
+                        </p>
                     </div>
-                ))}
+                )}
+
             </div>
 
             <div className="flex">

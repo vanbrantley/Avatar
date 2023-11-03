@@ -5,6 +5,8 @@ import { Mode } from '../lib/types';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+
 import dynamic from 'next/dynamic';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),
@@ -14,11 +16,12 @@ const SketchPicker = dynamic(
 const GarmentDetails = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { setMode, selectedGarment, selectedColor, setSelectedColor, handleColorChangePicker, updateGarmentToDB, handleModeChange } = store;
+    const { setMode, selectedGarment, selectedColor, setSelectedColor, handleColorChangePicker, handleModeChange, updateGarmentToDB, removeGarment } = store;
 
     const [brand, setBrand] = useState<string>("");
     const [name, setName] = useState<string>("");
     const [hasChanges, setHasChanges] = useState<boolean>(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
     useEffect(() => {
 
@@ -32,7 +35,6 @@ const GarmentDetails = observer(() => {
 
     const handleBrandChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBrand(e.target.value);
-        // setHasChanges(true);
 
         if (selectedGarment) {
             const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
@@ -47,7 +49,6 @@ const GarmentDetails = observer(() => {
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setName(e.target.value);
-        // setHasChanges(true);
 
         if (selectedGarment) {
             const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
@@ -61,7 +62,6 @@ const GarmentDetails = observer(() => {
 
     const handleColorPickerChange = (color: string) => {
         handleColorChangePicker(color);
-        // setHasChanges(true);
 
         if (selectedGarment) {
             const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
@@ -88,7 +88,17 @@ const GarmentDetails = observer(() => {
     };
 
     const handleDeleteGarmentButtonClick = () => {
-        // trigger modal pop up to confirm deletion
+        setShowDeleteDialog(true);
+    };
+
+    const confirmDelete = () => {
+
+        if (selectedGarment) {
+            const { id, area } = selectedGarment;
+            removeGarment(id, area);
+            setShowDeleteDialog(false);
+            handleModeChange(Mode.Closet);
+        }
 
     };
 
@@ -165,6 +175,24 @@ const GarmentDetails = observer(() => {
                     {/* Delete button */}
                     <button onClick={handleDeleteGarmentButtonClick}
                         className="bg-red-700 hover:bg-red-800 text-white font-bold py-4 px-4 rounded">Delete</button>
+
+                    {/* Delete confirmation dialog */}
+                    <Dialog open={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}>
+                        <DialogTitle>Delete Garment</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                Are you sure you want to delete this garment?
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setShowDeleteDialog(false)} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={confirmDelete} color="primary">
+                                Delete
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
 
                 </div>
             )}

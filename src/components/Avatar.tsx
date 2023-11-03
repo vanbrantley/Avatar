@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
+import { GarmentType } from '@/lib/types';
 
 interface IAvatarProps {
     mini: boolean
@@ -16,7 +17,7 @@ const Avatar = observer((props: IAvatarProps) => {
 
         <div className="grid gap-0">
             <div
-                onClick={() => handleAreaChange('hat')}
+                onClick={() => handleAreaChange(GarmentType.Hat)}
                 className={`${props.mini ? 'h-[25px] w-10' : 'h-[50px] w-20'} mx-auto cursor-pointer`}
                 style={{
                     backgroundColor: hatColor,
@@ -27,8 +28,7 @@ const Avatar = observer((props: IAvatarProps) => {
                 }}
             ></div>
             <div
-                onClick={() => handleAreaChange('face')}
-                className={`${props.mini ? 'h-[30px] w-[35px]' : 'h-[60px] w-[70px]'} mx-auto cursor-pointer`}
+                className={`${props.mini ? 'h-[30px] w-[35px]' : 'h-[60px] w-[70px]'} mx-auto`}
                 style={{
                     backgroundColor: faceColor,
                     borderBottomLeftRadius: '120%',
@@ -36,7 +36,7 @@ const Avatar = observer((props: IAvatarProps) => {
                 }}
             ></div>
             <div
-                onClick={() => handleAreaChange('top')}
+                onClick={() => handleAreaChange(GarmentType.Top)}
                 className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}
                 style={{
                     backgroundColor: topColor,
@@ -47,12 +47,12 @@ const Avatar = observer((props: IAvatarProps) => {
 
 
             <div
-                onClick={() => handleAreaChange('bottom')}
+                onClick={() => handleAreaChange(GarmentType.Bottom)}
                 className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}
                 style={{ backgroundColor: bottomColor }}
             ></div>
             <div
-                onClick={() => handleAreaChange('shoe')}
+                onClick={() => handleAreaChange(GarmentType.Shoe)}
                 className={`${props.mini ? 'h-[36px] w-[110px]' : 'h-[72px] w-[220px]'} mx-auto rounded-full cursor-pointer`}
                 style={{ backgroundColor: shoeColor }}
             ></div>
