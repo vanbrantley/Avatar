@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import Avatar from './Avatar';
 import Palette from './Palette';
 
+import { Layout } from './../lib/types';
+
 import dynamic from 'next/dynamic';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),
@@ -44,7 +46,7 @@ const HelpModal = observer(() => {
             image: (
                 <div className="flex">
                     <div className="flex-none">
-                        <Palette lock={false} />
+                        <Palette />
                     </div>
                     <div className="flex-grow">
                         <Avatar mini={true} />
@@ -71,9 +73,9 @@ const HelpModal = observer(() => {
         {
             image: (
                 <div className="flex">
-                    {(layout !== "mobile") && (
+                    {(layout !== Layout.Mobile) && (
                         <div className="flex-none w-1/5">
-                            <Palette lock={false} />
+                            <Palette />
                         </div>
                     )}
                     <div className="flex-grow w-2/5">
