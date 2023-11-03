@@ -9,9 +9,10 @@ export const onCreateGarment = /* GraphQL */ `
   ) {
     onCreateGarment(filter: $filter, owner: $owner) {
       id
-      color
       area
-      own
+      color
+      brand
+      name
       createdAt
       updatedAt
       owner
@@ -26,9 +27,10 @@ export const onUpdateGarment = /* GraphQL */ `
   ) {
     onUpdateGarment(filter: $filter, owner: $owner) {
       id
-      color
       area
-      own
+      color
+      brand
+      name
       createdAt
       updatedAt
       owner
@@ -43,9 +45,10 @@ export const onDeleteGarment = /* GraphQL */ `
   ) {
     onDeleteGarment(filter: $filter, owner: $owner) {
       id
-      color
       area
-      own
+      color
+      brand
+      name
       createdAt
       updatedAt
       owner

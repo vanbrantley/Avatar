@@ -6,11 +6,12 @@ import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import InfoIcon from '@mui/icons-material/Info';
 import { IconButton } from '@mui/material';
+import { Mode } from '../lib/types';
 
 const Header = observer(function Header() {
 
     const store = useContext(AppStoreContext);
-    const { mode, handleModeChange, navbarOpen, setNavbarOpen, layout, signUserOut, setShowHelp, setShowOnboard } = store;
+    const { mode, handleModeChange, navbarOpen, setNavbarOpen, signUserOut, setShowHelp, setShowOnboard } = store;
 
     const { user } = useUser();
     const router = useRouter();
@@ -40,31 +41,17 @@ const Header = observer(function Header() {
                     {user ? (
                         <div className="text-sm lg:flex-grow">
                             <button
-                                onClick={() => handleModeChange("closet-full")}
-                                className={`${(mode === "closet-full") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
+                                onClick={() => handleModeChange(Mode.Preview)}
+                                className={`${(mode === Mode.Preview || mode === Mode.Add) ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
                                 style={{ fontFamily: "Verdana" }}>
-                                Full
+                                Preview
                             </button>
-
-                            {(layout !== "mobile") && (
-                                <>
-
-                                    <button
-                                        onClick={() => handleModeChange("closet")}
-                                        className={`${(mode === "closet") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
-                                        style={{ fontFamily: "Verdana" }}>
-                                        Closet
-                                    </button>
-                                    <button
-                                        onClick={() => handleModeChange("lab")}
-                                        className={`${(mode === "lab") ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
-                                        style={{ fontFamily: "Verdana" }}>
-                                        Lab
-                                    </button>
-
-
-                                </>
-                            )}
+                            <button
+                                onClick={() => handleModeChange(Mode.Closet)}
+                                className={`${(mode === Mode.Closet || mode === Mode.Details) ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
+                                style={{ fontFamily: "Verdana" }}>
+                                Closet
+                            </button>
 
                             <button
                                 onClick={() => signUserOut()}

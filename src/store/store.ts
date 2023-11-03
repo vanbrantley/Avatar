@@ -1,12 +1,12 @@
 import { observable, action, makeObservable } from 'mobx';
-import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation } from '@/API';
+import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation } from '@/API';
 import groupByArea from '../lib/groupByArea';
 import { API, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
 import { listGarments, listPalettes, listComplexions } from '../graphql/queries';
-import { createGarment, createPalette, createComplexion, deleteGarment, deletePalette, updateComplexion } from '../graphql/mutations';
-import { SwatchObject } from '../lib/types';
+import { createGarment, createPalette, createComplexion, deleteGarment, deletePalette, updateComplexion, updateGarment } from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
+import { Layout, Mode } from '../lib/types';
 
 class AppStore {
 
@@ -20,10 +20,12 @@ class AppStore {
     selectedArea = "top";
     selectedColor = this.topColor;
 
-    hatSwatches: SwatchObject[] = [];
-    topSwatches: SwatchObject[] = [];
-    bottomSwatches: SwatchObject[] = [];
-    shoeSwatches: SwatchObject[] = [];
+    selectedGarment: Garment | null = null;
+
+    userHats: Garment[] = [];
+    userTops: Garment[] = [];
+    userBottoms: Garment[] = [];
+    userShoes: Garment[] = [];
 
     hatLock = false;
     topLock = false;
@@ -41,8 +43,8 @@ class AppStore {
     showHelp = false;
     showOnboard = false;
 
-    mode = "lab";
-    layout = "desktop";
+    mode: Mode = Mode.Closet;
+    layout: Layout = Layout.Desktop;
 
     user: CognitoUser | null = null;
 
@@ -58,10 +60,11 @@ class AppStore {
             shoeColor: observable,
             selectedArea: observable,
             selectedColor: observable,
-            hatSwatches: observable,
-            topSwatches: observable,
-            bottomSwatches: observable,
-            shoeSwatches: observable,
+            selectedGarment: observable,
+            userHats: observable,
+            userTops: observable,
+            userBottoms: observable,
+            userShoes: observable,
             hatLock: observable,
             topLock: observable,
             bottomLock: observable,
@@ -109,20 +112,24 @@ class AppStore {
         this.selectedColor = color;
     });
 
-    setHatSwatches = action((swatches: SwatchObject[]) => {
-        this.hatSwatches = swatches;
+    setSelectedGarment = action((garment: Garment | null) => {
+        this.selectedGarment = garment;
     });
 
-    setTopSwatches = action((swatches: SwatchObject[]) => {
-        this.topSwatches = swatches;
+    setUserHats = action((hats: Garment[]) => {
+        this.userHats = hats;
     });
 
-    setBottomSwatches = action((swatches: SwatchObject[]) => {
-        this.bottomSwatches = swatches;
+    setUserTops = action((tops: Garment[]) => {
+        this.userTops = tops;
     });
 
-    setShoeSwatches = action((swatches: SwatchObject[]) => {
-        this.shoeSwatches = swatches;
+    setUserBottoms = action((bottoms: Garment[]) => {
+        this.userBottoms = bottoms;
+    });
+
+    setUserShoes = action((shoes: Garment[]) => {
+        this.userShoes = shoes;
     });
 
     setHatLock = action((locked: boolean) => {
@@ -169,11 +176,11 @@ class AppStore {
         this.showOnboard = show;
     });
 
-    setMode = action((mode: string) => {
+    setMode = action((mode: Mode) => {
         this.mode = mode;
     });
 
-    setLayout = action((layout: string) => {
+    setLayout = action((layout: Layout) => {
         this.layout = layout;
     });
 
@@ -225,32 +232,7 @@ class AppStore {
         }
     });
 
-    randomizeOutfit = action(() => {
-        // generate a random number between 0 and length of each swatch array
-        // set each area color to the swatchArray[index]
-
-        if (!this.hatLock && (this.hatSwatches.length !== 0)) {
-            const hatIndex = Math.floor(Math.random() * this.hatSwatches.length);
-            this.setHatColor(this.hatSwatches[hatIndex].color);
-        }
-
-        if (!this.topLock && (this.topSwatches.length !== 0)) {
-            const topIndex = Math.floor(Math.random() * this.topSwatches.length);
-            this.setTopColor(this.topSwatches[topIndex].color);
-        }
-
-        if (!this.bottomLock && (this.bottomSwatches.length !== 0)) {
-            const bottomIndex = Math.floor(Math.random() * this.bottomSwatches.length);
-            this.setBottomColor(this.bottomSwatches[bottomIndex].color);
-        }
-
-        if (!this.shoeLock && (this.shoeSwatches.length !== 0)) {
-            const shoeIndex = Math.floor(Math.random() * this.shoeSwatches.length);
-            this.setShoeColor(this.shoeSwatches[shoeIndex].color);
-        }
-    });
-
-    handleModeChange = action((newMode: string) => {
+    handleModeChange = action((newMode: Mode) => {
 
         // if you aren't changing mdoes, don't do anything
         if (newMode === this.mode) return;
@@ -386,62 +368,6 @@ class AppStore {
 
     });
 
-    getSwatchId = (colorToFind: string, stateArray: SwatchObject[]): string | null => {
-        const foundObject = stateArray.find((obj: SwatchObject) => obj.color === colorToFind);
-        if (foundObject) {
-            return foundObject.id;
-        }
-        return null; // Return null when there is no match
-    };
-
-    handleColorSwatch = action((area: string) => {
-
-        // add color to the corresponding swatches array if it isn't already
-        switch (area) {
-            case "hat": {
-
-                const id = this.getSwatchId(this.hatColor, this.hatSwatches);
-
-                if (id) this.removeGarment(id, area);
-                else this.addGarmentToDB("hat", this.hatColor, true);
-
-                this.setSelectedColor(this.hatColor);
-                break;
-            }
-            case "top": {
-                const id = this.getSwatchId(this.topColor, this.topSwatches);
-
-                if (id) this.removeGarment(id, area);
-                else this.addGarmentToDB(area, this.topColor, true);
-
-                this.setSelectedColor(this.topColor);
-                break;
-            }
-            case "bottom": {
-                const id = this.getSwatchId(this.bottomColor, this.bottomSwatches);
-
-                if (id) this.removeGarment(id, area);
-                else this.addGarmentToDB(area, this.bottomColor, true);
-
-                this.setSelectedColor(this.bottomColor);
-                break;
-            }
-            case "shoe": {
-                const id = this.getSwatchId(this.shoeColor, this.shoeSwatches);
-
-                if (id) this.removeGarment(id, area);
-                else this.addGarmentToDB(area, this.shoeColor, true);
-
-                this.setSelectedColor(this.shoeColor);
-                break;
-            }
-            default:
-                break;
-        }
-
-        this.setSelectedArea(area);
-    });
-
     assignAreaColorsFromPalette = action((hatColor: string, topColor: string, bottomColor: string, shoeColor: string, id: string) => {
 
 
@@ -497,26 +423,32 @@ class AppStore {
             if (data && data.listGarments && data.listGarments.items) {
                 const userGarments = data.listGarments.items as Garment[];
                 const grouped = groupByArea(userGarments);
-                this.setHatSwatches(grouped["hat"]);
-                this.setTopSwatches(grouped["top"]);
-                this.setBottomSwatches(grouped["bottom"]);
-                this.setShoeSwatches(grouped["shoe"]);
+                this.setUserHats(grouped["hat"]);
+                this.setUserTops(grouped["top"]);
+                this.setUserBottoms(grouped["bottom"]);
+                this.setUserShoes(grouped["shoe"]);
                 return userGarments;
             } else {
                 throw new Error("Could not get garments");
             }
         } catch (error: any) {
-            throw new Error("Could not get palettes");
+            throw new Error("Could not get garments");
         }
     });
 
-    addGarmentToDB = action(async (area: string, color: string, own: boolean) => {
+    addGarmentToDB = action(async (area: string, color: string, brand: string, name: string) => {
         try {
+
+            // handle case when passed name is the empty string
+            if (!name) {
+                name = color + " " + brand + " " + area
+            }
 
             const createNewGarmentInput: CreateGarmentInput = {
                 color: color,
                 area: area,
-                own: own
+                brand: brand,
+                name: name
             };
 
             const response = await API.graphql<GraphQLQuery<CreateGarmentMutation>>(graphqlOperation(createGarment, {
@@ -525,21 +457,19 @@ class AppStore {
             const { data } = response;
             if (data && data.createGarment) {
                 const createdGarment = data.createGarment;
-                // add createdGarment to swatches
-                const newSwatch: SwatchObject = { color: createdGarment.color, id: createdGarment.id };
-
+                // add createdGarment to user garment group
                 switch (area) {
                     case "hat":
-                        this.setHatSwatches([newSwatch, ...this.hatSwatches]);
+                        this.setUserHats([createdGarment, ...this.userHats]);
                         break;
                     case "top":
-                        this.setTopSwatches([newSwatch, ...this.topSwatches]);
+                        this.setUserTops([createdGarment, ...this.userTops]);
                         break;
                     case "bottom":
-                        this.setBottomSwatches([newSwatch, ...this.bottomSwatches]);
+                        this.setUserBottoms([createdGarment, ...this.userBottoms]);
                         break;
                     case "shoe":
-                        this.setShoeSwatches([newSwatch, ...this.shoeSwatches]);
+                        this.setUserShoes([createdGarment, ...this.userShoes]);
                         break;
                 }
 
@@ -553,7 +483,75 @@ class AppStore {
         }
     });
 
+    updateGarmentToDB = action(async (id: string, area: string, color: string, brand: string, name: string) => {
 
+        try {
+
+            if (!name) {
+                name = color + " " + brand + " " + area
+            }
+
+            const updateGarmentInput: UpdateGarmentInput = {
+                id: id,
+                color: color,
+                area: area,
+                brand: brand,
+                name: name
+            };
+
+            // console.log(updateGarmentInput);
+
+            const response = await API.graphql<GraphQLQuery<UpdateGarmentMutation>>(graphqlOperation(updateGarment, {
+                input: updateGarmentInput
+            })) as GraphQLResult<UpdateGarmentMutation>;
+            const { data } = response;
+            if (data && data.updateGarment) {
+                const updatedGarment = data.updateGarment as Garment;
+                console.log("Garment updated successfully: ", updatedGarment);
+
+                // update the garment in the userGarments state array
+                let updatedArray: Garment[];
+                switch (area) {
+                    case "hat":
+                        updatedArray = [
+                            updatedGarment,
+                            ...(this.userHats.filter(garment => garment.id !== updatedGarment.id) as Garment[])
+                        ];
+                        this.setUserHats(updatedArray);
+                        break;
+                    case "top":
+                        updatedArray = [
+                            updatedGarment,
+                            ...(this.userTops.filter(garment => garment.id !== updatedGarment.id) as Garment[])
+                        ];
+                        this.setUserTops(updatedArray);
+                        break;
+                    case "bottom":
+                        updatedArray = [
+                            updatedGarment,
+                            ...(this.userBottoms.filter(garment => garment.id !== updatedGarment.id) as Garment[])
+                        ];
+                        this.setUserBottoms(updatedArray);
+                        break;
+                    case "shoe":
+                        updatedArray = [
+                            updatedGarment,
+                            ...(this.userShoes.filter(garment => garment.id !== updatedGarment.id) as Garment[])
+                        ];
+                        this.setUserShoes(updatedArray);
+                        break;
+
+                }
+
+            } else {
+                throw new Error("Could not update garment")
+            }
+
+        } catch (error: any) {
+            console.error("Error updating garment: ", error);
+        }
+
+    });
 
     removeGarment = action(async (garmentId: string, area: string) => {
         try {
@@ -572,21 +570,19 @@ class AppStore {
 
                 switch (area) {
                     case "hat":
-                        this.setHatSwatches(this.hatSwatches.filter((swatch) => swatch.id !== removedGarment.id));
+                        this.setUserHats(this.userHats.filter((swatch) => swatch.id !== removedGarment.id));
                         break;
                     case "top":
-                        this.setTopSwatches(this.topSwatches.filter((swatch) => swatch.id !== removedGarment.id));
+                        this.setUserTops(this.userTops.filter((swatch) => swatch.id !== removedGarment.id));
                         break;
                     case "bottom":
-                        this.setBottomSwatches(this.bottomSwatches.filter((swatch) => swatch.id !== removedGarment.id));
+                        this.setUserBottoms(this.userBottoms.filter((swatch) => swatch.id !== removedGarment.id));
                         break;
                     case "shoe":
-                        this.setShoeSwatches(this.shoeSwatches.filter((swatch) => swatch.id !== removedGarment.id));
+                        this.setUserShoes(this.userShoes.filter((swatch) => swatch.id !== removedGarment.id));
                         break;
                 }
 
-
-                // this.setPalettes(this.palettes.filter((swatch) => swatch.id !== removedGarment.id));
                 console.log("Garment removed successfully: ", removedGarment);
             }
 
@@ -714,7 +710,7 @@ class AppStore {
 
         try {
             await Auth.signOut();
-            this.handleModeChange("lab");
+            this.handleModeChange(Mode.Closet);
 
             // handle clean-up
 
@@ -735,7 +731,6 @@ class AppStore {
             console.log('Sign-out error:', error);
         }
     });
-
 }
 
 const appStore = new AppStore();

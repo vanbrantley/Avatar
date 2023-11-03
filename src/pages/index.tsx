@@ -8,6 +8,8 @@ import { AppStoreContext } from '../context/AppStoreContext';
 import { useUser } from '../context/AuthContext';
 import { observer } from 'mobx-react-lite';
 
+import { Layout } from './../lib/types';
+
 const Home = observer(() => {
 
   const { user } = useUser();
@@ -23,11 +25,11 @@ const Home = observer(() => {
       const screenWidth = window.innerWidth;
 
       if (screenWidth >= 1024) {
-        setLayout('desktop');
+        setLayout(Layout.Desktop);
       } else if (screenWidth >= 768) {
-        setLayout('tablet');
+        setLayout(Layout.Tablet);
       } else {
-        setLayout('mobile');
+        setLayout(Layout.Mobile);
       }
     };
 
@@ -73,9 +75,10 @@ const Home = observer(() => {
 
   return (
     <>
-      {layout === 'desktop' && <DesktopLayout />}
-      {layout === 'tablet' && <TabletLayout />}
-      {layout === 'mobile' && <MobileLayout />}
+      {/* {layout === Layout.Desktop && <DesktopLayout />}
+      {layout === Layout.Tablet && <TabletLayout />}
+      {layout === Layout.Mobile && <MobileLayout />} */}
+      <DesktopLayout />
     </>
   );
 

@@ -4,9 +4,10 @@
 
 type Garment @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
   id: ID!
-  color: String!
   area: String!
-  own: Boolean!
+  color: String!
+  brand: String!
+  name: String!
 }
 
 type Palette @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
@@ -21,3 +22,4 @@ type Complexion @model @auth(rules: [{ allow: owner, operations: [create, update
   id: ID!
   complexion: String!
 }
+

@@ -6,9 +6,10 @@ export const getGarment = /* GraphQL */ `
   query GetGarment($id: ID!) {
     getGarment(id: $id) {
       id
-      color
       area
-      own
+      color
+      brand
+      name
       createdAt
       updatedAt
       owner
@@ -25,9 +26,10 @@ export const listGarments = /* GraphQL */ `
     listGarments(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        color
         area
-        own
+        color
+        brand
+        name
         createdAt
         updatedAt
         owner
