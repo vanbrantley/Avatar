@@ -1,6 +1,4 @@
 import Avatar from './Avatar';
-import LabMenu from './LabMenu';
-import ClosetMenu from './ClosetMenu';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
@@ -26,8 +24,7 @@ const TabletLayout = observer(() => {
                     <div className="col-span-6">
                         <br></br>
                         <br></br>
-                        {mode === "lab" && <LabMenu />}
-                        {mode === "closet" && <ClosetMenu />}
+                        <p>Menu</p>
                     </div>
                 </div>
             </div>

@@ -12,8 +12,6 @@ const Avatar = observer((props: IAvatarProps) => {
 
     const { hatColor, faceColor, topColor, bottomColor, shoeColor, handleAreaChange } = store;
 
-    const URL_PREFIX = "https://avatarb886f49d0baa41e28fcf4484f402480e164949-dev.s3.amazonaws.com/public";
-
     return (
 
         <div className="grid gap-0">

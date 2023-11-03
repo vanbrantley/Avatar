@@ -1,9 +1,8 @@
 import { Garment } from "@/API";
-import { SwatchObject } from '@/lib/types';
 
-export default function groupByArea(garments: Garment[]): { [key: string]: SwatchObject[] } {
+export default function groupByArea(garments: Garment[]): { [key: string]: Garment[] } {
 
-    const grouped: { [key: string]: SwatchObject[] } = {
+    const grouped: { [key: string]: Garment[] } = {
         "hat": [],
         "top": [],
         "bottom": [],
@@ -11,9 +10,8 @@ export default function groupByArea(garments: Garment[]): { [key: string]: Swatc
     };
 
     garments.forEach((garment) => {
-        const { area, color, id } = garment;
-        const swatchObject: SwatchObject = { color: color, id: id };
-        grouped[area].push(swatchObject);
+        const { area } = garment;
+        grouped[area].push(garment);
     });
 
     return grouped;

@@ -79,6 +79,9 @@ const Signup = observer(() => {
             const amplifyUser = await Auth.signIn(username, password);
             if (amplifyUser) {
                 initializeComplexion(amplifyUser.getUsername());
+
+                // add garments to DB from store swatch arrays if they exist
+
                 setNavbarOpen(false);
                 router.push(`/`);
             }
