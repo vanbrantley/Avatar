@@ -16,6 +16,12 @@ const Header = observer(function Header() {
     const { user } = useUser();
     const router = useRouter();
 
+    let username = "";
+
+    if (user) {
+        username = user?.getUsername();
+    }
+
     return (
 
         <>
@@ -52,7 +58,10 @@ const Header = observer(function Header() {
                 <div className="flex items-center">
 
                     {user ? (
-                        <div className="text-sm lg:flex-grow">
+                        <div className="flex text-sm lg:flex-grow">
+
+                            <p className="mr-8" style={{ fontFamily: "Verdana" }}>{username}</p>
+
                             <button
                                 onClick={() => signUserOut()}
                                 className="block mt-4 lg:inline-block lg:mt-0 text-white mr-4"
