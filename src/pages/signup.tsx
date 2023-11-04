@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Alert, Button, Grid, Snackbar, TextField } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Auth } from "aws-amplify";
+import { API, Auth } from "aws-amplify";
+import { graphqlOperation } from '@aws-amplify/api';
+import { createGarment } from '../graphql/mutations';
 import { CognitoUser } from "@aws-amplify/auth";
 import { useRouter } from "next/router";
 import { observer } from 'mobx-react-lite';
@@ -19,7 +21,7 @@ interface IFormInput {
 const Signup = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { setNavbarOpen, initializeComplexion } = store;
+    const { setNavbarOpen, initializeComplexion, userHats, userTops, userBottoms, userShoes } = store;
 
     const router = useRouter();
     const [open, setOpen] = useState(false);
@@ -81,6 +83,24 @@ const Signup = observer(() => {
                 initializeComplexion(amplifyUser.getUsername());
 
                 // add garments to DB from store swatch arrays if they exist
+                const arraysToInsert = [userHats, userTops, userBottoms, userShoes];
+
+                const insertPromises = arraysToInsert.map(async (array) => {
+                    if (array && array.length > 0) {
+                        const createGarmentPromises = array.map(garment => {
+                            const createNewGarmentInput = {
+                                color: garment.color,
+                                area: garment.area,
+                                brand: garment.brand,
+                                name: garment.name,
+                            };
+                            return API.graphql(graphqlOperation(createGarment, { input: createNewGarmentInput }));
+                        });
+                        return Promise.all(createGarmentPromises);
+                    }
+                });
+
+                await Promise.all(insertPromises);
 
                 setNavbarOpen(false);
                 router.push(`/`);
@@ -92,7 +112,6 @@ const Signup = observer(() => {
     }
 
     return (
-
 
         <div className="flex flex-col h-screen mt-44">
 
