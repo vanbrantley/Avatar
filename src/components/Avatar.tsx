@@ -11,7 +11,9 @@ const Avatar = observer((props: IAvatarProps) => {
 
     const store = useContext(AppStoreContext);
 
-    const { hatColor, faceColor, topColor, bottomColor, shoeColor, handleAreaChange } = store;
+    const { hatColor, topColor, bottomColor, shoeColor, faceColor,
+        selectedHat, selectedTop, selectedBottom, selectedShoe, selectedCategory,
+        handleAreaChange, colorPickerOpen, selectedColor } = store;
 
     return (
 
@@ -20,7 +22,12 @@ const Avatar = observer((props: IAvatarProps) => {
                 onClick={() => handleAreaChange(GarmentType.Hat)}
                 className={`${props.mini ? 'h-[25px] w-10' : 'h-[50px] w-20'} mx-auto cursor-pointer`}
                 style={{
-                    backgroundColor: hatColor,
+                    // backgroundColor: hatColor,
+                    // backgroundColor: selectedHat.color,
+                    backgroundColor:
+                        colorPickerOpen && selectedCategory === GarmentType.Hat
+                            ? selectedColor
+                            : selectedHat.color,
                     borderTopLeftRadius: '60% 90%',
                     borderTopRightRadius: '60% 90%',
                     borderBottomLeftRadius: "10%",
@@ -39,7 +46,12 @@ const Avatar = observer((props: IAvatarProps) => {
                 onClick={() => handleAreaChange(GarmentType.Top)}
                 className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}
                 style={{
-                    backgroundColor: topColor,
+                    // backgroundColor: topColor,
+                    // backgroundColor: selectedTop.color,
+                    backgroundColor:
+                        colorPickerOpen && selectedCategory === GarmentType.Top
+                            ? selectedColor
+                            : selectedTop.color,
                     borderTopLeftRadius: '30%',
                     borderTopRightRadius: '30%',
                 }}
@@ -49,12 +61,26 @@ const Avatar = observer((props: IAvatarProps) => {
             <div
                 onClick={() => handleAreaChange(GarmentType.Bottom)}
                 className={`${props.mini ? 'h-[110px] w-20' : 'h-[220px] w-40'} mx-auto cursor-pointer`}
-                style={{ backgroundColor: bottomColor }}
+                style={{
+                    // backgroundColor: bottomColor
+                    // backgroundColor: selectedBottom.color,
+                    backgroundColor:
+                        colorPickerOpen && selectedCategory === GarmentType.Bottom
+                            ? selectedColor
+                            : selectedBottom.color
+                }}
             ></div>
             <div
                 onClick={() => handleAreaChange(GarmentType.Shoe)}
                 className={`${props.mini ? 'h-[36px] w-[110px]' : 'h-[72px] w-[220px]'} mx-auto rounded-full cursor-pointer`}
-                style={{ backgroundColor: shoeColor }}
+                style={{
+                    // backgroundColor: shoeColor
+                    // backgroundColor: selectedShoe.color,
+                    backgroundColor:
+                        colorPickerOpen && selectedCategory === GarmentType.Shoe
+                            ? selectedColor
+                            : selectedShoe.color
+                }}
             ></div>
         </div>
 

@@ -36,18 +36,18 @@ const Header = observer(function Header() {
                     >
                         <AccessibilityIcon className="w-6 h-6" />
                     </button>
-                    <span className="font-semibold text-xl text-white tracking-tight" style={{ fontFamily: "Verdana" }}>Avatar</span>
+                    <span className="font-semibold text-xl text-white tracking-tight" style={{ fontFamily: "Verdana" }}>MyCloset</span>
                     <div>
 
                         <button
                             onClick={() => handleModeChange(Mode.Preview)}
-                            className={`${(mode === Mode.Preview || mode === Mode.Add) ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4 ml-8`}
+                            className={`${(mode === Mode.Preview) ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4 ml-8`}
                             style={{ fontFamily: "Verdana" }}>
                             Preview
                         </button>
                         <button
                             onClick={() => handleModeChange(Mode.Closet)}
-                            className={`${(mode === Mode.Closet || mode === Mode.Details) ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
+                            className={`${(mode === Mode.Closet || mode === Mode.Details || mode === Mode.Add) ? 'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
                             style={{ fontFamily: "Verdana" }}>
                             Closet
                         </button>

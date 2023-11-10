@@ -5,7 +5,8 @@ import { GarmentType } from '@/lib/types';
 
 interface ISwatchProps {
     color: string,
-    area: GarmentType
+    area: GarmentType,
+    selected: boolean
 }
 
 const Swatch = observer((props: ISwatchProps) => {
@@ -13,8 +14,12 @@ const Swatch = observer((props: ISwatchProps) => {
     const store = useContext(AppStoreContext);
     const { handleColorChangeSwatch } = store;
 
+    // have the swatch take in the whole Garment
+
     return (
-        <div onClick={() => handleColorChangeSwatch(props.color, props.area)} className="w-20 h-10 rounded-md cursor-pointer" style={{ backgroundColor: props.color }}></div>
+        <div onClick={() => handleColorChangeSwatch(props.color, props.area)}
+            className="w-20 h-10 rounded-md cursor-pointer"
+            style={{ backgroundColor: props.color, border: props.selected ? "4px solid white" : "" }}></div>
     );
 
 });

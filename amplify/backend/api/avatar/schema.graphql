@@ -10,6 +10,14 @@ type Garment @model @auth(rules: [{ allow: owner, operations: [create, update, d
   name: String!
 }
 
+# type Outfit @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
+#   id: ID!
+#   hat: Garment @connection
+#   top: Garment @connection
+#   bottom: Garment @connection
+#   shoe: Garment @connection
+# }
+
 type Palette @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
   id: ID!
   hatColor: String!
