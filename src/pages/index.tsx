@@ -71,10 +71,9 @@ const Home = observer(() => {
 
   return (
     <>
-      {/* {layout === Layout.Desktop && <DesktopLayout />}
-      {layout === Layout.Tablet && <TabletLayout />}
-      {layout === Layout.Mobile && <MobileLayout />} */}
-      <DesktopLayout />
+      {layout === Layout.Desktop && <DesktopLayout />}
+      {/* {layout === Layout.Tablet && <TabletLayout />} */}
+      {layout === Layout.Mobile && <MobileLayout />}
     </>
   );
 

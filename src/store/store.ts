@@ -12,14 +12,71 @@ import { v4 as uuidv4 } from 'uuid';
 class AppStore {
 
     // state variables
-    hatColor = "#000000";
-    faceColor = "#a18057";
-    topColor = "#ffffff";
-    bottomColor = "#5687b8";
-    shoeColor = "#000000";
 
-    selectedCategory: GarmentType = GarmentType.Top;
-    selectedColor = this.topColor;
+    defaultHat: Garment = {
+        __typename: "Garment",
+        id: uuidv4(),
+        area: GarmentTypeStrings[GarmentType.Hat],
+        color: "#000000",
+        brand: "",
+        name: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        owner: null
+    }
+
+    defaultTop: Garment = {
+        __typename: "Garment",
+        id: uuidv4(),
+        area: GarmentTypeStrings[GarmentType.Top],
+        color: "#ffffff",
+        brand: "",
+        name: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        owner: null
+    }
+
+    defaultBottom: Garment = {
+        __typename: "Garment",
+        id: uuidv4(),
+        area: GarmentTypeStrings[GarmentType.Bottom],
+        color: "#5687b8",
+        brand: "",
+        name: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        owner: null
+    }
+
+    defaultShoe: Garment = {
+        __typename: "Garment",
+        id: uuidv4(),
+        area: GarmentTypeStrings[GarmentType.Shoe],
+        color: "#000000",
+        brand: "",
+        name: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        owner: null
+    }
+
+    selectedHat = this.defaultHat;
+    selectedTop = this.defaultTop;
+    selectedBottom = this.defaultBottom;
+    selectedShoe = this.defaultShoe;
+
+    hatColor = this.selectedHat.color;
+    faceColor = "#a18057";
+    topColor = this.selectedTop.color;
+    bottomColor = this.selectedBottom.color;
+    shoeColor = this.selectedShoe.color;
+
+    // hatColor = "#000000";
+    // faceColor = "#a18057";
+    // topColor = "#ffffff";
+    // bottomColor = "#5687b8";
+    // shoeColor = "#000000";
 
     selectedGarment: Garment | null = null;
 
@@ -27,6 +84,9 @@ class AppStore {
     userTops: Garment[] = [];
     userBottoms: Garment[] = [];
     userShoes: Garment[] = [];
+
+    selectedCategory: GarmentType = GarmentType.Top;
+    selectedColor = this.topColor; // stores color picker's color
 
     hatLock = false;
     topLock = false;
@@ -37,7 +97,7 @@ class AppStore {
     selectedPalette = "";
 
     navbarOpen = false;
-
+    colorPickerOpen = false;
     heartFilled = false;
 
     showPicker = true;
@@ -59,13 +119,17 @@ class AppStore {
             topColor: observable,
             bottomColor: observable,
             shoeColor: observable,
-            selectedCategory: observable,
-            selectedColor: observable,
+            selectedHat: observable,
+            selectedTop: observable,
+            selectedBottom: observable,
+            selectedShoe: observable,
             selectedGarment: observable,
             userHats: observable,
             userTops: observable,
             userBottoms: observable,
             userShoes: observable,
+            selectedCategory: observable,
+            selectedColor: observable,
             hatLock: observable,
             topLock: observable,
             bottomLock: observable,
@@ -73,6 +137,7 @@ class AppStore {
             palettes: observable,
             selectedPalette: observable,
             navbarOpen: observable,
+            colorPickerOpen: observable,
             heartFilled: observable,
             showPicker: observable,
             showHelp: observable,
@@ -106,12 +171,20 @@ class AppStore {
         this.shoeColor = color;
     });
 
-    setSelectedCategory = action((category: GarmentType) => {
-        this.selectedCategory = category;
+    setSelectedHat = action((selected: Garment) => {
+        this.selectedHat = selected;
     });
 
-    setSelectedColor = action((color: string) => {
-        this.selectedColor = color;
+    setSelectedTop = action((selected: Garment) => {
+        this.selectedTop = selected;
+    });
+
+    setSelectedBottom = action((selected: Garment) => {
+        this.selectedBottom = selected;
+    });
+
+    setSelectedShoe = action((selected: Garment) => {
+        this.selectedShoe = selected;
     });
 
     setSelectedGarment = action((garment: Garment | null) => {
@@ -132,6 +205,14 @@ class AppStore {
 
     setUserShoes = action((shoes: Garment[]) => {
         this.userShoes = shoes;
+    });
+
+    setSelectedCategory = action((category: GarmentType) => {
+        this.selectedCategory = category;
+    });
+
+    setSelectedColor = action((color: string) => {
+        this.selectedColor = color;
     });
 
     setHatLock = action((locked: boolean) => {
@@ -160,6 +241,10 @@ class AppStore {
 
     setNavbarOpen = action((isOpen: boolean) => {
         this.navbarOpen = isOpen;
+    });
+
+    setColorPickerOpen = action((isOpen: boolean) => {
+        this.colorPickerOpen = isOpen;
     });
 
     setHeartFilled = action((filled: boolean) => {
@@ -207,19 +292,19 @@ class AppStore {
 
         switch (area) {
             case GarmentType.Hat:
-                this.setSelectedColor(this.hatColor);
+                this.setSelectedColor(this.selectedHat.color);
                 break;
             // case "face":
             //     this.setSelectedColor(this.faceColor);
             //     break;
             case GarmentType.Top:
-                this.setSelectedColor(this.topColor);
+                this.setSelectedColor(this.selectedTop.color);
                 break;
             case GarmentType.Bottom:
-                this.setSelectedColor(this.bottomColor);
+                this.setSelectedColor(this.selectedBottom.color);
                 break;
             case GarmentType.Shoe:
-                this.setSelectedColor(this.shoeColor);
+                this.setSelectedColor(this.selectedShoe.color);
                 break;
         }
     });
@@ -379,6 +464,12 @@ class AppStore {
 
     });
 
+    // Randomly select IDs from userGarments for each category
+    getRandomGarment = (garments: Garment[]) => {
+        const randomIndex = Math.floor(Math.random() * garments.length);
+        return garments[randomIndex] || '';
+    };
+
     fetchGarmentsFromDB = action(async (): Promise<Garment[]> => {
         try {
             const response = (await API.graphql<GraphQLQuery<ListGarmentsQuery>>(graphqlOperation(listGarments))) as GraphQLResult<ListGarmentsQuery>;
@@ -390,6 +481,47 @@ class AppStore {
                 this.setUserTops(grouped["top"]);
                 this.setUserBottoms(grouped["bottom"]);
                 this.setUserShoes(grouped["shoe"]);
+
+                // Assign random garment IDs to selected variables
+                // set selectedColor 
+                if (this.userHats.length !== 0) {
+                    const randomHat = this.getRandomGarment(this.userHats);
+                    this.setSelectedHat(randomHat);
+                }
+
+                if (this.userTops.length !== 0) {
+                    const randomTop = this.getRandomGarment(this.userTops);
+                    this.setSelectedTop(randomTop);
+                    this.setSelectedColor(randomTop.color);
+                }
+
+                if (this.userBottoms.length !== 0) {
+                    const randomBottom = this.getRandomGarment(this.userBottoms);
+                    this.setSelectedBottom(randomBottom);
+                    this.setSelectedColor(randomBottom.color);
+                }
+
+                if (this.userShoes.length !== 0) {
+                    const randomShoe = this.getRandomGarment(this.userShoes);
+                    this.setSelectedShoe(randomShoe);
+                    this.setSelectedColor(randomShoe.color);
+                }
+
+                switch (this.selectedCategory) {
+                    case GarmentType.Hat:
+                        this.setSelectedColor(this.selectedHat.color);
+                        break;
+                    case GarmentType.Top:
+                        this.setSelectedColor(this.selectedTop.color);
+                        break;
+                    case GarmentType.Bottom:
+                        this.setSelectedColor(this.selectedBottom.color);
+                        break;
+                    case GarmentType.Shoe:
+                        this.setSelectedColor(this.selectedShoe.color);
+                        break;
+                }
+
                 return userGarments;
             } else {
                 throw new Error("Could not get garments");
@@ -499,8 +631,6 @@ class AppStore {
                 name: name
             };
 
-            // console.log(updateGarmentInput);
-
             const response = await API.graphql<GraphQLQuery<UpdateGarmentMutation>>(graphqlOperation(updateGarment, {
                 input: updateGarmentInput
             })) as GraphQLResult<UpdateGarmentMutation>;
@@ -509,7 +639,9 @@ class AppStore {
                 const updatedGarment = data.updateGarment as Garment;
                 console.log("Garment updated successfully: ", updatedGarment);
 
-                // update the garment in the userGarments state array
+                // update the garment in the userGarments area state array
+                // update the selected area garment
+
                 let updatedArray: Garment[];
                 switch (area) {
                     case "hat":
@@ -518,6 +650,7 @@ class AppStore {
                             ...(this.userHats.filter(garment => garment.id !== updatedGarment.id) as Garment[])
                         ];
                         this.setUserHats(updatedArray);
+                        this.setSelectedHat(updatedGarment);
                         break;
                     case "top":
                         updatedArray = [
@@ -525,6 +658,7 @@ class AppStore {
                             ...(this.userTops.filter(garment => garment.id !== updatedGarment.id) as Garment[])
                         ];
                         this.setUserTops(updatedArray);
+                        this.setSelectedTop(updatedGarment);
                         break;
                     case "bottom":
                         updatedArray = [
@@ -532,6 +666,7 @@ class AppStore {
                             ...(this.userBottoms.filter(garment => garment.id !== updatedGarment.id) as Garment[])
                         ];
                         this.setUserBottoms(updatedArray);
+                        this.setSelectedBottom(updatedGarment);
                         break;
                     case "shoe":
                         updatedArray = [
@@ -539,8 +674,8 @@ class AppStore {
                             ...(this.userShoes.filter(garment => garment.id !== updatedGarment.id) as Garment[])
                         ];
                         this.setUserShoes(updatedArray);
+                        this.setSelectedShoe(updatedGarment);
                         break;
-
                 }
 
             } else {
@@ -566,19 +701,46 @@ class AppStore {
 
             if (data && data.deleteGarment) {
                 const removedGarment = data.deleteGarment;
+
                 // remove removedGarment from garments array
+                // reset selected area garment
+
                 switch (area) {
                     case "hat":
                         this.setUserHats(this.userHats.filter((swatch) => swatch.id !== removedGarment.id));
+                        if (this.userHats.length === 0) {
+                            this.setSelectedHat(this.defaultHat);
+                        } else {
+                            const randomHat = this.getRandomGarment(this.userHats);
+                            this.setSelectedHat(randomHat);
+                        }
                         break;
                     case "top":
                         this.setUserTops(this.userTops.filter((swatch) => swatch.id !== removedGarment.id));
+                        if (this.userTops.length === 0) {
+                            this.setSelectedTop(this.defaultTop);
+                        } else {
+                            const randomTop = this.getRandomGarment(this.userTops);
+                            this.setSelectedTop(randomTop);
+                        }
                         break;
                     case "bottom":
                         this.setUserBottoms(this.userBottoms.filter((swatch) => swatch.id !== removedGarment.id));
+                        if (this.userBottoms.length === 0) {
+                            this.setSelectedBottom(this.defaultBottom);
+                        } else {
+                            const randomBottom = this.getRandomGarment(this.userBottoms);
+                            this.setSelectedBottom(randomBottom);
+                        }
                         break;
                     case "shoe":
                         this.setUserShoes(this.userShoes.filter((swatch) => swatch.id !== removedGarment.id));
+                        if (this.userShoes.length === 0) {
+                            this.setSelectedShoe(this.defaultShoe);
+                        } else {
+                            const randomShoe = this.getRandomGarment(this.userShoes);
+                            this.setSelectedShoe(randomShoe);
+                        }
                         break;
                 }
 

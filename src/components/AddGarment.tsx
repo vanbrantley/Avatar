@@ -31,7 +31,7 @@ const AddGarment = observer((props: IAddGarmentProps) => {
     const { user } = useUser();
     const store = useContext(AppStoreContext);
     const { selectedColor, handleColorChangePicker, selectedCategory, setSelectedCategory, handleAreaChange,
-        addGarmentToDB, addGarmentLocal, handleModeChange, setMode } = store;
+        addGarmentToDB, addGarmentLocal, handleModeChange, setMode, setColorPickerOpen } = store;
 
     const handleAreaChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
 
@@ -76,13 +76,19 @@ const AddGarment = observer((props: IAddGarmentProps) => {
         if (user) addGarmentToDB(selectedCategory, selectedColor, brand, name);
         else addGarmentLocal(selectedCategory, selectedColor, brand, name);
         handleModeChange(Mode.Closet);
+        setColorPickerOpen(false);
+    };
+
+    const handleBackButtonClick = () => {
+        setMode(Mode.Closet);
+        setColorPickerOpen(false);
     };
 
     return (
         <div className="flex flex-col">
 
             <div>
-                <IconButton size="large" onClick={() => setMode(Mode.Closet)}>
+                <IconButton size="large" onClick={handleBackButtonClick}>
                     <ArrowBackIcon fontSize="large" style={{ color: "white" }} />
                 </IconButton>
             </div>

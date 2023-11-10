@@ -19,11 +19,11 @@ const MobileLayout = observer(() => {
         <>
 
             <div className="flex flex-col h-screen">
-                <Header />
+                {/* <Header /> */}
 
                 <div className="flex justify-between items-center flex-grow">
                     <div className="w-full h-full mx-auto">
-                        <div className="grid grid-cols-12" style={{ height: "60%" }}>
+                        <div className="grid grid-cols-12" style={{ height: "70%" }}>
                             <div className="col-span-3">
                             </div>
                             <div className="col-span-6 flex justify-center items-center">
@@ -33,7 +33,11 @@ const MobileLayout = observer(() => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col items-center justify-center bg-yellow-800" style={{ height: "30%" }}></div>
+                        <div className="flex flex-col items-center justify-center bg-yellow-800" style={{ height: "20%" }}>
+
+                            {/* Conditionally render Avatar or List button based on showAvatar state boolean variable */}
+
+                        </div>
                         <div style={{ height: "10%" }}></div>
                     </div>
 
@@ -41,20 +45,20 @@ const MobileLayout = observer(() => {
 
             </div>
 
-            <div className="flex flex-col h-screen">
+            {/* <div className="flex flex-col h-screen">
                 <div style={{ height: "5%" }}></div>
 
                 <Closet />
 
-            </div>
+            </div> */}
 
 
-            <div className="flex flex-col h-screen">
+            {/* <div className="flex flex-col h-screen">
                 <div style={{ height: "5%" }}></div>
 
                 <AddGarment mobile={true} />
 
-            </div>
+            </div> */}
 
         </>
     );

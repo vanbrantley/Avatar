@@ -12,6 +12,11 @@ const Preview = observer(() => {
     const store = useContext(AppStoreContext);
     const { userHats, userTops, userBottoms, userShoes } = store;
 
+    const selectedHat = "0f8a13e1-3771-4fcf-95d4-434502512c70";
+    const selectedTop = "caf6842b-6fec-4b11-9778-f84496712170";
+    const selectedBottom = "6db99140-7f9f-4001-8880-b50233f3e1ec";
+    const selectedShoe = "027f95ae-44ec-4598-991f-8988c2234d74";
+
     return (
         <div className="h-full space-y-8">
             <div className="flex flex-col space-y-4">
@@ -25,7 +30,8 @@ const Preview = observer(() => {
                                 key={swatch.id}
                                 className="w-20 h-w0"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Hat} />
+                                {/* Have the swatch take in the whole Garment as its prop */}
+                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Hat} selected={swatch.id === selectedHat} />
                             </div>
                         ))}
                     </div>
@@ -47,7 +53,7 @@ const Preview = observer(() => {
                                 key={swatch.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Top} />
+                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Top} selected={swatch.id === selectedTop} />
                             </div>
                         ))}
                     </div>
@@ -69,7 +75,7 @@ const Preview = observer(() => {
                                 key={swatch.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Bottom} />
+                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Bottom} selected={swatch.id === selectedBottom} />
                             </div>
                         ))}
                     </div>
@@ -91,7 +97,7 @@ const Preview = observer(() => {
                                 key={swatch.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Shoe} />
+                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Shoe} selected={swatch.id === selectedShoe} />
                             </div>
                         ))}
                     </div>

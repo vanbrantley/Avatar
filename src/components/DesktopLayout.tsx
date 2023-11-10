@@ -11,6 +11,10 @@ import AddGarment from './AddGarment';
 import GarmentDetails from './GarmentDetails';
 import { Mode } from '../lib/types';
 
+import { IconButton } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 const DesktopLayout = observer(() => {
 
     const store = useContext(AppStoreContext);
@@ -27,8 +31,20 @@ const DesktopLayout = observer(() => {
                         <br></br>
                         <Palette />
                     </div>
-                    <div className="col-start-2 col-span-6 flex items-center justify-center">
+                    {/* <div className="col-start-2 col-span-6 flex items-center justify-center">
                         <Avatar mini={false} />
+                    </div> */}
+                    <div className="col-start-2 col-span-6 flex items-center justify-center">
+
+                        <IconButton size="large">
+                            <ArrowBackIosIcon fontSize="large" style={{ color: "white" }} />
+                        </IconButton>
+
+                        <Avatar mini={false} />
+
+                        <IconButton size="large">
+                            <ArrowForwardIosIcon fontSize="large" style={{ color: "white" }} />
+                        </IconButton>
                     </div>
                     <div className="col-span-5 overflow-auto flex flex-col px-16 py-4" style={{ backgroundColor: "#2b2b2b" }}>
 
