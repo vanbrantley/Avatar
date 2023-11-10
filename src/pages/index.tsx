@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 const DesktopLayout = dynamic(() => import('@/components/DesktopLayout'));
-const TabletLayout = dynamic(() => import('@/components/TabletLayout'));
+// const TabletLayout = dynamic(() => import('@/components/TabletLayout'));
 const MobileLayout = dynamic(() => import('@/components/MobileLayout'));
 
 import { useEffect, useContext } from 'react';
@@ -72,8 +72,8 @@ const Home = observer(() => {
   return (
     <>
       {layout === Layout.Desktop && <DesktopLayout />}
-      {/* {layout === Layout.Tablet && <TabletLayout />} */}
       {layout === Layout.Mobile && <MobileLayout />}
+      {/* {layout === Layout.Tablet && <TabletLayout />} */}
     </>
   );
 

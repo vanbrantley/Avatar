@@ -381,11 +381,33 @@ class AppStore {
 
     });
 
+    handleSwatchClick = action((garment: Garment) => {
+
+        switch (garment.area) {
+            case GarmentTypeStrings[GarmentType.Hat]:
+                this.setSelectedHat(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Top]:
+                this.setSelectedTop(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Bottom]:
+                this.setSelectedBottom(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Shoe]:
+                this.setSelectedShoe(garment);
+                break;
+        }
+
+    })
+
+    // depreceated - can be removed - replaced by handleSwatchClick ^
     handleColorChangeSwatch = action((color: string, area: GarmentType) => {
 
         // const isAreaLocked = this.checkAreaLock(area);
 
         // if (!isAreaLocked) {
+
+        // 
 
         switch (area) {
             case GarmentType.Hat:
@@ -590,18 +612,23 @@ class AppStore {
             if (data && data.createGarment) {
                 const createdGarment = data.createGarment;
                 // add createdGarment to user garment group
+                // make createdGarmnet the selected area garment
                 switch (area) {
                     case GarmentType.Hat:
                         this.setUserHats([createdGarment, ...this.userHats]);
+                        this.setSelectedHat(createdGarment);
                         break;
                     case GarmentType.Top:
                         this.setUserTops([createdGarment, ...this.userTops]);
+                        this.setSelectedTop(createdGarment);
                         break;
                     case GarmentType.Bottom:
                         this.setUserBottoms([createdGarment, ...this.userBottoms]);
+                        this.setSelectedBottom(createdGarment);
                         break;
                     case GarmentType.Shoe:
                         this.setUserShoes([createdGarment, ...this.userShoes]);
+                        this.setSelectedShoe(createdGarment);
                         break;
                 }
 
@@ -870,6 +897,7 @@ class AppStore {
         localStorage.removeItem('refreshToken');
 
         try {
+
             await Auth.signOut();
             this.handleModeChange(Mode.Closet);
 
@@ -884,11 +912,11 @@ class AppStore {
             this.setSelectedCategory(GarmentType.Top);
             this.setSelectedColor(this.topColor);
 
-            this.setHatColor("#000000");
-            this.setFaceColor("#a18057");
-            this.setTopColor("#ffffff");
-            this.setBottomColor("#5687b8");
-            this.setShoeColor("#000000");
+            this.setSelectedHat(this.defaultHat);
+            this.setSelectedTop(this.defaultTop);
+            this.setSelectedBottom(this.defaultBottom);
+            this.setSelectedShoe(this.defaultShoe);
+
 
             this.setUserHats([]);
             this.setUserTops([]);
