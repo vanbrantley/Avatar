@@ -5,17 +5,11 @@ import Swatch from './Swatch';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
-import { GarmentType } from '@/lib/types';
 
 const Preview = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { userHats, userTops, userBottoms, userShoes } = store;
-
-    const selectedHat = "0f8a13e1-3771-4fcf-95d4-434502512c70";
-    const selectedTop = "caf6842b-6fec-4b11-9778-f84496712170";
-    const selectedBottom = "6db99140-7f9f-4001-8880-b50233f3e1ec";
-    const selectedShoe = "027f95ae-44ec-4598-991f-8988c2234d74";
+    const { userHats, userTops, userBottoms, userShoes, selectedHat, selectedTop, selectedBottom, selectedShoe } = store;
 
     return (
         <div className="h-full space-y-8">
@@ -25,13 +19,12 @@ const Preview = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                        {userHats.map((swatch) => (
+                        {userHats.map((garment) => (
                             <div
-                                key={swatch.id}
+                                key={garment.id}
                                 className="w-20 h-w0"
                             >
-                                {/* Have the swatch take in the whole Garment as its prop */}
-                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Hat} selected={swatch.id === selectedHat} />
+                                <Swatch key={garment.id} garment={garment} selected={garment.id === selectedHat.id} />
                             </div>
                         ))}
                     </div>
@@ -48,12 +41,12 @@ const Preview = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                        {userTops.map((swatch) => (
+                        {userTops.map((garment) => (
                             <div
-                                key={swatch.id}
+                                key={garment.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Top} selected={swatch.id === selectedTop} />
+                                <Swatch key={garment.id} garment={garment} selected={garment.id === selectedTop.id} />
                             </div>
                         ))}
                     </div>
@@ -70,12 +63,12 @@ const Preview = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                        {userBottoms.map((swatch) => (
+                        {userBottoms.map((garment) => (
                             <div
-                                key={swatch.id}
+                                key={garment.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Bottom} selected={swatch.id === selectedBottom} />
+                                <Swatch key={garment.id} garment={garment} selected={garment.id === selectedBottom.id} />
                             </div>
                         ))}
                     </div>
@@ -92,12 +85,12 @@ const Preview = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                        {userShoes.map((swatch) => (
+                        {userShoes.map((garment) => (
                             <div
-                                key={swatch.id}
+                                key={garment.id}
                                 className="w-20 h-10"
                             >
-                                <Swatch key={swatch.id} color={swatch.color} area={GarmentType.Shoe} selected={swatch.id === selectedShoe} />
+                                <Swatch key={garment.id} garment={garment} selected={garment.id === selectedShoe.id} />
                             </div>
                         ))}
                     </div>

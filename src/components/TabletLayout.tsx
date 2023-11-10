@@ -13,7 +13,7 @@ const TabletLayout = observer(() => {
     return (
 
         <div className="h-screen flex flex-col">
-            <Header />
+            <Header isMobile={false} />
             <div className="flex-grow flex overflow-y-auto">
                 <div className="grid grid-cols-12 w-full h-full">
                     <div className="col-span-6">
