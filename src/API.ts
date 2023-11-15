@@ -84,6 +84,48 @@ export type DeleteGarmentInput = {
   id: string,
 };
 
+export type CreateOutfitInput = {
+  id?: string | null,
+  hatId: string,
+  topId: string,
+  bottomId: string,
+  shoeId: string,
+};
+
+export type ModelOutfitConditionInput = {
+  hatId?: ModelStringInput | null,
+  topId?: ModelStringInput | null,
+  bottomId?: ModelStringInput | null,
+  shoeId?: ModelStringInput | null,
+  and?: Array< ModelOutfitConditionInput | null > | null,
+  or?: Array< ModelOutfitConditionInput | null > | null,
+  not?: ModelOutfitConditionInput | null,
+};
+
+export type Outfit = {
+  __typename: "Outfit",
+  id: string,
+  hatId: string,
+  topId: string,
+  bottomId: string,
+  shoeId: string,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type UpdateOutfitInput = {
+  id: string,
+  hatId?: string | null,
+  topId?: string | null,
+  bottomId?: string | null,
+  shoeId?: string | null,
+};
+
+export type DeleteOutfitInput = {
+  id: string,
+};
+
 export type CreatePaletteInput = {
   id?: string | null,
   hatColor: string,
@@ -189,6 +231,23 @@ export type ModelGarmentConnection = {
   nextToken?: string | null,
 };
 
+export type ModelOutfitFilterInput = {
+  id?: ModelIDInput | null,
+  hatId?: ModelStringInput | null,
+  topId?: ModelStringInput | null,
+  bottomId?: ModelStringInput | null,
+  shoeId?: ModelStringInput | null,
+  and?: Array< ModelOutfitFilterInput | null > | null,
+  or?: Array< ModelOutfitFilterInput | null > | null,
+  not?: ModelOutfitFilterInput | null,
+};
+
+export type ModelOutfitConnection = {
+  __typename: "ModelOutfitConnection",
+  items:  Array<Outfit | null >,
+  nextToken?: string | null,
+};
+
 export type ModelPaletteFilterInput = {
   id?: ModelIDInput | null,
   hatColor?: ModelStringInput | null,
@@ -260,6 +319,16 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionOutfitFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  hatId?: ModelSubscriptionStringInput | null,
+  topId?: ModelSubscriptionStringInput | null,
+  bottomId?: ModelSubscriptionStringInput | null,
+  shoeId?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
+  or?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
+};
+
 export type ModelSubscriptionPaletteFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   hatColor?: ModelSubscriptionStringInput | null,
@@ -328,6 +397,63 @@ export type DeleteGarmentMutation = {
     color: string,
     brand: string,
     name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type CreateOutfitMutationVariables = {
+  input: CreateOutfitInput,
+  condition?: ModelOutfitConditionInput | null,
+};
+
+export type CreateOutfitMutation = {
+  createOutfit?:  {
+    __typename: "Outfit",
+    id: string,
+    hatId: string,
+    topId: string,
+    bottomId: string,
+    shoeId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type UpdateOutfitMutationVariables = {
+  input: UpdateOutfitInput,
+  condition?: ModelOutfitConditionInput | null,
+};
+
+export type UpdateOutfitMutation = {
+  updateOutfit?:  {
+    __typename: "Outfit",
+    id: string,
+    hatId: string,
+    topId: string,
+    bottomId: string,
+    shoeId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type DeleteOutfitMutationVariables = {
+  input: DeleteOutfitInput,
+  condition?: ModelOutfitConditionInput | null,
+};
+
+export type DeleteOutfitMutation = {
+  deleteOutfit?:  {
+    __typename: "Outfit",
+    id: string,
+    hatId: string,
+    topId: string,
+    bottomId: string,
+    shoeId: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -481,6 +607,48 @@ export type ListGarmentsQuery = {
   } | null,
 };
 
+export type GetOutfitQueryVariables = {
+  id: string,
+};
+
+export type GetOutfitQuery = {
+  getOutfit?:  {
+    __typename: "Outfit",
+    id: string,
+    hatId: string,
+    topId: string,
+    bottomId: string,
+    shoeId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type ListOutfitsQueryVariables = {
+  filter?: ModelOutfitFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListOutfitsQuery = {
+  listOutfits?:  {
+    __typename: "ModelOutfitConnection",
+    items:  Array< {
+      __typename: "Outfit",
+      id: string,
+      hatId: string,
+      topId: string,
+      bottomId: string,
+      shoeId: string,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetPaletteQueryVariables = {
   id: string,
 };
@@ -610,6 +778,63 @@ export type OnDeleteGarmentSubscription = {
     color: string,
     brand: string,
     name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnCreateOutfitSubscriptionVariables = {
+  filter?: ModelSubscriptionOutfitFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnCreateOutfitSubscription = {
+  onCreateOutfit?:  {
+    __typename: "Outfit",
+    id: string,
+    hatId: string,
+    topId: string,
+    bottomId: string,
+    shoeId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnUpdateOutfitSubscriptionVariables = {
+  filter?: ModelSubscriptionOutfitFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnUpdateOutfitSubscription = {
+  onUpdateOutfit?:  {
+    __typename: "Outfit",
+    id: string,
+    hatId: string,
+    topId: string,
+    bottomId: string,
+    shoeId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnDeleteOutfitSubscriptionVariables = {
+  filter?: ModelSubscriptionOutfitFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnDeleteOutfitSubscription = {
+  onDeleteOutfit?:  {
+    __typename: "Outfit",
+    id: string,
+    hatId: string,
+    topId: string,
+    bottomId: string,
+    shoeId: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,

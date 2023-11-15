@@ -14,7 +14,7 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { fetchPalettes, fetchGarmentsFromDB, fetchComplexion, layout, setLayout, setUser } = store;
+  const { fetchGarmentsFromDB, fetchComplexion, layout, setLayout, setUser } = store;
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,7 +45,6 @@ const Home = observer(() => {
     // Execute the fetchPalettes function when the component mounts
     if (user) {
       setUser(user);
-      fetchPalettes();
       fetchGarmentsFromDB();
       fetchComplexion(user.getUsername());
     }
@@ -54,7 +53,6 @@ const Home = observer(() => {
     const handlePageRefresh = () => {
       if (user) {
         setUser(user);
-        fetchPalettes();
         fetchGarmentsFromDB();
         fetchComplexion(user.getUsername());
       }

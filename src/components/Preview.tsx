@@ -28,11 +28,11 @@ const Preview = observer(() => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex">
+                    {/* <div className="flex">
                         <IconButton size="large">
                             <LockIcon fontSize="large" style={{ color: "#484848" }} />
                         </IconButton>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="flex flex-col space-y-4">
@@ -50,11 +50,11 @@ const Preview = observer(() => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex">
+                    {/* <div className="flex">
                         <IconButton size="large">
                             <LockIcon fontSize="large" style={{ color: "#484848" }} />
                         </IconButton>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="flex flex-col space-y-4">
@@ -72,11 +72,11 @@ const Preview = observer(() => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex">
+                    {/* <div className="flex">
                         <IconButton size="large">
                             <LockIcon fontSize="large" style={{ color: "#484848" }} />
                         </IconButton>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="flex flex-col space-y-4">
@@ -94,11 +94,11 @@ const Preview = observer(() => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex">
+                    {/* <div className="flex">
                         <IconButton size="large">
                             <LockIcon fontSize="large" style={{ color: "#484848" }} />
                         </IconButton>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

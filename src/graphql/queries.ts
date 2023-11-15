@@ -40,6 +40,44 @@ export const listGarments = /* GraphQL */ `
     }
   }
 `;
+export const getOutfit = /* GraphQL */ `
+  query GetOutfit($id: ID!) {
+    getOutfit(id: $id) {
+      id
+      hatId
+      topId
+      bottomId
+      shoeId
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const listOutfits = /* GraphQL */ `
+  query ListOutfits(
+    $filter: ModelOutfitFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listOutfits(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        hatId
+        topId
+        bottomId
+        shoeId
+        createdAt
+        updatedAt
+        owner
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const getPalette = /* GraphQL */ `
   query GetPalette($id: ID!) {
     getPalette(id: $id) {

@@ -13,15 +13,16 @@ import { IconButton } from '@mui/material';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import ListIcon from '@mui/icons-material/List';
 import { Mode } from '../lib/types';
+import Outfits from './Outfits';
 
 const MobileLayout = observer(() => {
 
     // const { user } = useUser();
 
     const store = useContext(AppStoreContext);
-    const { mode } = store;
+    const { mode, showAvatar, setShowAvatar } = store;
 
-    const [showAvatar, setShowAvatar] = useState<boolean>(true);
+    // const [showAvatar, setShowAvatar] = useState<boolean>(true);
 
     return (
         <>
@@ -52,12 +53,12 @@ const MobileLayout = observer(() => {
                                 {(mode === Mode.Closet) && <MobileCloset />}
                                 {(mode === Mode.Add) && <AddGarment mobile={true} />}
                                 {(mode === Mode.Details) && <GarmentDetails />}
+                                {(mode === Mode.Outfit) && <Outfits />}
                             </>
 
                         )}
 
                         <div className="absolute bottom-20 right-5 p-4">
-                            {/* <button className="bg-blue-500 text-white px-4 py-2 rounded">Button</button> */}
                             <IconButton size="large" onClick={() => setShowAvatar(!showAvatar)} style={{ backgroundColor: "#484848", borderRadius: "10%" }}>
                                 {showAvatar ? (
                                     <ListIcon fontSize="large" style={{ color: "white" }} />

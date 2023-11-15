@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { Garment } from '@/API';
-import { Mode } from '@/lib/types';
 import { GarmentType, GarmentTypeStrings } from '@/lib/types';
 
 import { IconButton } from '@mui/material';
@@ -12,9 +11,9 @@ import AddIcon from '@mui/icons-material/Add';
 const MobileCloset = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { userHats, userTops, userBottoms, userShoes, setMode, setSelectedGarment, handleAreaChange,
-        selectedHat, selectedTop, selectedBottom, selectedShoe, setSelectedHat, setSelectedTop, setSelectedBottom, setSelectedShoe,
-        selectedCategory, setSelectedColor, setColorPickerOpen } = store;
+    const { userHats, userTops, userBottoms, userShoes, handleAreaChange,
+        selectedHat, selectedTop, selectedBottom, selectedShoe,
+        selectedCategory, handlePlusButtonClick, handleGarmentClick, openGarmentDetails } = store;
 
     let selectedArray: Garment[] = [];
     let selectedGarmentId = "";
@@ -36,69 +35,6 @@ const MobileCloset = observer(() => {
             selectedArray = userShoes;
             selectedGarmentId = selectedShoe.id;
             break;
-    };
-
-    const openGarmentDetails = (garment: Garment) => {
-
-        // set garment to its area's selected garment
-        switch (garment.area) {
-
-            case "hat":
-                setSelectedHat(garment);
-                break;
-            case "top":
-                setSelectedTop(garment);
-                break;
-            case "bottom":
-                setSelectedBottom(garment);
-                break;
-            case "shoe":
-                setSelectedShoe(garment);
-                break;
-            default:
-                break;
-        }
-
-        // set selectedGarment
-        setSelectedGarment(garment);
-
-        // change mode to Details
-        setMode(Mode.Details);
-        setColorPickerOpen(true);
-
-    };
-
-    const handleGarmentClick = (garment: Garment) => {
-
-        const { area, color } = garment;
-
-        // switch based on garment's area
-
-        switch (area) {
-
-            case "hat":
-                setSelectedHat(garment);
-                break;
-            case "top":
-                setSelectedTop(garment);
-                break;
-            case "bottom":
-                setSelectedBottom(garment);
-                break;
-            case "shoe":
-                setSelectedShoe(garment);
-                break;
-            default:
-                break;
-        }
-
-        setSelectedColor(color);
-
-    };
-
-    const handlePlusClick = () => {
-        setMode(Mode.Add);
-        setColorPickerOpen(true);
     };
 
     return (
@@ -167,7 +103,7 @@ const MobileCloset = observer(() => {
 
             <div className="flex justify-end">
                 <div className="p-4">
-                    <IconButton size="large" onClick={handlePlusClick}>
+                    <IconButton size="large" onClick={handlePlusButtonClick}>
                         <AddIcon fontSize="large" style={{ color: 'white' }} />
                     </IconButton>
                 </div>

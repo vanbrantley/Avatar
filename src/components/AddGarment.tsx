@@ -30,35 +30,30 @@ const AddGarment = observer((props: IAddGarmentProps) => {
 
     const { user } = useUser();
     const store = useContext(AppStoreContext);
-    const { selectedColor, handleColorChangePicker, selectedCategory, setSelectedCategory, handleAreaChange,
-        addGarmentToDB, addGarmentLocal, handleModeChange, setMode, setColorPickerOpen } = store;
+    const { selectedColor, handleColorChangePicker, selectedCategory, handleAreaChange,
+        addGarmentToDB, addGarmentLocal, handleModeChange, handleBackButtonClick, setColorPickerOpen } = store;
 
     const handleAreaChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
 
         const area = event.target.value;
-        // console.log(area);
         let category: GarmentType;
 
         switch (area) {
-            case "hat":
+            case GarmentTypeStrings[GarmentType.Hat]:
                 category = GarmentType.Hat;
                 handleAreaChange(category);
-                setSelectedCategory(category);
                 break;
-            case "top":
+            case GarmentTypeStrings[GarmentType.Top]:
                 category = GarmentType.Top;
                 handleAreaChange(category);
-                setSelectedCategory(category);
                 break;
-            case "bottom":
+            case GarmentTypeStrings[GarmentType.Bottom]:
                 category = GarmentType.Bottom;
                 handleAreaChange(category);
-                setSelectedCategory(category);
                 break;
-            case "shoe":
+            case GarmentTypeStrings[GarmentType.Shoe]:
                 category = GarmentType.Shoe;
                 handleAreaChange(category);
-                setSelectedCategory(category);
                 break;
         }
 
@@ -76,11 +71,6 @@ const AddGarment = observer((props: IAddGarmentProps) => {
         if (user) addGarmentToDB(selectedCategory, selectedColor, brand, name);
         else addGarmentLocal(selectedCategory, selectedColor, brand, name);
         handleModeChange(Mode.Closet);
-        setColorPickerOpen(false);
-    };
-
-    const handleBackButtonClick = () => {
-        setMode(Mode.Closet);
         setColorPickerOpen(false);
     };
 
