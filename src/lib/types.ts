@@ -1,3 +1,5 @@
+import { Garment } from "@/API";
+
 export enum Layout {
     Desktop,
     Mobile,
@@ -9,7 +11,7 @@ export enum Mode {
     Preview,
     Add,
     Details,
-    Lab
+    Outfit
 };
 
 export enum GarmentType {
@@ -24,4 +26,20 @@ export const GarmentTypeStrings: Record<GarmentType, string> = {
     [GarmentType.Top]: "top",
     [GarmentType.Bottom]: "bottom",
     [GarmentType.Shoe]: "shoe",
+};
+
+export type Outfit = {
+    id: string;
+    hatId: string;
+    topId: string;
+    bottomId: string;
+    shoeId: string;
+};
+
+export type EmbeddedOutfit = {
+    id: string;
+    hat: Garment;
+    top: Garment;
+    bottom: Garment;
+    shoe: Garment;
 };

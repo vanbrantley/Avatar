@@ -56,6 +56,60 @@ export const onDeleteGarment = /* GraphQL */ `
     }
   }
 `;
+export const onCreateOutfit = /* GraphQL */ `
+  subscription OnCreateOutfit(
+    $filter: ModelSubscriptionOutfitFilterInput
+    $owner: String
+  ) {
+    onCreateOutfit(filter: $filter, owner: $owner) {
+      id
+      hatId
+      topId
+      bottomId
+      shoeId
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const onUpdateOutfit = /* GraphQL */ `
+  subscription OnUpdateOutfit(
+    $filter: ModelSubscriptionOutfitFilterInput
+    $owner: String
+  ) {
+    onUpdateOutfit(filter: $filter, owner: $owner) {
+      id
+      hatId
+      topId
+      bottomId
+      shoeId
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const onDeleteOutfit = /* GraphQL */ `
+  subscription OnDeleteOutfit(
+    $filter: ModelSubscriptionOutfitFilterInput
+    $owner: String
+  ) {
+    onDeleteOutfit(filter: $filter, owner: $owner) {
+      id
+      hatId
+      topId
+      bottomId
+      shoeId
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
 export const onCreatePalette = /* GraphQL */ `
   subscription OnCreatePalette(
     $filter: ModelSubscriptionPaletteFilterInput

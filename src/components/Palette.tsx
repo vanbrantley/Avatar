@@ -13,7 +13,7 @@ const Palette = observer(function PaletteComponent() {
 
         <>
             <div
-                className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedCategory === GarmentType.Hat ? 'border-2 border-white' : ''}`}
+                className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedCategory === GarmentType.Hat ? 'border-4 border-white' : ''}`}
                 style={{
                     backgroundColor:
                         colorPickerOpen && selectedCategory === GarmentType.Hat
@@ -23,7 +23,7 @@ const Palette = observer(function PaletteComponent() {
                 onClick={() => handleAreaChange(GarmentType.Hat)}
             ></div>
             <div
-                className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedCategory === GarmentType.Top ? 'border-2 border-white' : ''}`}
+                className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedCategory === GarmentType.Top ? 'border-4 border-white' : ''}`}
                 style={{
                     backgroundColor:
                         colorPickerOpen && selectedCategory === GarmentType.Top
@@ -33,7 +33,7 @@ const Palette = observer(function PaletteComponent() {
                 onClick={() => handleAreaChange(GarmentType.Top)}
             ></div>
             <div
-                className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedCategory === GarmentType.Bottom ? 'border-2 border-white' : ''}`}
+                className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedCategory === GarmentType.Bottom ? 'border-4 border-white' : ''}`}
                 style={{
                     backgroundColor:
                         colorPickerOpen && selectedCategory === GarmentType.Bottom
@@ -43,7 +43,7 @@ const Palette = observer(function PaletteComponent() {
                 onClick={() => handleAreaChange(GarmentType.Bottom)}
             ></div>
             <div
-                className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedCategory === GarmentType.Shoe ? 'border-2 border-white' : ''}`}
+                className={`h-[72px] w-20 rounded-none cursor-pointer ${selectedCategory === GarmentType.Shoe ? 'border-4 border-white' : ''}`}
                 style={{
                     backgroundColor:
                         colorPickerOpen && selectedCategory === GarmentType.Shoe

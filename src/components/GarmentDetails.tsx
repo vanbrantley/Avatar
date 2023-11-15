@@ -16,8 +16,9 @@ const SketchPicker = dynamic(
 const GarmentDetails = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { setMode, selectedGarment, selectedColor, setSelectedColor, handleColorChangePicker,
-        handleModeChange, updateGarmentToDB, removeGarment, setColorPickerOpen } = store;
+    const { selectedGarment, selectedColor, setSelectedColor, handleColorChangePicker,
+        handleModeChange, removeGarment, setColorPickerOpen, handleBackButtonClick,
+        handleUpdateGarmentButtonClick } = store;
 
     const [brand, setBrand] = useState<string>("");
     const [name, setName] = useState<string>("");
@@ -79,30 +80,8 @@ const GarmentDetails = observer(() => {
 
     }
 
-    const handleUpdateGarmentButtonClick = () => {
-
-        if (selectedGarment) {
-
-            const { id, area } = selectedGarment;
-            updateGarmentToDB(id, area, selectedColor, brand, name);
-            handleModeChange(Mode.Closet);
-            setColorPickerOpen(false);
-
-        }
-
-    };
-
     const handleDeleteGarmentButtonClick = () => {
-
         setShowDeleteDialog(true);
-
-    };
-
-    const handleBackButtonClick = () => {
-
-        setMode(Mode.Closet);
-        setColorPickerOpen(false);
-
     };
 
     const handleResetColor = () => {
@@ -128,10 +107,12 @@ const GarmentDetails = observer(() => {
 
         if (selectedGarment) {
             const { id, area } = selectedGarment;
+            // TODO: Add mode change and picker close to removeGarment
             removeGarment(id, area);
             setColorPickerOpen(false);
-            setShowDeleteDialog(false);
             handleModeChange(Mode.Closet);
+
+            setShowDeleteDialog(false);
         }
 
     };
@@ -215,7 +196,7 @@ const GarmentDetails = observer(() => {
 
                     {/* Update button */}
                     {hasChanges ? (
-                        <button onClick={handleUpdateGarmentButtonClick}
+                        <button onClick={() => handleUpdateGarmentButtonClick(brand, name)}
                             className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-4 rounded">Update</button>
                     ) : (
                         <button

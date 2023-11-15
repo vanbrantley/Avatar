@@ -1,13 +1,15 @@
 import { observable, action, makeObservable } from 'mobx';
-import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation } from '@/API';
+import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation, DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery } from '@/API';
 import groupByArea from '../lib/groupByArea';
 import { API, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
-import { listGarments, listPalettes, listComplexions } from '../graphql/queries';
-import { createGarment, createPalette, createComplexion, deleteGarment, deletePalette, updateComplexion, updateGarment } from '../graphql/mutations';
+import { listGarments, listPalettes, listComplexions, listOutfits } from '../graphql/queries';
+import { createGarment, createPalette, createComplexion, deleteGarment, deletePalette, updateComplexion, updateGarment, createOutfit, deleteOutfit } from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
-import { Layout, Mode, GarmentType, GarmentTypeStrings } from '../lib/types';
+import { Layout, Mode, GarmentType, GarmentTypeStrings, EmbeddedOutfit } from '../lib/types';
 import { v4 as uuidv4 } from 'uuid';
+
+import { Outfit } from '../lib/types';
 
 class AppStore {
 
@@ -93,6 +95,15 @@ class AppStore {
     bottomLock = false;
     shoeLock = false;
 
+    // hatIds: ["8f14b75d-ef5e-46c2-a5ae-e1b4e22c9cd7", "b0290ed2-1dc9-4cb0-bd4b-2b31306a5137", "c943d6c1-6785-497c-89b6-b8e256c53d67"]
+    // topIds: ["caf6842b-6fec-4b11-9778-f84496712170", "3bc067cf-77f6-402c-9aa9-5238c88e985c", "33758603-cd1f-4cad-bd40-937b5d3141a6", "e584dcc2-ca58-4fe7-a6ef-eef7d0084516"]
+    // bottomIds: ["69dba41a-b6d9-4135-86ff-364da1ff7e42", "6db99140-7f9f-4001-8880-b50233f3e1ec", "74631079-f840-41ec-a001-ff1fe649fd0e"]
+    // shoeIds: ["3a89eaed-c61a-4705-bd20-ae370b104b90", "027f95ae-44ec-4598-991f-8988c2234d74", "ab45da44-cdbe-4371-acf2-7d32f5a2c73e"]
+
+    outfits: Outfit[] = [];
+    embeddedOutfits: EmbeddedOutfit[] = [];
+    selectedOutfit: EmbeddedOutfit | null = null;
+
     palettes: Palette[] = [];
     selectedPalette = "";
 
@@ -100,6 +111,7 @@ class AppStore {
     colorPickerOpen = false;
     heartFilled = false;
 
+    showAvatar = true;
     showPicker = true;
     showHelp = false;
     showOnboard = false;
@@ -134,11 +146,15 @@ class AppStore {
             topLock: observable,
             bottomLock: observable,
             shoeLock: observable,
+            outfits: observable,
+            embeddedOutfits: observable,
+            selectedOutfit: observable,
             palettes: observable,
             selectedPalette: observable,
             navbarOpen: observable,
             colorPickerOpen: observable,
             heartFilled: observable,
+            showAvatar: observable,
             showPicker: observable,
             showHelp: observable,
             showOnboard: observable,
@@ -231,6 +247,25 @@ class AppStore {
         this.shoeLock = locked;
     });
 
+    setOutfits = action((outfits: Outfit[]) => {
+        this.outfits = outfits;
+    });
+
+    setEmbeddedOutfits = action((embeddedOutfits: EmbeddedOutfit[]) => {
+        this.embeddedOutfits = embeddedOutfits;
+    });
+
+    setSelectedOutfit = action((embeddedOutfit: EmbeddedOutfit | null) => {
+        this.selectedOutfit = embeddedOutfit;
+        if (embeddedOutfit) {
+            const { hat, top, bottom, shoe } = embeddedOutfit;
+            this.setSelectedHat(hat);
+            this.setSelectedTop(top);
+            this.setSelectedBottom(bottom);
+            this.setSelectedShoe(shoe);
+        }
+    });
+
     setPalettes = action((palettes: Palette[]) => {
         this.palettes = palettes;
     });
@@ -249,6 +284,10 @@ class AppStore {
 
     setHeartFilled = action((filled: boolean) => {
         this.heartFilled = filled;
+    });
+
+    setShowAvatar = action((show: boolean) => {
+        this.showAvatar = show;
     });
 
     setShowPicker = action((show: boolean) => {
@@ -285,18 +324,19 @@ class AppStore {
         this.setMode(newMode);
         this.setNavbarOpen(false);
 
+        // if the layout is mobile, set showAvatar to false
+        if (this.layout === Layout.Mobile) this.setShowAvatar(false);
+
     });
 
     handleAreaChange = action((area: GarmentType) => {
+
         this.setSelectedCategory(area);
 
         switch (area) {
             case GarmentType.Hat:
                 this.setSelectedColor(this.selectedHat.color);
                 break;
-            // case "face":
-            //     this.setSelectedColor(this.faceColor);
-            //     break;
             case GarmentType.Top:
                 this.setSelectedColor(this.selectedTop.color);
                 break;
@@ -361,6 +401,88 @@ class AppStore {
         // }
     });
 
+    handleBackButtonClick = action(() => {
+        this.setMode(Mode.Closet);
+        this.setColorPickerOpen(false);
+    });
+
+    handlePlusButtonClick = action(() => {
+        this.setMode(Mode.Add);
+        this.setColorPickerOpen(true);
+    });
+
+    handleUpdateGarmentButtonClick = action((brand: string, name: string) => {
+
+        if (this.selectedGarment) {
+
+            const { id, area } = this.selectedGarment;
+            this.updateGarmentToDB(id, area, this.selectedColor, brand, name);
+            this.handleModeChange(Mode.Closet);
+            this.setColorPickerOpen(false);
+
+        }
+
+    });
+
+    handleGarmentClick = action((garment: Garment) => {
+
+        const { area, color } = garment;
+
+        // switch based on garment's area
+
+        switch (area) {
+
+            case GarmentTypeStrings[GarmentType.Hat]:
+                this.setSelectedHat(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Top]:
+                this.setSelectedTop(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Bottom]:
+                this.setSelectedBottom(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Shoe]:
+                this.setSelectedShoe(garment);
+                break;
+            default:
+                break;
+        }
+
+        this.setSelectedColor(color);
+        this.checkIfSavedOutfit();
+
+    });
+
+    openGarmentDetails = action((garment: Garment) => {
+
+        // set garment to its area's selected garment
+        switch (garment.area) {
+
+            case GarmentTypeStrings[GarmentType.Hat]:
+                this.setSelectedHat(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Top]:
+                this.setSelectedTop(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Bottom]:
+                this.setSelectedBottom(garment);
+                break;
+            case GarmentTypeStrings[GarmentType.Shoe]:
+                this.setSelectedShoe(garment);
+                break;
+            default:
+                break;
+        }
+
+        // set selectedGarment
+        this.setSelectedGarment(garment);
+
+        // change mode to Details
+        this.setMode(Mode.Details);
+        this.setColorPickerOpen(true);
+
+    });
+
     updateDBComlpexion = action(async (newComplexion: string) => {
 
         try {
@@ -397,6 +519,8 @@ class AppStore {
                 this.setSelectedShoe(garment);
                 break;
         }
+
+        this.checkIfSavedOutfit();
 
     })
 
@@ -544,6 +668,8 @@ class AppStore {
                         break;
                 }
 
+                this.fetchOutfits();
+
                 return userGarments;
             } else {
                 throw new Error("Could not get garments");
@@ -671,7 +797,7 @@ class AppStore {
 
                 let updatedArray: Garment[];
                 switch (area) {
-                    case "hat":
+                    case GarmentTypeStrings[GarmentType.Hat]:
                         updatedArray = [
                             updatedGarment,
                             ...(this.userHats.filter(garment => garment.id !== updatedGarment.id) as Garment[])
@@ -679,7 +805,7 @@ class AppStore {
                         this.setUserHats(updatedArray);
                         this.setSelectedHat(updatedGarment);
                         break;
-                    case "top":
+                    case GarmentTypeStrings[GarmentType.Top]:
                         updatedArray = [
                             updatedGarment,
                             ...(this.userTops.filter(garment => garment.id !== updatedGarment.id) as Garment[])
@@ -687,7 +813,7 @@ class AppStore {
                         this.setUserTops(updatedArray);
                         this.setSelectedTop(updatedGarment);
                         break;
-                    case "bottom":
+                    case GarmentTypeStrings[GarmentType.Bottom]:
                         updatedArray = [
                             updatedGarment,
                             ...(this.userBottoms.filter(garment => garment.id !== updatedGarment.id) as Garment[])
@@ -695,7 +821,7 @@ class AppStore {
                         this.setUserBottoms(updatedArray);
                         this.setSelectedBottom(updatedGarment);
                         break;
-                    case "shoe":
+                    case GarmentTypeStrings[GarmentType.Shoe]:
                         updatedArray = [
                             updatedGarment,
                             ...(this.userShoes.filter(garment => garment.id !== updatedGarment.id) as Garment[])
@@ -733,7 +859,7 @@ class AppStore {
                 // reset selected area garment
 
                 switch (area) {
-                    case "hat":
+                    case GarmentTypeStrings[GarmentType.Hat]:
                         this.setUserHats(this.userHats.filter((swatch) => swatch.id !== removedGarment.id));
                         if (this.userHats.length === 0) {
                             this.setSelectedHat(this.defaultHat);
@@ -742,7 +868,7 @@ class AppStore {
                             this.setSelectedHat(randomHat);
                         }
                         break;
-                    case "top":
+                    case GarmentTypeStrings[GarmentType.Top]:
                         this.setUserTops(this.userTops.filter((swatch) => swatch.id !== removedGarment.id));
                         if (this.userTops.length === 0) {
                             this.setSelectedTop(this.defaultTop);
@@ -751,7 +877,7 @@ class AppStore {
                             this.setSelectedTop(randomTop);
                         }
                         break;
-                    case "bottom":
+                    case GarmentTypeStrings[GarmentType.Bottom]:
                         this.setUserBottoms(this.userBottoms.filter((swatch) => swatch.id !== removedGarment.id));
                         if (this.userBottoms.length === 0) {
                             this.setSelectedBottom(this.defaultBottom);
@@ -760,7 +886,7 @@ class AppStore {
                             this.setSelectedBottom(randomBottom);
                         }
                         break;
-                    case "shoe":
+                    case GarmentTypeStrings[GarmentType.Shoe]:
                         this.setUserShoes(this.userShoes.filter((swatch) => swatch.id !== removedGarment.id));
                         if (this.userShoes.length === 0) {
                             this.setSelectedShoe(this.defaultShoe);
@@ -772,11 +898,290 @@ class AppStore {
                 }
 
                 console.log("Garment removed successfully: ", removedGarment);
+
+                // TODO: Cascade delete outfits containing that garment
+                const outfitsToDelete = this.outfits.filter((outfit) => outfit[`${removedGarment.area}Id` as keyof Outfit] === removedGarment.id);
+
+                for (const outfitToDelete of outfitsToDelete) {
+                    await this.removeOutfit(outfitToDelete.id);
+                }
+
+
+
             }
 
         } catch (error: any) {
             console.error("Error removing palette: ", error);
         }
+    });
+
+    populateEmbeddedOutfits = (outfits: Outfit[]) => {
+
+        let embeddedOutfits: EmbeddedOutfit[] = [];
+
+        for (const outfit of outfits) {
+
+            // TODO: maybe make whats in this for loop a function too -- because it is also done in saveOutfit
+
+            const { id, hatId, topId, bottomId, shoeId } = outfit;
+
+            const hatGarment = this.userHats.find((hat) => hat.id === hatId);
+            const topGarment = this.userTops.find((top) => top.id === topId);
+            const bottomGarment = this.userBottoms.find((bottom) => bottom.id === bottomId);
+            const shoeGarment = this.userShoes.find((shoe) => shoe.id === shoeId);
+
+            if (!hatGarment || !topGarment || !bottomGarment || !shoeGarment) {
+                console.warn('Skipping outfit because one or more garments are undefined');
+                continue;
+            }
+
+            const embeddedOutfit: EmbeddedOutfit = {
+                id: id,
+                hat: hatGarment,
+                top: topGarment,
+                bottom: bottomGarment,
+                shoe: shoeGarment
+            }
+
+            embeddedOutfits = [...embeddedOutfits, embeddedOutfit];
+
+        }
+
+        // console.log("Embedded Outfits: ", embeddedOutfits);
+        this.setEmbeddedOutfits(embeddedOutfits);
+
+    }
+
+    fetchOutfits = action(async (): Promise<Outfit[]> => {
+
+        try {
+            const response = (await API.graphql<GraphQLQuery<ListOutfitsQuery>>(graphqlOperation(listOutfits))) as GraphQLResult<ListOutfitsQuery>;
+            const { data } = response;
+            if (data && data.listOutfits && data.listOutfits.items) {
+
+                const userOutfits = data.listOutfits.items as Outfit[];
+                this.setOutfits(userOutfits);
+                this.populateEmbeddedOutfits(userOutfits);
+                return userOutfits;
+
+            } else {
+                throw new Error("Could not get outfits");
+            }
+        } catch (error: any) {
+            throw new Error("Could not get outfits");
+        }
+
+    });
+
+    donOutfit = action((outfit: EmbeddedOutfit) => {
+
+        // set id to new selectedOutfit state variable to handle deletion
+        const { hat, top, bottom, shoe } = outfit;
+
+        this.setSelectedHat(hat);
+        this.setSelectedTop(top);
+        this.setSelectedBottom(bottom);
+        this.setSelectedShoe(shoe);
+
+        this.setSelectedOutfit(outfit);
+
+        // update selectedColor
+        switch (this.selectedCategory) {
+            case GarmentType.Hat:
+                this.setSelectedColor(this.selectedHat.color);
+                break;
+            case GarmentType.Top:
+                this.setSelectedColor(this.selectedTop.color);
+                break;
+            case GarmentType.Bottom:
+                this.setSelectedColor(this.selectedBottom.color);
+                break;
+            case GarmentType.Shoe:
+                this.setSelectedColor(this.selectedShoe.color);
+                break;
+        }
+
+        // should bake the logic somewhere else or package that with something else so you don't have to 
+        // wonder if you need to do it or not
+        // or make an action that updates the selectedColor - switch based on selectedCategory, sets selectedColor to 
+        // color of selected garment of that category. Nice.
+
+        // wait it actually seems to be working fine without you updating the selectedColor here, seems to be updated
+        // when you go to edit, not add.
+
+    });
+
+    cycleOutfitsLeft = action(() => {
+
+        // selectedOutfit can be null, or can be an embeddedOutfit
+        if (this.selectedOutfit) {
+            const { id } = this.selectedOutfit;
+            // if it's not null, get the index of the selectedOutfit in embeddedOutfits
+            const selectedOutfitIndex = this.embeddedOutfits.findIndex(outfit => outfit.id === id);
+            if (selectedOutfitIndex !== -1) {
+                // subtract one from index or set to last if it is first one
+                const leftIndex = (selectedOutfitIndex === 0) ? this.embeddedOutfits.length - 1 : selectedOutfitIndex - 1;
+                // make embeddedOutfits[i] the seletedOutfit and set the selectedGarments
+                this.setSelectedOutfit(this.embeddedOutfits[leftIndex]);
+                // set the selected garments to the parts of the embedded outfit
+
+            } else console.warn('Selected outfit not found in embeddedOutfits');
+        } else {
+            // if it's null, pick a random index from embeddedOutfits.length
+            // make embeddedOutfits[i] the seletedOutfit and set the selectedGarments
+            const randomIndex = Math.floor(Math.random() * this.embeddedOutfits.length);
+            const randomOutfit = this.embeddedOutfits[randomIndex];
+            this.setSelectedOutfit(randomOutfit);
+        }
+
+    })
+
+    cycleOutfitsRight = action(() => {
+
+        // selectedOutfit can be null, or can be an embeddedOutfit
+        if (this.selectedOutfit) {
+            const { id } = this.selectedOutfit;
+            // if it's not null, get the index of the selectedOutfit in embeddedOutfits
+            const selectedOutfitIndex = this.embeddedOutfits.findIndex(outfit => outfit.id === id);
+            if (selectedOutfitIndex !== -1) {
+                // add one to the index or set to 0 if its last one
+                const rightIndex = (selectedOutfitIndex === this.embeddedOutfits.length - 1) ? 0 : selectedOutfitIndex + 1;
+                // make embeddedOutfits[i] the seletedOutfit and set the selectedGarments
+                this.setSelectedOutfit(this.embeddedOutfits[rightIndex]);
+                // set the selected garments to the parts of the embedded outfit
+
+            } else console.warn('Selected outfit not found in embeddedOutfits');
+        } else {
+            // if it's null, pick a random index from embeddedOutfits.length
+            // make embeddedOutfits[i] the seletedOutfit and set the selectedGarments
+            const randomIndex = Math.floor(Math.random() * this.embeddedOutfits.length);
+            const randomOutfit = this.embeddedOutfits[randomIndex];
+            this.setSelectedOutfit(randomOutfit);
+        }
+
+    });
+
+    createOutfitHash = (hatId: string, topId: string, bottomId: string, shoeId: string) => {
+        return `${hatId}-${topId}-${bottomId}-${shoeId}`;
+    }
+
+    checkIfSavedOutfit = action(() => {
+
+        // make hash for current garments
+        const currentOutfitHash = this.createOutfitHash(this.selectedHat.id, this.selectedTop.id, this.selectedBottom.id, this.selectedShoe.id);
+
+        // make hashes for saved outfits
+        let savedOutfitHashes: string[] = [];
+
+        for (const outfit of this.embeddedOutfits) {
+
+            const { hat, top, bottom, shoe } = outfit;
+            const outfitHash = this.createOutfitHash(hat.id, top.id, bottom.id, shoe.id);
+            savedOutfitHashes = [...savedOutfitHashes, outfitHash];
+
+        }
+
+        // check currentOutfitHas against all of the savedOutfitHashes
+        const index = savedOutfitHashes.indexOf(currentOutfitHash);
+
+        // if match is found, get the matched embeddedOutfit's id, set it to the selectedOutfit
+        if (index !== -1) {
+
+            // Match found, get the corresponding embeddedOutfit
+            const selectedEmbeddedOutfit = this.embeddedOutfits[index];
+
+            // set it to the selectedOutfit
+            this.setSelectedOutfit(selectedEmbeddedOutfit);
+
+        } else {
+            if (this.selectedOutfit) this.setSelectedOutfit(null);
+        }
+
+    });
+
+    saveOutfit = action(async () => {
+
+        try {
+
+            // create CreateOutfitInput object with ids of selected garments
+            const createNewOutfitInput: CreateOutfitInput = {
+                hatId: this.selectedHat.id,
+                topId: this.selectedTop.id,
+                bottomId: this.selectedBottom.id,
+                shoeId: this.selectedShoe.id
+            }
+
+            // add it to the database
+            const response = await API.graphql<GraphQLQuery<CreateOutfitMutation>>(graphqlOperation(createOutfit, {
+                input: createNewOutfitInput
+            })) as GraphQLResult<CreateOutfitMutation>;
+            const { data } = response;
+
+            // make embeddedOutfit object from createdOutfit & add it to otufits, embeddedOutfits
+            // set selectedOutfit to the newly created embeddedOutfit
+            if (data && data.createOutfit) {
+                const createdOutfit = data.createOutfit;
+                const { id, hatId, topId, bottomId, shoeId } = createdOutfit;
+
+                const hatGarment = this.userHats.find((hat) => hat.id === hatId);
+                const topGarment = this.userTops.find((top) => top.id === topId);
+                const bottomGarment = this.userBottoms.find((bottom) => bottom.id === bottomId);
+                const shoeGarment = this.userShoes.find((shoe) => shoe.id === shoeId);
+
+                if (!hatGarment || !topGarment || !bottomGarment || !shoeGarment) {
+                    console.warn('Skipping outfit because one or more garments are undefined');
+                    return;
+                }
+
+                const embeddedOutfit: EmbeddedOutfit = {
+                    id: id,
+                    hat: hatGarment,
+                    top: topGarment,
+                    bottom: bottomGarment,
+                    shoe: shoeGarment
+                }
+
+                this.setOutfits([...this.outfits, createdOutfit]);
+                this.setEmbeddedOutfits([...this.embeddedOutfits, embeddedOutfit]);
+                this.setSelectedOutfit(embeddedOutfit);
+
+                console.log("Outfit added successfully: ", createdOutfit);
+
+            } else {
+                throw new Error("Could not save palette.");
+            }
+
+        } catch (error: any) {
+            console.error("Error adding palette: ", error);
+        }
+
+    });
+
+    removeOutfit = action(async (outfitId: string) => {
+
+        try {
+
+            const outfitDetails: DeleteOutfitInput = {
+                id: outfitId,
+            };
+
+            const response = await API.graphql<GraphQLQuery<DeleteOutfitMutation>>(graphqlOperation(deleteOutfit, {
+                input: outfitDetails
+            })) as GraphQLResult<DeleteOutfitMutation>;
+            const { data } = response;
+
+            if (data && data.deleteOutfit) {
+                const removedOutfit = data.deleteOutfit;
+                this.setSelectedOutfit(null);
+                this.setOutfits(this.outfits.filter((outfit) => outfit.id !== removedOutfit.id));
+                this.setEmbeddedOutfits(this.embeddedOutfits.filter((outfit) => outfit.id !== removedOutfit.id));
+                console.log("Outfit removed successfully: ", removedOutfit);
+            }
+
+        } catch (error: any) {
+            console.error("Error removing palette: ", error);
+        }
+
     });
 
     fetchPalettes = action(async (): Promise<Palette[]> => {
@@ -899,7 +1304,6 @@ class AppStore {
         try {
 
             await Auth.signOut();
-            this.handleModeChange(Mode.Closet);
 
             // handle clean-up
 
@@ -916,6 +1320,7 @@ class AppStore {
             this.setSelectedTop(this.defaultTop);
             this.setSelectedBottom(this.defaultBottom);
             this.setSelectedShoe(this.defaultShoe);
+            this.setSelectedOutfit(null);
 
 
             this.setUserHats([]);
@@ -924,6 +1329,7 @@ class AppStore {
             this.setUserShoes([]);
 
             this.setPalettes([]);
+            // this.handleModeChange(Mode.Closet);
 
         } catch (error) {
             console.log('Sign-out error:', error);
