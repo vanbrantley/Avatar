@@ -3,13 +3,13 @@ import { useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import Swatch from './Swatch';
 import { IconButton } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 
 const Preview = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { userHats, userTops, userBottoms, userShoes, selectedHat, selectedTop, selectedBottom, selectedShoe } = store;
+    const { userHats, userTops, userBottoms, userShoes,
+        selectedHat, selectedTop, selectedBottom, selectedShoe, randomizeGarments } = store;
 
     return (
         <div className="h-full space-y-8">
@@ -104,7 +104,7 @@ const Preview = observer(() => {
 
             <div className="flex">
                 <div>
-                    <IconButton size="large">
+                    <IconButton size="large" onClick={randomizeGarments}>
                         <ShuffleIcon fontSize="large" style={{ color: "white" }} />
                     </IconButton>
                 </div>

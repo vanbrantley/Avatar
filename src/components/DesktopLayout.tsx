@@ -11,6 +11,7 @@ import Closet from './Closet';
 import AddGarment from './AddGarment';
 import GarmentDetails from './GarmentDetails';
 import Outfits from './Outfits';
+import Complexion from './Complexion';
 import { Mode } from '../lib/types';
 
 import { IconButton } from '@mui/material';
@@ -25,7 +26,7 @@ const DesktopLayout = observer(() => {
 
     const { user } = useUser();
     const store = useContext(AppStoreContext);
-    const { mode, cycleOutfitsLeft, cycleOutfitsRight, selectedOutfit, saveOutfit, removeOutfit } = store;
+    const { mode, cycleOutfitsLeft, cycleOutfitsRight, selectedOutfit, embeddedOutfits, saveOutfit, removeOutfit } = store;
 
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
@@ -65,15 +66,36 @@ const DesktopLayout = observer(() => {
                     </div>
                     <div className="col-start-2 col-span-6 flex items-center justify-center">
 
-                        <IconButton size="large" onClick={cycleOutfitsLeft}>
-                            <ArrowBackIosIcon fontSize="large" style={{ color: "white" }} />
-                        </IconButton>
+                        {
+                            (user && embeddedOutfits.length !== 0) && (
+                                (embeddedOutfits.length === 1) ? (
+                                    <IconButton size="large">
+                                        <ArrowBackIosIcon fontSize="large" style={{ color: "#484848" }} />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton size="large" onClick={cycleOutfitsLeft}>
+                                        <ArrowBackIosIcon fontSize="large" style={{ color: "white" }} />
+                                    </IconButton>
+                                )
+                            )
+                        }
 
                         <Avatar mini={false} />
 
-                        <IconButton size="large" onClick={cycleOutfitsRight}>
-                            <ArrowForwardIosIcon fontSize="large" style={{ color: "white" }} />
-                        </IconButton>
+                        {
+                            (user && embeddedOutfits.length !== 0) && (
+                                (embeddedOutfits.length === 1) ? (
+                                    <IconButton size="large">
+                                        <ArrowForwardIosIcon fontSize="large" style={{ color: "#484848" }} />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton size="large" onClick={cycleOutfitsRight}>
+                                        <ArrowForwardIosIcon fontSize="large" style={{ color: "white" }} />
+                                    </IconButton>
+                                )
+                            )
+                        }
+
                     </div>
                     <div className="col-span-5 overflow-auto flex flex-col px-16 py-4" style={{ backgroundColor: "#2b2b2b" }}>
 
@@ -82,6 +104,7 @@ const DesktopLayout = observer(() => {
                         {(mode === Mode.Add) && <AddGarment mobile={false} />}
                         {(mode === Mode.Details) && <GarmentDetails />}
                         {(mode === Mode.Outfit) && <Outfits />}
+                        {(mode === Mode.Complexion) && <Complexion />}
 
                     </div>
                 </div>
