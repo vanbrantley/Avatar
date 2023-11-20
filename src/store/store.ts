@@ -1,10 +1,10 @@
 import { observable, action, makeObservable } from 'mobx';
-import { CreateGarmentInput, CreateGarmentMutation, CreatePaletteInput, CreatePaletteMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, DeletePaletteInput, DeletePaletteMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation, DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery } from '@/API';
+import { CreateGarmentInput, CreateGarmentMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation, DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery } from '@/API';
 import groupByArea from '../lib/groupByArea';
 import { API, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
 import { listGarments, listPalettes, listComplexions, listOutfits } from '../graphql/queries';
-import { createGarment, createPalette, createComplexion, deleteGarment, deletePalette, updateComplexion, updateGarment, createOutfit, deleteOutfit } from '../graphql/mutations';
+import { createGarment, createComplexion, deleteGarment, updateComplexion, updateGarment, createOutfit, deleteOutfit } from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
 import { Layout, Mode, GarmentType, GarmentTypeStrings, EmbeddedOutfit } from '../lib/types';
 import { v4 as uuidv4 } from 'uuid';
@@ -68,18 +68,6 @@ class AppStore {
     selectedBottom = this.defaultBottom;
     selectedShoe = this.defaultShoe;
 
-    hatColor = this.selectedHat.color;
-    faceColor = "#a18057";
-    topColor = this.selectedTop.color;
-    bottomColor = this.selectedBottom.color;
-    shoeColor = this.selectedShoe.color;
-
-    // hatColor = "#000000";
-    // faceColor = "#a18057";
-    // topColor = "#ffffff";
-    // bottomColor = "#5687b8";
-    // shoeColor = "#000000";
-
     selectedGarment: Garment | null = null;
 
     userHats: Garment[] = [];
@@ -87,18 +75,21 @@ class AppStore {
     userBottoms: Garment[] = [];
     userShoes: Garment[] = [];
 
+    // OG complexion #a18057
+    complexions: string[] = ["#f5ebe4", "#ecdacc", "#e3c8b4",
+        "#d3aa8a", "#cd9d79", "#c08355",
+        "#a66b3d", "#885732", "#714829",
+        "#53351e", "#3b2616", "#23160d"];
+    selectedComplexion = Math.floor(Math.random() * this.complexions.length);
+    faceColor = this.complexions[this.selectedComplexion];
+
     selectedCategory: GarmentType = GarmentType.Top;
-    selectedColor = this.topColor; // stores color picker's color
+    selectedColor = this.selectedTop.color; // stores color picker's color
 
     hatLock = false;
     topLock = false;
     bottomLock = false;
     shoeLock = false;
-
-    // hatIds: ["8f14b75d-ef5e-46c2-a5ae-e1b4e22c9cd7", "b0290ed2-1dc9-4cb0-bd4b-2b31306a5137", "c943d6c1-6785-497c-89b6-b8e256c53d67"]
-    // topIds: ["caf6842b-6fec-4b11-9778-f84496712170", "3bc067cf-77f6-402c-9aa9-5238c88e985c", "33758603-cd1f-4cad-bd40-937b5d3141a6", "e584dcc2-ca58-4fe7-a6ef-eef7d0084516"]
-    // bottomIds: ["69dba41a-b6d9-4135-86ff-364da1ff7e42", "6db99140-7f9f-4001-8880-b50233f3e1ec", "74631079-f840-41ec-a001-ff1fe649fd0e"]
-    // shoeIds: ["3a89eaed-c61a-4705-bd20-ae370b104b90", "027f95ae-44ec-4598-991f-8988c2234d74", "ab45da44-cdbe-4371-acf2-7d32f5a2c73e"]
 
     outfits: Outfit[] = [];
     embeddedOutfits: EmbeddedOutfit[] = [];
@@ -126,11 +117,7 @@ class AppStore {
         makeObservable(this, {
 
             // state variables + their setters
-            hatColor: observable,
             faceColor: observable,
-            topColor: observable,
-            bottomColor: observable,
-            shoeColor: observable,
             selectedHat: observable,
             selectedTop: observable,
             selectedBottom: observable,
@@ -140,6 +127,8 @@ class AppStore {
             userTops: observable,
             userBottoms: observable,
             userShoes: observable,
+            complexions: observable,
+            selectedComplexion: observable,
             selectedCategory: observable,
             selectedColor: observable,
             hatLock: observable,
@@ -167,24 +156,9 @@ class AppStore {
     }
 
     // setter functions
-    setHatColor = action((color: string) => {
-        this.hatColor = color;
-    });
 
     setFaceColor = action((color: string) => {
         this.faceColor = color;
-    });
-
-    setTopColor = action((color: string) => {
-        this.topColor = color;
-    });
-
-    setBottomColor = action((color: string) => {
-        this.bottomColor = color;
-    });
-
-    setShoeColor = action((color: string) => {
-        this.shoeColor = color;
     });
 
     setSelectedHat = action((selected: Garment) => {
@@ -221,6 +195,10 @@ class AppStore {
 
     setUserShoes = action((shoes: Garment[]) => {
         this.userShoes = shoes;
+    });
+
+    setSelectedComplexion = action((index: number) => {
+        this.selectedComplexion = index;
     });
 
     setSelectedCategory = action((category: GarmentType) => {
@@ -319,7 +297,7 @@ class AppStore {
     handleModeChange = action((newMode: Mode) => {
 
         // if you aren't changing mdoes, don't do anything
-        if (newMode === this.mode) return;
+        if (this.layout === Layout.Desktop && newMode === this.mode) return;
 
         this.setMode(newMode);
         this.setNavbarOpen(false);
@@ -349,6 +327,14 @@ class AppStore {
         }
     });
 
+    handleAvatarClickMobile = action((area: GarmentType) => {
+
+        this.handleAreaChange(area);
+        this.setShowAvatar(false);
+        this.setMode(Mode.Closet);
+
+    });
+
     // checkAreaLock = (area: string) => {
     //     switch (area) {
     //         case "hat":
@@ -366,39 +352,8 @@ class AppStore {
 
     handleColorChangePicker = action((color: string) => {
 
-        // lock logic is commented out
-
-        // if its heartFilled and the area you're trying to change is not locked
-        // const isAreaLocked = this.checkAreaLock(this.selectedArea);
-        // if (this.heartFilled && !isAreaLocked) this.setHeartFilled(false);
-
-        // if (!isAreaLocked) {
-
-        switch (this.selectedCategory) {
-            case GarmentType.Hat:
-                this.setHatColor(color);
-                break;
-            // case "face":
-            //     this.setFaceColor(color);
-            //     // update complexion in DB
-            //     if (this.user) this.updateDBComlpexion(color);
-            //     break;
-            case GarmentType.Top:
-                this.setTopColor(color);
-                break;
-            case GarmentType.Bottom:
-                this.setBottomColor(color);
-                break;
-            case GarmentType.Shoe:
-                this.setShoeColor(color);
-                break;
-            default:
-                break;
-        };
-
         this.setSelectedColor(color);
 
-        // }
     });
 
     handleBackButtonClick = action(() => {
@@ -483,26 +438,6 @@ class AppStore {
 
     });
 
-    updateDBComlpexion = action(async (newComplexion: string) => {
-
-        try {
-            const username = this.user?.getUsername();
-            const complexionDetails: UpdateComplexionInput = {
-                id: username!,
-                complexion: newComplexion
-            };
-
-            await API.graphql<GraphQLQuery<UpdateComplexionMutation>>(graphqlOperation(updateComplexion, {
-                input: complexionDetails
-            })) as GraphQLResult<UpdateComplexionMutation>;
-
-        } catch (error) {
-            console.error('API call error:', error);
-            throw error;
-        }
-
-    });
-
     handleSwatchClick = action((garment: Garment) => {
 
         switch (garment.area) {
@@ -522,92 +457,6 @@ class AppStore {
 
         this.checkIfSavedOutfit();
 
-    })
-
-    // depreceated - can be removed - replaced by handleSwatchClick ^
-    handleColorChangeSwatch = action((color: string, area: GarmentType) => {
-
-        // const isAreaLocked = this.checkAreaLock(area);
-
-        // if (!isAreaLocked) {
-
-        // 
-
-        switch (area) {
-            case GarmentType.Hat:
-                this.setHatColor(color);
-                break;
-            // case "face":
-            //     this.setFaceColor(color);
-            //     break;
-            case GarmentType.Top:
-                this.setTopColor(color);
-                break;
-            case GarmentType.Bottom:
-                this.setBottomColor(color);
-                break;
-            case GarmentType.Shoe:
-                this.setShoeColor(color);
-                break;
-            default:
-                break;
-        }
-
-        this.setSelectedCategory(area);
-        this.setSelectedColor(color);
-
-        // }
-
-
-    });
-
-    assignAreaColorsFromPalette = action((hatColor: string, topColor: string, bottomColor: string, shoeColor: string, id: string) => {
-
-
-        const allAreasLocked = this.hatLock && this.topLock && this.bottomLock && this.shoeLock;
-        if (allAreasLocked) return;
-
-        // set area color to the palette color if it is not locked
-        if (!this.hatLock) this.setHatColor(hatColor);
-        if (!this.topLock) this.setTopColor(topColor);
-        if (!this.bottomLock) this.setBottomColor(bottomColor);
-        if (!this.shoeLock) this.setShoeColor(shoeColor);
-
-
-        // assign selectedColor to the color of the selectedArea in the palette
-        // const isAreaLocked = this.checkAreaLock(this.selectedArea);
-        // if (!isAreaLocked) {
-
-        switch (this.selectedCategory) {
-            case GarmentType.Hat:
-                this.setSelectedColor(hatColor);
-                break;
-            // case "face":
-            //     break;
-            case GarmentType.Top:
-                this.setSelectedColor(topColor);
-                break;
-            case GarmentType.Bottom:
-                this.setSelectedColor(bottomColor);
-                break;
-            case GarmentType.Shoe:
-                this.setSelectedColor(shoeColor);
-                break;
-            default:
-                break;
-        }
-
-        // }
-
-        const anyAreaLocked = this.hatLock || this.topLock || this.bottomLock || this.shoeLock;
-
-        // a locked area stops us from assigning all area colors - thus palette isn't one that we've saved
-        if (anyAreaLocked && (this.selectedPalette !== id)) this.setHeartFilled(false);
-        else {
-            this.setHeartFilled(true);
-            this.setSelectedPalette(id);
-        }
-
     });
 
     // Randomly select IDs from userGarments for each category
@@ -616,7 +465,51 @@ class AppStore {
         return garments[randomIndex] || '';
     };
 
-    fetchGarmentsFromDB = action(async (): Promise<Garment[]> => {
+    randomizeGarments = action(() => {
+
+        if (this.userHats.length > 1) {
+            const randomHat = this.getRandomGarment(this.userHats);
+            this.setSelectedHat(randomHat);
+        }
+
+        if (this.userTops.length > 1) {
+            const randomTop = this.getRandomGarment(this.userTops);
+            this.setSelectedTop(randomTop);
+            this.setSelectedColor(randomTop.color);
+        }
+
+        if (this.userBottoms.length > 1) {
+            const randomBottom = this.getRandomGarment(this.userBottoms);
+            this.setSelectedBottom(randomBottom);
+            this.setSelectedColor(randomBottom.color);
+        }
+
+        if (this.userShoes.length > 1) {
+            const randomShoe = this.getRandomGarment(this.userShoes);
+            this.setSelectedShoe(randomShoe);
+            this.setSelectedColor(randomShoe.color);
+        }
+
+        switch (this.selectedCategory) {
+            case GarmentType.Hat:
+                this.setSelectedColor(this.selectedHat.color);
+                break;
+            case GarmentType.Top:
+                this.setSelectedColor(this.selectedTop.color);
+                break;
+            case GarmentType.Bottom:
+                this.setSelectedColor(this.selectedBottom.color);
+                break;
+            case GarmentType.Shoe:
+                this.setSelectedColor(this.selectedShoe.color);
+                break;
+        }
+
+        this.checkIfSavedOutfit();
+
+    });
+
+    fetchGarments = action(async (): Promise<Garment[]> => {
         try {
             const response = (await API.graphql<GraphQLQuery<ListGarmentsQuery>>(graphqlOperation(listGarments))) as GraphQLResult<ListGarmentsQuery>;
             const { data } = response;
@@ -638,19 +531,16 @@ class AppStore {
                 if (this.userTops.length !== 0) {
                     const randomTop = this.getRandomGarment(this.userTops);
                     this.setSelectedTop(randomTop);
-                    this.setSelectedColor(randomTop.color);
                 }
 
                 if (this.userBottoms.length !== 0) {
                     const randomBottom = this.getRandomGarment(this.userBottoms);
                     this.setSelectedBottom(randomBottom);
-                    this.setSelectedColor(randomBottom.color);
                 }
 
                 if (this.userShoes.length !== 0) {
                     const randomShoe = this.getRandomGarment(this.userShoes);
                     this.setSelectedShoe(randomShoe);
-                    this.setSelectedColor(randomShoe.color);
                 }
 
                 switch (this.selectedCategory) {
@@ -906,8 +796,6 @@ class AppStore {
                     await this.removeOutfit(outfitToDelete.id);
                 }
 
-
-
             }
 
         } catch (error: any) {
@@ -1103,6 +991,10 @@ class AppStore {
 
         try {
 
+            // check for case where you go to make an outfit with a default garment
+            // if there is a default garment, add it to the database for the user & get its id
+            // think you have to change it so that the addGarment function returns the createdGarment
+
             // create CreateOutfitInput object with ids of selected garments
             const createNewOutfitInput: CreateOutfitInput = {
                 hatId: this.selectedHat.id,
@@ -1129,7 +1021,7 @@ class AppStore {
                 const shoeGarment = this.userShoes.find((shoe) => shoe.id === shoeId);
 
                 if (!hatGarment || !topGarment || !bottomGarment || !shoeGarment) {
-                    console.warn('Skipping outfit because one or more garments are undefined');
+                    console.warn('Garment not found for outfit');
                     return;
                 }
 
@@ -1202,60 +1094,6 @@ class AppStore {
         }
     });
 
-    savePalette = action(async () => {
-        try {
-
-            const createNewPaletteInput: CreatePaletteInput = {
-                hatColor: this.hatColor,
-                topColor: this.topColor,
-                bottomColor: this.bottomColor,
-                shoeColor: this.shoeColor
-            };
-
-            const response = await API.graphql<GraphQLQuery<CreatePaletteMutation>>(graphqlOperation(createPalette, {
-                input: createNewPaletteInput
-            })) as GraphQLResult<CreatePaletteMutation>;
-            const { data } = response;
-
-            if (data && data.createPalette) {
-                const createdPalette = data.createPalette;
-                this.setPalettes([createdPalette, ...this.palettes]);
-                this.setSelectedPalette(createdPalette.id);
-                this.setHeartFilled(true);
-                console.log("Palette added successfully: ", createdPalette);
-
-            } else {
-                throw new Error("Could not save palette.");
-            }
-        } catch (error: any) {
-            console.error("Error adding palette: ", error);
-        }
-    });
-
-    removePalette = action(async () => {
-        try {
-            const paletteDetails: DeletePaletteInput = {
-                id: this.selectedPalette!,
-            };
-
-            const response = await API.graphql<GraphQLQuery<DeletePaletteMutation>>(graphqlOperation(deletePalette, {
-                input: paletteDetails
-            })) as GraphQLResult<DeletePaletteMutation>;
-            const { data } = response;
-
-            if (data && data.deletePalette) {
-                const removedPalette = data.deletePalette;
-                this.setPalettes(this.palettes.filter((palette) => palette.id !== removedPalette.id));
-                this.setSelectedPalette("");
-                this.setHeartFilled(false);
-                console.log("Palette removed successfully: ", removedPalette);
-            }
-
-        } catch (error: any) {
-            console.error("Error removing palette: ", error);
-        }
-    });
-
     initializeComplexion = action(async (username: string) => {
 
         try {
@@ -1276,9 +1114,7 @@ class AppStore {
 
     });
 
-    fetchComplexion = action(async (username: string) => {
-
-        // console.log("Fetch complexion for: ", username);
+    fetchComplexion = action(async () => {
 
         try {
             const response = await API.graphql<GraphQLQuery<ListComplexionsQuery>>(graphqlOperation(listComplexions)) as GraphQLResult<ListComplexionsQuery>;
@@ -1293,6 +1129,33 @@ class AppStore {
             console.error(error);
             throw new Error("Could not get complexion");
         }
+    });
+
+    updateDBComlpexion = action(async (newComplexion: string) => {
+
+        try {
+            const username = this.user?.getUsername();
+            const complexionDetails: UpdateComplexionInput = {
+                id: username!,
+                complexion: newComplexion
+            };
+
+            await API.graphql<GraphQLQuery<UpdateComplexionMutation>>(graphqlOperation(updateComplexion, {
+                input: complexionDetails
+            })) as GraphQLResult<UpdateComplexionMutation>;
+
+            console.log("Complexion updated successfully.");
+
+        } catch (error) {
+            console.error('Error updating complexion:', error);
+            throw error;
+        }
+
+    });
+
+    updateComplexion = action((complexion: string) => {
+        this.setFaceColor(complexion);
+        this.updateDBComlpexion(complexion);
     });
 
     signUserOut = action(async () => {
@@ -1314,14 +1177,13 @@ class AppStore {
             if (this.shoeLock) this.setShoeLock(false);
 
             this.setSelectedCategory(GarmentType.Top);
-            this.setSelectedColor(this.topColor);
 
             this.setSelectedHat(this.defaultHat);
             this.setSelectedTop(this.defaultTop);
             this.setSelectedBottom(this.defaultBottom);
             this.setSelectedShoe(this.defaultShoe);
             this.setSelectedOutfit(null);
-
+            this.setSelectedColor(this.selectedTop.color);
 
             this.setUserHats([]);
             this.setUserTops([]);
