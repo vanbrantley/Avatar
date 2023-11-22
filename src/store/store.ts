@@ -1,15 +1,18 @@
 import { observable, action, makeObservable } from 'mobx';
-import { CreateGarmentInput, CreateGarmentMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput, DeleteGarmentMutation, Garment, ListGarmentsQuery, ListPalettesQuery, Palette, ListComplexionsQuery, UpdateComplexionInput, UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation, DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery } from '@/API';
+import {
+    CreateGarmentInput, CreateGarmentMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput,
+    DeleteGarmentMutation, Garment, ListGarmentsQuery, ListComplexionsQuery, UpdateComplexionInput,
+    UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation,
+    DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery
+} from '@/API';
 import groupByArea from '../lib/groupByArea';
 import { API, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
-import { listGarments, listPalettes, listComplexions, listOutfits } from '../graphql/queries';
+import { listGarments, listComplexions, listOutfits } from '../graphql/queries';
 import { createGarment, createComplexion, deleteGarment, updateComplexion, updateGarment, createOutfit, deleteOutfit } from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
-import { Layout, Mode, GarmentType, GarmentTypeStrings, EmbeddedOutfit } from '../lib/types';
+import { Layout, Mode, GarmentType, GarmentTypeStrings, Outfit, EmbeddedOutfit } from '../lib/types';
 import { v4 as uuidv4 } from 'uuid';
-
-import { Outfit } from '../lib/types';
 
 class AppStore {
 
@@ -84,24 +87,14 @@ class AppStore {
     faceColor = this.complexions[this.selectedComplexion];
 
     selectedCategory: GarmentType = GarmentType.Top;
-    selectedColor = this.selectedTop.color; // stores color picker's color
-
-    hatLock = false;
-    topLock = false;
-    bottomLock = false;
-    shoeLock = false;
+    selectedColor = this.selectedTop.color; // color picker's color
 
     outfits: Outfit[] = [];
     embeddedOutfits: EmbeddedOutfit[] = [];
     selectedOutfit: EmbeddedOutfit | null = null;
 
-    palettes: Palette[] = [];
-    selectedPalette = "";
-
     navbarOpen = false;
     colorPickerOpen = false;
-    heartFilled = false;
-
     showAvatar = true;
     showPicker = true;
     showHelp = false;
@@ -109,8 +102,18 @@ class AppStore {
 
     mode: Mode = Mode.Closet;
     layout: Layout = Layout.Desktop;
-
     user: CognitoUser | null = null;
+
+    errorMessage: string | null = null;
+    showErrorMessage = false;
+    successMessage: string | null = null;
+    showSuccessMessage = false;
+
+    hatLock = false;
+    topLock = false;
+    bottomLock = false;
+    shoeLock = false;
+
 
     constructor() {
 
@@ -138,19 +141,19 @@ class AppStore {
             outfits: observable,
             embeddedOutfits: observable,
             selectedOutfit: observable,
-            palettes: observable,
-            selectedPalette: observable,
             navbarOpen: observable,
             colorPickerOpen: observable,
-            heartFilled: observable,
             showAvatar: observable,
             showPicker: observable,
             showHelp: observable,
             showOnboard: observable,
             mode: observable,
             layout: observable,
-            user: observable
-
+            user: observable,
+            errorMessage: observable,
+            showErrorMessage: observable,
+            successMessage: observable,
+            showSuccessMessage: observable
         });
 
     }
@@ -244,24 +247,12 @@ class AppStore {
         }
     });
 
-    setPalettes = action((palettes: Palette[]) => {
-        this.palettes = palettes;
-    });
-
-    setSelectedPalette = action((id: string) => {
-        this.selectedPalette = id;
-    });
-
     setNavbarOpen = action((isOpen: boolean) => {
         this.navbarOpen = isOpen;
     });
 
     setColorPickerOpen = action((isOpen: boolean) => {
         this.colorPickerOpen = isOpen;
-    });
-
-    setHeartFilled = action((filled: boolean) => {
-        this.heartFilled = filled;
     });
 
     setShowAvatar = action((show: boolean) => {
@@ -292,7 +283,43 @@ class AppStore {
         this.user = user;
     });
 
+    setErrorMessage = action((message: string | null) => {
+        this.errorMessage = message;
+    });
+
+    setShowErrorMessage = action((show: boolean) => {
+        this.showErrorMessage = show;
+    });
+
+    setSuccessMessage = action((message: string | null) => {
+        this.successMessage = message;
+    });
+
+    setShowSuccessMessage = action((show: boolean) => {
+        this.showSuccessMessage = show;
+    });
+
     // functions
+
+    dismissErrorMessage = action(() => {
+        this.setShowErrorMessage(false);
+        this.setErrorMessage(null);
+    });
+
+    setErrorMessageHandler = action((message: string) => {
+        this.setErrorMessage(message);
+        this.setShowErrorMessage(true);
+    });
+
+    dismissSuccessMessage = action(() => {
+        this.setShowSuccessMessage(false);
+        this.setSuccessMessage(null);
+    });
+
+    setSuccessMessageHandler = action((message: string) => {
+        this.setSuccessMessage(message);
+        this.setShowSuccessMessage(true);
+    });
 
     handleModeChange = action((newMode: Mode) => {
 
@@ -562,10 +589,12 @@ class AppStore {
 
                 return userGarments;
             } else {
-                throw new Error("Could not get garments");
+                throw new Error("Error fetching garments");
             }
         } catch (error: any) {
-            throw new Error("Could not get garments");
+            console.error(error);
+            this.setErrorMessageHandler("Error fetching garments");
+            throw error;
         }
     });
 
@@ -592,15 +621,19 @@ class AppStore {
         switch (area) {
             case GarmentType.Hat:
                 this.setUserHats([newGarment, ...this.userHats]);
+                this.setSelectedHat(newGarment);
                 break;
             case GarmentType.Top:
                 this.setUserTops([newGarment, ...this.userTops]);
+                this.setSelectedTop(newGarment);
                 break;
             case GarmentType.Bottom:
                 this.setUserBottoms([newGarment, ...this.userBottoms]);
+                this.setSelectedBottom(newGarment);
                 break;
             case GarmentType.Shoe:
                 this.setUserShoes([newGarment, ...this.userShoes]);
+                this.setSelectedShoe(newGarment);
                 break;
         }
 
@@ -648,13 +681,13 @@ class AppStore {
                         break;
                 }
 
-                console.log("Garment added successfully: ", createdGarment);
-            } else {
-                throw new Error("Could not add garment")
+                this.setSuccessMessageHandler("Garment added successfully");
             }
 
         } catch (error: any) {
-            console.error("Error adding garment: ", error);
+            console.error(error);
+            this.setErrorMessageHandler("Error adding garment");
+            throw error;
         }
     });
 
@@ -680,7 +713,6 @@ class AppStore {
             const { data } = response;
             if (data && data.updateGarment) {
                 const updatedGarment = data.updateGarment as Garment;
-                console.log("Garment updated successfully: ", updatedGarment);
 
                 // update the garment in the userGarments area state array
                 // update the selected area garment
@@ -721,12 +753,14 @@ class AppStore {
                         break;
                 }
 
-            } else {
-                throw new Error("Could not update garment")
+                this.setSuccessMessageHandler("Garment updated successfully");
+
             }
 
         } catch (error: any) {
-            console.error("Error updating garment: ", error);
+            console.error(error);
+            this.setErrorMessageHandler("Error updating garment");
+            throw error;
         }
 
     });
@@ -787,9 +821,8 @@ class AppStore {
                         break;
                 }
 
-                console.log("Garment removed successfully: ", removedGarment);
+                this.setSuccessMessageHandler("Garment removed successfully");
 
-                // TODO: Cascade delete outfits containing that garment
                 const outfitsToDelete = this.outfits.filter((outfit) => outfit[`${removedGarment.area}Id` as keyof Outfit] === removedGarment.id);
 
                 for (const outfitToDelete of outfitsToDelete) {
@@ -799,7 +832,9 @@ class AppStore {
             }
 
         } catch (error: any) {
-            console.error("Error removing palette: ", error);
+            console.error(error);
+            this.setErrorMessageHandler("Error removing garment");
+            throw error;
         }
     });
 
@@ -835,7 +870,6 @@ class AppStore {
 
         }
 
-        // console.log("Embedded Outfits: ", embeddedOutfits);
         this.setEmbeddedOutfits(embeddedOutfits);
 
     }
@@ -853,10 +887,12 @@ class AppStore {
                 return userOutfits;
 
             } else {
-                throw new Error("Could not get outfits");
+                throw new Error("Error fetching user outfits");
             }
         } catch (error: any) {
-            throw new Error("Could not get outfits");
+            console.error(error);
+            this.setErrorMessageHandler("Error fetching user outfits");
+            throw error;
         }
 
     });
@@ -1037,14 +1073,14 @@ class AppStore {
                 this.setEmbeddedOutfits([...this.embeddedOutfits, embeddedOutfit]);
                 this.setSelectedOutfit(embeddedOutfit);
 
-                console.log("Outfit added successfully: ", createdOutfit);
+                this.setSuccessMessageHandler("Outfit added successfully");
 
-            } else {
-                throw new Error("Could not save palette.");
             }
 
         } catch (error: any) {
-            console.error("Error adding palette: ", error);
+            console.error(error);
+            this.setErrorMessageHandler("Error saving outfit");
+            throw error;
         }
 
     });
@@ -1067,31 +1103,15 @@ class AppStore {
                 this.setSelectedOutfit(null);
                 this.setOutfits(this.outfits.filter((outfit) => outfit.id !== removedOutfit.id));
                 this.setEmbeddedOutfits(this.embeddedOutfits.filter((outfit) => outfit.id !== removedOutfit.id));
-                console.log("Outfit removed successfully: ", removedOutfit);
+                this.setSuccessMessageHandler("Outfit removed successfully");
             }
 
-        } catch (error: any) {
-            console.error("Error removing palette: ", error);
-        }
-
-    });
-
-    fetchPalettes = action(async (): Promise<Palette[]> => {
-        try {
-            const response = await API.graphql<GraphQLQuery<ListPalettesQuery>>(graphqlOperation(listPalettes)) as GraphQLResult<ListPalettesQuery>;
-            const { data } = response;
-            if (data && data.listPalettes && data.listPalettes.items) {
-                const userPalettes = data.listPalettes.items as Palette[];
-                // setPalettes to the hatColor, topColor, bottomColor, shoeColor
-                this.setPalettes(userPalettes);
-                return userPalettes;
-            } else {
-                throw new Error("Could not get palettes.");
-            }
         } catch (error: any) {
             console.error(error);
-            throw new Error("Could not get palettes");
+            this.setErrorMessageHandler("Error removing outfit");
+            throw error;
         }
+
     });
 
     initializeComplexion = action(async (username: string) => {
@@ -1103,13 +1123,13 @@ class AppStore {
                 complexion: this.faceColor
             };
 
-            const response = await API.graphql<GraphQLQuery<CreateComplexionMutation>>(graphqlOperation(createComplexion, {
+            await API.graphql<GraphQLQuery<CreateComplexionMutation>>(graphqlOperation(createComplexion, {
                 input: createNewComplexionInput
             })) as GraphQLResult<CreateComplexionMutation>;
-            const { data } = response;
-            console.log(data);
+
         } catch (error: any) {
-            console.error("Error adding palette: ", error);
+            this.setErrorMessageHandler("Error setting user's complexion");
+            console.error(error);
         }
 
     });
@@ -1119,21 +1139,23 @@ class AppStore {
         try {
             const response = await API.graphql<GraphQLQuery<ListComplexionsQuery>>(graphqlOperation(listComplexions)) as GraphQLResult<ListComplexionsQuery>;
             const { data } = response;
+
             if (data && data.listComplexions && data.listComplexions.items) {
                 const complexion = data.listComplexions.items[0]?.complexion;
                 if (complexion !== this.faceColor) this.setFaceColor(complexion!);
-            } else {
-                throw new Error("Could not get complexion.");
             }
+
         } catch (error: any) {
             console.error(error);
-            throw new Error("Could not get complexion");
+            this.setErrorMessageHandler("Error fetching complexion");
+            throw new error;
         }
     });
 
     updateDBComlpexion = action(async (newComplexion: string) => {
 
         try {
+
             const username = this.user?.getUsername();
             const complexionDetails: UpdateComplexionInput = {
                 id: username!,
@@ -1144,10 +1166,11 @@ class AppStore {
                 input: complexionDetails
             })) as GraphQLResult<UpdateComplexionMutation>;
 
-            console.log("Complexion updated successfully.");
+            this.setSuccessMessageHandler("Complexion updated successfully");
 
         } catch (error) {
-            console.error('Error updating complexion:', error);
+            console.error(error);
+            this.setErrorMessageHandler('Error updating complexion');
             throw error;
         }
 
@@ -1190,11 +1213,12 @@ class AppStore {
             this.setUserBottoms([]);
             this.setUserShoes([]);
 
-            this.setPalettes([]);
-            // this.handleModeChange(Mode.Closet);
+            this.setSuccessMessageHandler("User signed out successfully");
 
         } catch (error) {
-            console.log('Sign-out error:', error);
+            console.error(error);
+            this.setErrorMessageHandler('Error signing user out');
+            throw error;
         }
     });
 }

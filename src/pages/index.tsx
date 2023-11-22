@@ -10,11 +10,16 @@ import { observer } from 'mobx-react-lite';
 
 import { Layout } from './../lib/types';
 
+import { Alert, Snackbar } from "@mui/material";
+
 const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { fetchGarments, fetchComplexion, layout, setLayout, setUser } = store;
+  const { fetchGarments, fetchComplexion, layout, setLayout, setUser,
+    errorMessage, showErrorMessage, setShowErrorMessage, dismissErrorMessage,
+    successMessage, showSuccessMessage, setShowSuccessMessage, dismissSuccessMessage } = store;
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,6 +76,23 @@ const Home = observer(() => {
       {layout === Layout.Desktop && <DesktopLayout />}
       {layout === Layout.Mobile && <MobileLayout />}
       {/* {layout === Layout.Tablet && <TabletLayout />} */}
+
+      {showErrorMessage && (
+        <Snackbar open={showErrorMessage} autoHideDuration={5000} onClose={dismissErrorMessage}>
+          <Alert severity="error" onClose={dismissErrorMessage}>
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      )}
+
+      {showSuccessMessage && (
+        <Snackbar open={showSuccessMessage} autoHideDuration={5000} onClose={dismissSuccessMessage}>
+          <Alert severity="success" onClose={dismissSuccessMessage}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
+      )}
+
     </>
   );
 
