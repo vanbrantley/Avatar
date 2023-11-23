@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { useContext, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { useUser } from '../context/AuthContext';
 
@@ -25,13 +25,18 @@ const AddGarment = observer((props: IAddGarmentProps) => {
 
     const { mobile } = props;
 
-    const [brand, setBrand] = useState<string>("");
-    const [name, setName] = useState<string>("");
-
     const { user } = useUser();
     const store = useContext(AppStoreContext);
     const { selectedColor, handleColorChangePicker, selectedCategory, handleAreaChange,
         addGarmentToDB, addGarmentLocal, handleModeChange, handleBackButtonClick, setColorPickerOpen } = store;
+
+    const [brand, setBrand] = useState<string | undefined>(undefined);
+    const [name, setName] = useState<string>(`${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
+    const [dynamicName, setDynamicName] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (dynamicName) setName(`${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
+    }, [selectedColor, brand, selectedCategory, dynamicName]);
 
     const handleAreaChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
 
@@ -55,6 +60,8 @@ const AddGarment = observer((props: IAddGarmentProps) => {
                 category = GarmentType.Shoe;
                 handleAreaChange(category);
                 break;
+            default:
+                throw new Error(`Unexpected area value: ${area}`);
         }
 
     };
@@ -64,10 +71,13 @@ const AddGarment = observer((props: IAddGarmentProps) => {
     };
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+        const newName = e.target.value;
+        setName(newName);
+        setDynamicName(newName === '' || newName === `${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
     };
 
     const handleAddGarmentButtonClick = () => {
+
         if (user) addGarmentToDB(selectedCategory, selectedColor, brand, name);
         else addGarmentLocal(selectedCategory, selectedColor, brand, name);
         handleModeChange(Mode.Closet);
@@ -82,8 +92,6 @@ const AddGarment = observer((props: IAddGarmentProps) => {
                     <ArrowBackIcon fontSize="large" style={{ color: "white" }} />
                 </IconButton>
             </div>
-
-            {/* <p style={{ fontFamily: "Verdana" }}>Add a new garment</p> */}
 
             {/* Area Dropdown */}
             <p style={{ fontFamily: "Verdana" }}>Area: </p>
@@ -127,7 +135,7 @@ const AddGarment = observer((props: IAddGarmentProps) => {
 
                 <input
                     type="text"
-                    value={brand}
+                    value={brand || ''}
                     onChange={handleBrandChange}
                     placeholder=""
                     style={{ color: 'black', paddingLeft: '5px' }}
@@ -143,7 +151,6 @@ const AddGarment = observer((props: IAddGarmentProps) => {
                     type="text"
                     value={name}
                     onChange={handleNameChange}
-                    placeholder=""
                     style={{ color: 'black', paddingLeft: '5px' }}
                 />
             </div>

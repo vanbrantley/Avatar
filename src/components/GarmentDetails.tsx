@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { useContext, useState, useEffect } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
-import { Mode } from '../lib/types';
+import { GarmentTypeStrings, Mode } from '../lib/types';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -16,24 +16,32 @@ const SketchPicker = dynamic(
 const GarmentDetails = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { selectedGarment, selectedColor, setSelectedColor, handleColorChangePicker,
+    const { selectedCategory, selectedGarment, selectedColor, handleColorChangePicker,
         handleModeChange, removeGarment, setColorPickerOpen, handleBackButtonClick,
         handleUpdateGarmentButtonClick } = store;
 
-    const [brand, setBrand] = useState<string>("");
+    const [brand, setBrand] = useState<string | undefined>(undefined);
     const [name, setName] = useState<string>("");
     const [hasChanges, setHasChanges] = useState<boolean>(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-
     const [diffColor, setDiffColor] = useState<boolean>(false);
+    const [dynamicName, setDynamicName] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (dynamicName) setName(`${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
+    }, [name, brand, selectedColor, dynamicName]);
 
     useEffect(() => {
 
-        if (selectedGarment) {
-            setSelectedColor(selectedGarment.color);
-            setBrand(selectedGarment.brand);
-            setName(selectedGarment.name);
-        }
+        setBrand(selectedGarment.brand === null ? undefined : selectedGarment.brand);
+        setName(selectedGarment.name);
+
+        // Initial set of dynamicName
+        const garmentName = selectedGarment.name;
+        const garmentBrand = selectedGarment.brand;
+        const constructedName = `${selectedColor}${garmentBrand ? ` ${garmentBrand}` : ''} ${GarmentTypeStrings[selectedCategory]}`;
+        setDynamicName(garmentName === constructedName);
+        // console.log('setDynamicName condition result: 'garmentName === constructedName);
 
     }, [selectedGarment]);
 
@@ -52,7 +60,8 @@ const GarmentDetails = observer(() => {
     };
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+        const newName = e.target.value;
+        setName(newName);
 
         if (selectedGarment) {
             const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
@@ -62,21 +71,23 @@ const GarmentDetails = observer(() => {
                 selectedColor !== originalColor
             );
         }
+
+        setDynamicName(newName === '' || newName === `${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
+
     };
 
     const handleColorPickerChange = (color: string) => {
+
         handleColorChangePicker(color);
 
-        if (selectedGarment) {
-            const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
-            setHasChanges(
-                brand !== originalBrand ||
-                name !== originalName ||
-                color !== originalColor
-            );
+        const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
+        setHasChanges(
+            brand !== originalBrand ||
+            name !== originalName ||
+            color !== originalColor
+        );
 
-            setDiffColor(color !== originalColor);
-        }
+        setDiffColor(color !== originalColor);
 
     }
 
@@ -86,20 +97,17 @@ const GarmentDetails = observer(() => {
 
     const handleResetColor = () => {
 
-        if (selectedGarment) {
 
-            const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
+        const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
 
-            handleColorChangePicker(originalColor);
+        handleColorChangePicker(originalColor);
 
-            setHasChanges(
-                brand !== originalBrand ||
-                name !== originalName
-            );
+        setHasChanges(
+            brand !== originalBrand ||
+            name !== originalName
+        );
 
-            setDiffColor(false);
-
-        }
+        setDiffColor(false);
 
     };
 
@@ -111,7 +119,6 @@ const GarmentDetails = observer(() => {
             removeGarment(id, area);
             setColorPickerOpen(false);
             handleModeChange(Mode.Closet);
-
             setShowDeleteDialog(false);
         }
 
@@ -171,7 +178,7 @@ const GarmentDetails = observer(() => {
 
                         <input
                             type="text"
-                            value={brand}
+                            value={brand || ''}
                             onChange={handleBrandChange}
                             placeholder=""
                             style={{ color: 'black', paddingLeft: '5px' }}
