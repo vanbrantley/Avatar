@@ -6,7 +6,7 @@ type Garment @model @auth(rules: [{ allow: owner, operations: [create, update, d
   id: ID!
   area: String!
   color: String!
-  brand: String!
+  brand: String
   name: String!
 }
 

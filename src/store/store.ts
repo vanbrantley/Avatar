@@ -71,7 +71,7 @@ class AppStore {
     selectedBottom = this.defaultBottom;
     selectedShoe = this.defaultShoe;
 
-    selectedGarment: Garment | null = null;
+    selectedGarment: Garment = this.defaultTop;
 
     userHats: Garment[] = [];
     userTops: Garment[] = [];
@@ -180,7 +180,7 @@ class AppStore {
         this.selectedShoe = selected;
     });
 
-    setSelectedGarment = action((garment: Garment | null) => {
+    setSelectedGarment = action((garment: Garment) => {
         this.selectedGarment = garment;
     });
 
@@ -393,16 +393,12 @@ class AppStore {
         this.setColorPickerOpen(true);
     });
 
-    handleUpdateGarmentButtonClick = action((brand: string, name: string) => {
+    handleUpdateGarmentButtonClick = action((brand: string | undefined, name: string) => {
 
-        if (this.selectedGarment) {
-
-            const { id, area } = this.selectedGarment;
-            this.updateGarmentToDB(id, area, this.selectedColor, brand, name);
-            this.handleModeChange(Mode.Closet);
-            this.setColorPickerOpen(false);
-
-        }
+        const { id, area } = this.selectedGarment;
+        this.updateGarmentToDB(id, area, this.selectedColor, brand, name);
+        this.handleModeChange(Mode.Closet);
+        this.setColorPickerOpen(false);
 
     });
 
@@ -437,6 +433,10 @@ class AppStore {
 
     openGarmentDetails = action((garment: Garment) => {
 
+        // set selectedGarment
+        this.setSelectedGarment(garment);
+        this.setSelectedColor(garment.color);
+
         // set garment to its area's selected garment
         switch (garment.area) {
 
@@ -455,9 +455,6 @@ class AppStore {
             default:
                 break;
         }
-
-        // set selectedGarment
-        this.setSelectedGarment(garment);
 
         // change mode to Details
         this.setMode(Mode.Details);
@@ -598,11 +595,9 @@ class AppStore {
         }
     });
 
-    addGarmentLocal = action((area: GarmentType, color: string, brand: string, name: string) => {
+    addGarmentLocal = action((area: GarmentType, color: string, brand: string | undefined, name: string) => {
 
-        if (!name) {
-            name = color + " " + brand + " " + GarmentTypeStrings[area]
-        }
+        const normalizedBrand = (brand === undefined || brand === '') ? null : brand;
 
         // make a Garment Object with placeholder data for id, createdAt, updatedAt, owner
         const newGarment: Garment = {
@@ -610,7 +605,7 @@ class AppStore {
             id: uuidv4(),
             area: GarmentTypeStrings[area],
             color: color,
-            brand: brand,
+            brand: normalizedBrand,
             name: name,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -639,18 +634,15 @@ class AppStore {
 
     });
 
-    addGarmentToDB = action(async (area: GarmentType, color: string, brand: string, name: string) => {
+    addGarmentToDB = action(async (area: GarmentType, color: string, brand: string | undefined, name: string) => {
         try {
 
-            // handle case when passed name is the empty string
-            if (!name) {
-                name = color + " " + brand + " " + GarmentTypeStrings[area]
-            }
+            const normalizedBrand = (brand === undefined || brand === '') ? null : brand;
 
             const createNewGarmentInput: CreateGarmentInput = {
                 color: color,
                 area: GarmentTypeStrings[area],
-                brand: brand,
+                brand: normalizedBrand,
                 name: name
             };
 
@@ -691,19 +683,17 @@ class AppStore {
         }
     });
 
-    updateGarmentToDB = action(async (id: string, area: string, color: string, brand: string, name: string) => {
+    updateGarmentToDB = action(async (id: string, area: string, color: string, brand: string | undefined, name: string) => {
 
         try {
 
-            if (!name) {
-                name = color + " " + brand + " " + area
-            }
+            const normalizedBrand = (brand === undefined || brand === '') ? null : brand;
 
             const updateGarmentInput: UpdateGarmentInput = {
                 id: id,
                 color: color,
                 area: area,
-                brand: brand,
+                brand: normalizedBrand,
                 name: name
             };
 
@@ -1029,7 +1019,13 @@ class AppStore {
 
             // check for case where you go to make an outfit with a default garment
             // if there is a default garment, add it to the database for the user & get its id
-            // think you have to change it so that the addGarment function returns the createdGarment
+            // think you have to change it so that the addGarment function returns the createdGarment -- yea
+
+            // check all areas to see if the garments are in the database (see if any are default garments)
+            // save the area garment ids to variables
+            // if there are default garments, make a garment for it in the db, and save its id to the variable
+            // make the CreateOutfitInput
+
 
             // create CreateOutfitInput object with ids of selected garments
             const createNewOutfitInput: CreateOutfitInput = {
@@ -1143,6 +1139,7 @@ class AppStore {
             if (data && data.listComplexions && data.listComplexions.items) {
                 const complexion = data.listComplexions.items[0]?.complexion;
                 if (complexion !== this.faceColor) this.setFaceColor(complexion!);
+                // TODO: Set selectedComplexion
             }
 
         } catch (error: any) {
@@ -1200,6 +1197,7 @@ class AppStore {
             if (this.shoeLock) this.setShoeLock(false);
 
             this.setSelectedCategory(GarmentType.Top);
+            this.setSelectedGarment(this.defaultTop);
 
             this.setSelectedHat(this.defaultHat);
             this.setSelectedTop(this.defaultTop);
