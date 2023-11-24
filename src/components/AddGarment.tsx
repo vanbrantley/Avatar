@@ -78,7 +78,7 @@ const AddGarment = observer((props: IAddGarmentProps) => {
 
     const handleAddGarmentButtonClick = () => {
 
-        if (user) addGarmentToDB(selectedCategory, selectedColor, brand, name);
+        if (user) addGarmentToDB(GarmentTypeStrings[selectedCategory], selectedColor, brand, name);
         else addGarmentLocal(selectedCategory, selectedColor, brand, name);
         handleModeChange(Mode.Closet);
         setColorPickerOpen(false);

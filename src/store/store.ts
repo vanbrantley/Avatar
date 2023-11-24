@@ -13,6 +13,7 @@ import { createGarment, createComplexion, deleteGarment, updateComplexion, updat
 import { CognitoUser } from '@aws-amplify/auth';
 import { Layout, Mode, GarmentType, GarmentTypeStrings, Outfit, EmbeddedOutfit } from '../lib/types';
 import { v4 as uuidv4 } from 'uuid';
+import isEqual from 'lodash/isEqual';
 
 class AppStore {
 
@@ -467,15 +468,19 @@ class AppStore {
         switch (garment.area) {
             case GarmentTypeStrings[GarmentType.Hat]:
                 this.setSelectedHat(garment);
+                this.setSelectedCategory(GarmentType.Hat);
                 break;
             case GarmentTypeStrings[GarmentType.Top]:
                 this.setSelectedTop(garment);
+                this.setSelectedCategory(GarmentType.Top);
                 break;
             case GarmentTypeStrings[GarmentType.Bottom]:
                 this.setSelectedBottom(garment);
+                this.setSelectedCategory(GarmentType.Bottom);
                 break;
             case GarmentTypeStrings[GarmentType.Shoe]:
                 this.setSelectedShoe(garment);
+                this.setSelectedCategory(GarmentType.Shoe);
                 break;
         }
 
@@ -634,14 +639,14 @@ class AppStore {
 
     });
 
-    addGarmentToDB = action(async (area: GarmentType, color: string, brand: string | undefined, name: string) => {
+    addGarmentToDB = action(async (area: string, color: string, brand: string | undefined, name: string): Promise<Garment | undefined> => {
         try {
 
             const normalizedBrand = (brand === undefined || brand === '') ? null : brand;
 
             const createNewGarmentInput: CreateGarmentInput = {
                 color: color,
-                area: GarmentTypeStrings[area],
+                area: area,
                 brand: normalizedBrand,
                 name: name
             };
@@ -655,26 +660,32 @@ class AppStore {
                 // add createdGarment to user garment group
                 // make createdGarmnet the selected area garment
                 switch (area) {
-                    case GarmentType.Hat:
+                    case GarmentTypeStrings[GarmentType.Hat]:
                         this.setUserHats([createdGarment, ...this.userHats]);
                         this.setSelectedHat(createdGarment);
                         break;
-                    case GarmentType.Top:
+                    case GarmentTypeStrings[GarmentType.Top]:
                         this.setUserTops([createdGarment, ...this.userTops]);
                         this.setSelectedTop(createdGarment);
                         break;
-                    case GarmentType.Bottom:
+                    case GarmentTypeStrings[GarmentType.Bottom]:
                         this.setUserBottoms([createdGarment, ...this.userBottoms]);
                         this.setSelectedBottom(createdGarment);
                         break;
-                    case GarmentType.Shoe:
+                    case GarmentTypeStrings[GarmentType.Shoe]:
                         this.setUserShoes([createdGarment, ...this.userShoes]);
                         this.setSelectedShoe(createdGarment);
                         break;
                 }
 
+                this.checkIfSavedOutfit();
                 this.setSuccessMessageHandler("Garment added successfully");
+
+                return createdGarment;
+
             }
+
+            return undefined;
 
         } catch (error: any) {
             console.error(error);
@@ -819,6 +830,8 @@ class AppStore {
                     await this.removeOutfit(outfitToDelete.id);
                 }
 
+                this.checkIfSavedOutfit();
+
             }
 
         } catch (error: any) {
@@ -874,6 +887,7 @@ class AppStore {
                 const userOutfits = data.listOutfits.items as Outfit[];
                 this.setOutfits(userOutfits);
                 this.populateEmbeddedOutfits(userOutfits);
+                this.checkIfSavedOutfit();
                 return userOutfits;
 
             } else {
@@ -1013,26 +1027,50 @@ class AppStore {
 
     });
 
+    addDefaultGarmentToDB = action(async (defaultGarment: Garment): Promise<Garment | null> => {
+
+        const { area, color } = defaultGarment;
+        const name = `${color} ${area}`;
+
+        try {
+            const createdGarment = await this.addGarmentToDB(area, color, undefined, name);
+            return createdGarment || null;
+        } catch (error) {
+            console.error('Error adding default garment:', error);
+            return null;
+        }
+
+    });
+
     saveOutfit = action(async () => {
 
         try {
 
-            // check for case where you go to make an outfit with a default garment
-            // if there is a default garment, add it to the database for the user & get its id
-            // think you have to change it so that the addGarment function returns the createdGarment -- yea
+            const isHatDefault = isEqual(this.selectedHat, this.defaultHat);
+            console.log("Is hat default: ", isHatDefault);
+            const isTopDefault = isEqual(this.selectedTop, this.defaultTop);
+            console.log("Is top default: ", isTopDefault);
+            const isBottomDefault = isEqual(this.selectedBottom, this.defaultBottom);
+            console.log("Is bottom default: ", isBottomDefault);
+            const isShoeDefault = isEqual(this.selectedShoe, this.defaultShoe);
+            console.log("Is shoe default: ", isShoeDefault);
 
-            // check all areas to see if the garments are in the database (see if any are default garments)
-            // save the area garment ids to variables
-            // if there are default garments, make a garment for it in the db, and save its id to the variable
-            // make the CreateOutfitInput
+            const hat = isHatDefault ? await this.addDefaultGarmentToDB(this.defaultHat) : this.selectedHat;
+            const top = isTopDefault ? await this.addDefaultGarmentToDB(this.defaultTop) : this.selectedTop;
+            const bottom = isBottomDefault ? await this.addDefaultGarmentToDB(this.defaultBottom) : this.selectedBottom;
+            const shoe = isShoeDefault ? await this.addDefaultGarmentToDB(this.defaultShoe) : this.selectedShoe;
 
+            if (!(hat && top && bottom && shoe)) {
+                console.warn('One or more default garments failed to be added to the database.');
+                return;
+            }
 
             // create CreateOutfitInput object with ids of selected garments
             const createNewOutfitInput: CreateOutfitInput = {
-                hatId: this.selectedHat.id,
-                topId: this.selectedTop.id,
-                bottomId: this.selectedBottom.id,
-                shoeId: this.selectedShoe.id
+                hatId: hat.id,
+                topId: top.id,
+                bottomId: bottom.id,
+                shoeId: shoe.id
             }
 
             // add it to the database

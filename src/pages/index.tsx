@@ -17,8 +17,8 @@ const Home = observer(() => {
   const { user } = useUser();
   const store = useContext(AppStoreContext);
   const { fetchGarments, fetchComplexion, layout, setLayout, setUser,
-    errorMessage, showErrorMessage, setShowErrorMessage, dismissErrorMessage,
-    successMessage, showSuccessMessage, setShowSuccessMessage, dismissSuccessMessage } = store;
+    errorMessage, showErrorMessage, dismissErrorMessage,
+    successMessage, showSuccessMessage, dismissSuccessMessage } = store;
 
 
   useEffect(() => {
