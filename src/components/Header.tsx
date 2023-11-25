@@ -45,7 +45,7 @@ const Header = observer(function Header(props: IHeaderProps) {
                             >
                                 <AccessibilityIcon className="w-6 h-6" />
                             </button>
-                            <span className="font-semibold text-xl text-white tracking-tight" style={{ fontFamily: "Verdana" }}>MyCloset</span>
+                            <span className="font-semibold text-xl text-white tracking-tight" style={{ fontFamily: "Verdana" }}>Avatar</span>
                         </div>
 
                         <div className="block lg:hidden">
@@ -121,7 +121,7 @@ const Header = observer(function Header(props: IHeaderProps) {
                         >
                             <AccessibilityIcon className="w-6 h-6" />
                         </button>
-                        <span className="font-semibold text-xl text-white tracking-tight" style={{ fontFamily: "Verdana" }}>MyCloset</span>
+                        <span className="font-semibold text-xl text-white tracking-tight" style={{ fontFamily: "Verdana" }}>Avatar</span>
                         <div>
 
                             <button

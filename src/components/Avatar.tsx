@@ -12,7 +12,7 @@ const Avatar = observer((props: IAvatarProps) => {
     const store = useContext(AppStoreContext);
 
     const { faceColor, selectedHat, selectedTop, selectedBottom, selectedShoe, selectedCategory,
-        handleAreaChange, colorPickerOpen, selectedColor, handleAvatarClickMobile, handleModeChange } = store;
+        handleAreaChange, colorPickerOpen, selectedColor, handleAvatarClick, handleModeChange } = store;
 
     const sizeDictionary = {
         hat: {
@@ -72,11 +72,7 @@ const Avatar = observer((props: IAvatarProps) => {
 
         <div className="grid gap-0">
             <div
-                onClick={
-                    props.mini ?
-                        () => handleAvatarClickMobile(GarmentType.Hat)
-                        : () => handleAreaChange(GarmentType.Hat)
-                }
+                onClick={() => handleAvatarClick(GarmentType.Hat)}
                 className="mx-auto cursor-pointer"
                 style={{
                     backgroundColor:
@@ -103,11 +99,7 @@ const Avatar = observer((props: IAvatarProps) => {
                 }}
             ></div>
             <div
-                onClick={
-                    props.mini ?
-                        () => handleAvatarClickMobile(GarmentType.Top)
-                        : () => handleAreaChange(GarmentType.Top)
-                }
+                onClick={() => handleAvatarClick(GarmentType.Top)}
                 className="mx-auto cursor-pointer"
                 style={{
                     backgroundColor:
@@ -123,11 +115,7 @@ const Avatar = observer((props: IAvatarProps) => {
 
 
             <div
-                onClick={
-                    props.mini ?
-                        () => handleAvatarClickMobile(GarmentType.Bottom)
-                        : () => handleAreaChange(GarmentType.Bottom)
-                }
+                onClick={() => handleAvatarClick(GarmentType.Bottom)}
                 className="mx-auto cursor-pointer"
                 style={{
                     backgroundColor:
@@ -139,11 +127,7 @@ const Avatar = observer((props: IAvatarProps) => {
                 }}
             ></div>
             <div
-                onClick={
-                    props.mini ?
-                        () => handleAvatarClickMobile(GarmentType.Shoe)
-                        : () => handleAreaChange(GarmentType.Shoe)
-                }
+                onClick={() => handleAvatarClick(GarmentType.Shoe)}
                 className="mx-auto rounded-full cursor-pointer"
                 style={{
                     backgroundColor:

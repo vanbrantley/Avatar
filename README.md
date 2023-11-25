@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="public/avatar-a1.png" width="25%" alt="Avatar Logo"/>
-    <img src="public/avatar-a6.png" width="25%" alt="Avatar Logo"/>
-    <img src="public/avatar-a5.png" width="25%" alt="Avatar Logo"/>
+    <img src="public/README-images/avatar-a1.png" width="25%" alt="Avatar Logo"/>
+    <img src="public/README-images/avatar-a6.png" width="25%" alt="Avatar Logo"/>
+    <img src="public/README-images/avatar-a5.png" width="25%" alt="Avatar Logo"/>
 </p>
 
 <h1 align="center"><strong>Avatar</strong></h1>
@@ -25,66 +25,29 @@
 
 Avatar is a web application that you can use to manage your wardrobe.
 
-Add garments that you own to your digital closet and preview different outfit combinations on your Avatar.
-
-Identify colors that would integrate well into your wardrobe so you know what pieces you should buy next.
-
-## Walkthrough
-
+Add garments that you own to your digital closet and preview different outfit combinations on your Avatar character.
 <!-- [[ Avatar Demo YouTube video (eventually) ]] -->
 
-![Closet Mode](public/closet-mode.png)
+![Preview](public/README-images/Preview.png)
 
-The Avatar character is made up of 5 different areas (hat, face, top, bottom, shoe) - each of which you can assign the color of.
+Click the Avatar's face to assign your character's complexion.
 
-Click an area on the Avatar to make it the selected area.
+Click the Avatar's hat, top, bottom, or shoe area to browse through that area's garments.
 
-Use the color picker and color swatches to change the color of the selected area.
+Select a garment from the garment list to apply it to the Avatar.
 
-### Modes
+![Closet](public/README-images/Closet.png)
 
-Avatar has three different modes: **Lab**, **Closet**, and **Mockup**.
+## Mobile
 
-### Lab Mode
+Avatar is also available to use on mobile browsers!
 
-Use **Lab** mode to experiment and find outfit color combinations that work well together with the help of the randomize button and color picker.
 
-![Lab Mode](public/lab-mode.png)
+<p align="center">
+    <img src="public/README-images/Mobile-Avatar.png" width="25%" alt="Mobile Avatar" />
+    <img src="public/README-images/Mobile-Closet.png" width="25%" alt="Mobile Avatar" />
+    <img src="public/README-images/Mobile-Preview.png" width="25%" alt="Mobile Avatar" />
+</p>
 
-Click the randomize button to assign random colors to every area.
-
-Lock certain areas to prevent them from being changed by pressing the lock for the corresponding area on the palette.
-
-Save palettes with the heart button (must create an account to save). Saved palettes are shown below the color picker.
-
-Click on a saved palette to display the palette colors on the Avatar.
-
-### Closet Mode
-
-Use **Closet** mode to save swatches for garments that you own, and preview outfit combinations.
-
-![Closet Mode](public/closet-mode-2.png)
-
-Click areas on the right palette to add or remove a color swatch.
-
-Color swatches are shown above the color picker.
-
-Clicking on a color swatch puts that color in the respective area on the Avatar.
-
-Click the randomize button to generate random outfit combinations out of your swatches.
-
-Lock areas to prevent their colors from being changed.
-
-### Mockup Mode
-
-Use **Mockup** mode to upload and manage images of clothing items which you can preview on the Avatar.
-
-![Mockup Mode](public/mockup-mode.png)
-
-Upload a file to be displayed on the Avatar by pressing the upload button on the bottom right of the screen and selecting the a file with your File Explorer.
-
-Select an uploaded image from the results to preview it on the Avatar.
 
 ---
-
-For documentation on the project's implementation, check out the [writeup.md](writeup.md) file!
