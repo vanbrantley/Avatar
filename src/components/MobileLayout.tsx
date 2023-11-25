@@ -26,7 +26,8 @@ const MobileLayout = observer(() => {
     const { user } = useUser();
 
     const store = useContext(AppStoreContext);
-    const { mode, showAvatar, setShowAvatar, embeddedOutfits, cycleOutfitsLeft, cycleOutfitsRight, selectedOutfit, saveOutfit, removeOutfit } = store;
+    const { mode, showAvatar, setShowAvatar, embeddedOutfits, cycleOutfitsLeft, cycleOutfitsRight,
+        selectedOutfit, saveOutfit, removeOutfit, navbarOpen, setNavbarOpen } = store;
 
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
@@ -37,6 +38,10 @@ const MobileLayout = observer(() => {
     const confirmDelete = () => {
         if (selectedOutfit) removeOutfit(selectedOutfit.id);
         setShowDeleteDialog(false);
+    };
+
+    const handleClickOutside = () => {
+        if (navbarOpen) setNavbarOpen(false);
     }
 
     return (
@@ -45,7 +50,7 @@ const MobileLayout = observer(() => {
             <div className="flex flex-col h-screen">
                 <Header isMobile={true} />
 
-                <div className="flex justify-center items-center flex-grow ">
+                <div className="flex justify-center items-center flex-grow" onClick={handleClickOutside}>
                     <div className="w-full h-full mx-auto">
 
                         {showAvatar ? (

@@ -1047,13 +1047,9 @@ class AppStore {
         try {
 
             const isHatDefault = isEqual(this.selectedHat, this.defaultHat);
-            console.log("Is hat default: ", isHatDefault);
             const isTopDefault = isEqual(this.selectedTop, this.defaultTop);
-            console.log("Is top default: ", isTopDefault);
             const isBottomDefault = isEqual(this.selectedBottom, this.defaultBottom);
-            console.log("Is bottom default: ", isBottomDefault);
             const isShoeDefault = isEqual(this.selectedShoe, this.defaultShoe);
-            console.log("Is shoe default: ", isShoeDefault);
 
             const hat = isHatDefault ? await this.addDefaultGarmentToDB(this.defaultHat) : this.selectedHat;
             const top = isTopDefault ? await this.addDefaultGarmentToDB(this.defaultTop) : this.selectedTop;

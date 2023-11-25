@@ -41,8 +41,8 @@ export default function MyApp(props: MyAppProps) {
           <CssBaseline />
           <AppStoreContext.Provider value={appStore}>
             <Component {...pageProps} />
-            <HelpModal />
-            <OnboardModal />
+            {/* <HelpModal />
+            <OnboardModal /> */}
           </AppStoreContext.Provider>
         </ThemeProvider>
       </AuthContext>

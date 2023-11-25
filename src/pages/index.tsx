@@ -92,7 +92,6 @@ const Home = observer(() => {
           </Alert>
         </Snackbar>
       )}
-
     </>
   );
 

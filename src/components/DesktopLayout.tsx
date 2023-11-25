@@ -128,7 +128,6 @@ const DesktopLayout = observer(() => {
                 </DialogActions>
             </Dialog>
 
-
         </div>
 
     );

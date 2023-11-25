@@ -74,7 +74,8 @@ const Closet = observer(() => {
             <br />
             <br />
 
-            <div className="flex flex-col flex-grow">
+            {/* just want this part to be scrollable when overflow */}
+            <div className="flex flex-col flex-grow overflow-auto">
 
                 {(selectedArray.length > 0) ? (
                     selectedArray.map((garment, index) => {
