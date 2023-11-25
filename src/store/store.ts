@@ -355,11 +355,11 @@ class AppStore {
         }
     });
 
-    handleAvatarClickMobile = action((area: GarmentType) => {
+    handleAvatarClick = action((area: GarmentType) => {
 
         this.handleAreaChange(area);
-        this.setShowAvatar(false);
         this.setMode(Mode.Closet);
+        if (this.layout === Layout.Mobile) this.setShowAvatar(false);
 
     });
 
@@ -1102,7 +1102,6 @@ class AppStore {
                 this.setOutfits([...this.outfits, createdOutfit]);
                 this.setEmbeddedOutfits([...this.embeddedOutfits, embeddedOutfit]);
                 this.setSelectedOutfit(embeddedOutfit);
-
                 this.setSuccessMessageHandler("Outfit added successfully");
 
             }
