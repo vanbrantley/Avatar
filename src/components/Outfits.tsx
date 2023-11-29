@@ -35,7 +35,7 @@ const Outfits = observer(() => {
                 </div>
             ) : (
                 <div className="flex h-full items-center justify-center">
-                    <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>Sign in save outfits</p>
+                    <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>Sign in to save outfits</p>
                 </div>
             )}
         </>

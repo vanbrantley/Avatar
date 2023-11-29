@@ -4,6 +4,7 @@ import { AppStoreContext } from '../context/AppStoreContext';
 import { GarmentTypeStrings, Mode } from '../lib/types';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useUser } from '../context/AuthContext';
 
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
@@ -17,8 +18,9 @@ const GarmentDetails = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { selectedCategory, selectedGarment, selectedColor, handleColorChangePicker,
-        handleModeChange, removeGarment, setColorPickerOpen, handleBackButtonClick,
-        handleUpdateGarmentButtonClick } = store;
+        handleModeChange, removeGarment, removeGarmentLocal, setColorPickerOpen, handleBackButtonClick,
+        updateGarmentToDB, updateGarmentLocal } = store;
+    const { user } = useUser();
 
     const [brand, setBrand] = useState<string | undefined>(undefined);
     const [name, setName] = useState<string>("");
@@ -89,7 +91,17 @@ const GarmentDetails = observer(() => {
 
         setDiffColor(color !== originalColor);
 
-    }
+    };
+
+    const handleUpdateGarmentButtonClick = () => {
+
+        const { id, area } = selectedGarment;
+        if (user) updateGarmentToDB(id, area, selectedColor, brand, name);
+        else updateGarmentLocal(id, area, selectedColor, brand, name);
+        handleModeChange(Mode.Closet);
+        setColorPickerOpen(false);
+
+    };
 
     const handleDeleteGarmentButtonClick = () => {
         setShowDeleteDialog(true);
@@ -115,8 +127,8 @@ const GarmentDetails = observer(() => {
 
         if (selectedGarment) {
             const { id, area } = selectedGarment;
-            // TODO: Add mode change and picker close to removeGarment
-            removeGarment(id, area);
+            if (user) removeGarment(id, area);
+            else removeGarmentLocal(id, area);
             setColorPickerOpen(false);
             handleModeChange(Mode.Closet);
             setShowDeleteDialog(false);
@@ -203,7 +215,7 @@ const GarmentDetails = observer(() => {
 
                     {/* Update button */}
                     {hasChanges ? (
-                        <button onClick={() => handleUpdateGarmentButtonClick(brand, name)}
+                        <button onClick={handleUpdateGarmentButtonClick}
                             className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-4 rounded">Update</button>
                     ) : (
                         <button
