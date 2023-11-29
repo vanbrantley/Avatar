@@ -12,21 +12,27 @@ const Preview = observer(() => {
         selectedHat, selectedTop, selectedBottom, selectedShoe, randomizeGarments } = store;
 
     return (
-        <div className="h-full space-y-8">
+        <div className="h-full space-y-12 flex flex-col justify-center">
             <div className="flex flex-col space-y-4">
                 <div>
                     <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px" }}>Hats</p>
                 </div>
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                        {userHats.map((garment) => (
-                            <div
-                                key={garment.id}
-                                className="w-20 h-w0"
-                            >
-                                <Swatch key={garment.id} garment={garment} selected={garment.id === selectedHat.id} />
-                            </div>
-                        ))}
+
+                        {userHats.length === 0 ? (
+                            <p style={{ fontFamily: "Verdana" }}>No hats added</p>
+                        ) : (
+                            userHats.map((garment) => (
+                                <div
+                                    key={garment.id}
+                                    className="w-20 h-w0"
+                                >
+                                    <Swatch key={garment.id} garment={garment} selected={garment.id === selectedHat.id} />
+                                </div>
+                            ))
+                        )}
+
                     </div>
                     {/* <div className="flex">
                         <IconButton size="large">
@@ -41,14 +47,18 @@ const Preview = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                        {userTops.map((garment) => (
-                            <div
-                                key={garment.id}
-                                className="w-20 h-10"
-                            >
-                                <Swatch key={garment.id} garment={garment} selected={garment.id === selectedTop.id} />
-                            </div>
-                        ))}
+                        {userTops.length === 0 ? (
+                            <p style={{ fontFamily: "Verdana" }}>No tops added</p>
+                        ) : (
+                            userTops.map((garment) => (
+                                <div
+                                    key={garment.id}
+                                    className="w-20 h-w0"
+                                >
+                                    <Swatch key={garment.id} garment={garment} selected={garment.id === selectedTop.id} />
+                                </div>
+                            ))
+                        )}
                     </div>
                     {/* <div className="flex">
                         <IconButton size="large">
@@ -63,14 +73,18 @@ const Preview = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                        {userBottoms.map((garment) => (
-                            <div
-                                key={garment.id}
-                                className="w-20 h-10"
-                            >
-                                <Swatch key={garment.id} garment={garment} selected={garment.id === selectedBottom.id} />
-                            </div>
-                        ))}
+                        {userBottoms.length === 0 ? (
+                            <p style={{ fontFamily: "Verdana" }}>No bottoms added</p>
+                        ) : (
+                            userBottoms.map((garment) => (
+                                <div
+                                    key={garment.id}
+                                    className="w-20 h-w0"
+                                >
+                                    <Swatch key={garment.id} garment={garment} selected={garment.id === selectedBottom.id} />
+                                </div>
+                            ))
+                        )}
                     </div>
                     {/* <div className="flex">
                         <IconButton size="large">
@@ -85,14 +99,18 @@ const Preview = observer(() => {
                 </div>
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
-                        {userShoes.map((garment) => (
-                            <div
-                                key={garment.id}
-                                className="w-20 h-10"
-                            >
-                                <Swatch key={garment.id} garment={garment} selected={garment.id === selectedShoe.id} />
-                            </div>
-                        ))}
+                        {userShoes.length === 0 ? (
+                            <p style={{ fontFamily: "Verdana" }}>No shoes added</p>
+                        ) : (
+                            userShoes.map((garment) => (
+                                <div
+                                    key={garment.id}
+                                    className="w-20 h-w0"
+                                >
+                                    <Swatch key={garment.id} garment={garment} selected={garment.id === selectedShoe.id} />
+                                </div>
+                            ))
+                        )}
                     </div>
                     {/* <div className="flex">
                         <IconButton size="large">

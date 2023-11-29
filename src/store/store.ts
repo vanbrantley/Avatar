@@ -394,15 +394,6 @@ class AppStore {
         this.setColorPickerOpen(true);
     });
 
-    handleUpdateGarmentButtonClick = action((brand: string | undefined, name: string) => {
-
-        const { id, area } = this.selectedGarment;
-        this.updateGarmentToDB(id, area, this.selectedColor, brand, name);
-        this.handleModeChange(Mode.Closet);
-        this.setColorPickerOpen(false);
-
-    });
-
     handleGarmentClick = action((garment: Garment) => {
 
         const { area, color } = garment;
@@ -615,7 +606,7 @@ class AppStore {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             owner: null
-        }
+        };
 
         // add createdGarment to user garment group
         switch (area) {
@@ -694,6 +685,62 @@ class AppStore {
         }
     });
 
+    updateGarmentLocal = action((id: string, area: string, color: string, brand: string | undefined, name: string) => {
+
+        const normalizedBrand = (brand === undefined || brand === '') ? null : brand;
+
+        const updatedGarment: Garment = {
+            __typename: "Garment",
+            id: id,
+            area: area,
+            color: color,
+            brand: normalizedBrand,
+            name: name,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            owner: null
+        };
+
+        let updatedArray: Garment[];
+        switch (area) {
+            case GarmentTypeStrings[GarmentType.Hat]:
+                updatedArray = [
+                    updatedGarment,
+                    ...(this.userHats.filter(garment => garment.id !== id) as Garment[])
+                ];
+                this.setUserHats(updatedArray);
+                this.setSelectedHat(updatedGarment);
+                break;
+            case GarmentTypeStrings[GarmentType.Top]:
+                updatedArray = [
+                    updatedGarment,
+                    ...(this.userTops.filter(garment => garment.id !== id) as Garment[])
+                ];
+                this.setUserTops(updatedArray);
+                this.setSelectedTop(updatedGarment);
+                break;
+            case GarmentTypeStrings[GarmentType.Bottom]:
+                updatedArray = [
+                    updatedGarment,
+                    ...(this.userBottoms.filter(garment => garment.id !== id) as Garment[])
+                ];
+                this.setUserBottoms(updatedArray);
+                this.setSelectedBottom(updatedGarment);
+                break;
+            case GarmentTypeStrings[GarmentType.Shoe]:
+                updatedArray = [
+                    updatedGarment,
+                    ...(this.userShoes.filter(garment => garment.id !== id) as Garment[])
+                ];
+                this.setUserShoes(updatedArray);
+                this.setSelectedShoe(updatedGarment);
+                break;
+        }
+
+        this.setSuccessMessageHandler("Garment updated successfully");
+
+    });
+
     updateGarmentToDB = action(async (id: string, area: string, color: string, brand: string | undefined, name: string) => {
 
         try {
@@ -763,6 +810,53 @@ class AppStore {
             this.setErrorMessageHandler("Error updating garment");
             throw error;
         }
+
+    });
+
+    removeGarmentLocal = action((garmentId: string, area: string) => {
+
+        // remove removedGarment from garments array
+        // reset selected area garment
+        switch (area) {
+            case GarmentTypeStrings[GarmentType.Hat]:
+                this.setUserHats(this.userHats.filter((swatch) => swatch.id !== garmentId));
+                if (this.userHats.length === 0) {
+                    this.setSelectedHat(this.defaultHat);
+                } else {
+                    const randomHat = this.getRandomGarment(this.userHats);
+                    this.setSelectedHat(randomHat);
+                }
+                break;
+            case GarmentTypeStrings[GarmentType.Top]:
+                this.setUserTops(this.userTops.filter((swatch) => swatch.id !== garmentId));
+                if (this.userTops.length === 0) {
+                    this.setSelectedTop(this.defaultTop);
+                } else {
+                    const randomTop = this.getRandomGarment(this.userTops);
+                    this.setSelectedTop(randomTop);
+                }
+                break;
+            case GarmentTypeStrings[GarmentType.Bottom]:
+                this.setUserBottoms(this.userBottoms.filter((swatch) => swatch.id !== garmentId));
+                if (this.userBottoms.length === 0) {
+                    this.setSelectedBottom(this.defaultBottom);
+                } else {
+                    const randomBottom = this.getRandomGarment(this.userBottoms);
+                    this.setSelectedBottom(randomBottom);
+                }
+                break;
+            case GarmentTypeStrings[GarmentType.Shoe]:
+                this.setUserShoes(this.userShoes.filter((swatch) => swatch.id !== garmentId));
+                if (this.userShoes.length === 0) {
+                    this.setSelectedShoe(this.defaultShoe);
+                } else {
+                    const randomShoe = this.getRandomGarment(this.userShoes);
+                    this.setSelectedShoe(randomShoe);
+                }
+                break;
+        }
+
+        this.setSuccessMessageHandler("Garment removed successfully");
 
     });
 
