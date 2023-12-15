@@ -1258,6 +1258,11 @@ class AppStore {
 
     });
 
+    initializeRandomComplexion = action(() => {
+        this.setSelectedComplexion(Math.floor(Math.random() * this.complexions.length));
+        this.setFaceColor(this.complexions[this.selectedComplexion]);
+    });
+
     fetchComplexion = action(async () => {
 
         try {

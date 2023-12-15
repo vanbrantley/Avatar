@@ -16,7 +16,7 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { fetchGarments, fetchComplexion, layout, setLayout, setUser,
+  const { fetchGarments, fetchComplexion, initializeRandomComplexion, layout, setLayout, setUser,
     errorMessage, showErrorMessage, dismissErrorMessage,
     successMessage, showSuccessMessage, dismissSuccessMessage } = store;
 
@@ -51,6 +51,8 @@ const Home = observer(() => {
       setUser(user);
       fetchGarments();
       fetchComplexion();
+    } else {
+      initializeRandomComplexion();
     }
 
     // Register the beforeunload event listener to fetch palettes on page refresh
