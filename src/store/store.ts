@@ -80,10 +80,11 @@ class AppStore {
     userShoes: Garment[] = [];
 
     // OG complexion #a18057
-    complexions: string[] = ["#f5ebe4", "#ecdacc", "#e3c8b4",
-        "#d3aa8a", "#cd9d79", "#c08355",
-        "#a66b3d", "#885732", "#714829",
-        "#53351e", "#3b2616", "#23160d"];
+    complexions: string[] = ["#ecdacc", "#dbc9ba", "#d9bca7",
+        "#d3aa8a", "#cd9d79", "#b58c6d",
+        "#5c493a", "#3d2e22",
+        "#3b2616", "#23160d", "#120904", "#080400"];
+
     selectedComplexion = Math.floor(Math.random() * this.complexions.length);
     faceColor = this.complexions[this.selectedComplexion];
 
@@ -1265,8 +1266,12 @@ class AppStore {
 
             if (data && data.listComplexions && data.listComplexions.items) {
                 const complexion = data.listComplexions.items[0]?.complexion;
-                if (complexion !== this.faceColor) this.setFaceColor(complexion!);
-                // TODO: Set selectedComplexion
+                if (complexion) {
+                    if (complexion !== this.faceColor) this.setFaceColor(complexion);
+                    // TODO: Set selectedComplexion
+                    const complexionIndex = this.complexions.indexOf(complexion)
+                    this.setSelectedComplexion(complexionIndex);
+                }
             }
 
         } catch (error: any) {
