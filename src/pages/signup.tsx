@@ -188,8 +188,6 @@ const Signup = observer(() => {
                 </Snackbar>
             </form>
 
-
-
         </div>
 
     );

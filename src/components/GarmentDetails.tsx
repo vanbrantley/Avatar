@@ -1,13 +1,11 @@
 import { observer } from 'mobx-react-lite';
 import { useContext, useState, useEffect } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
-import { GarmentTypeStrings, Mode } from '../lib/types';
+import { generateDynamicName } from '../lib/functions';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useUser } from '../context/AuthContext';
-
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
-
 import dynamic from 'next/dynamic';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),
@@ -18,8 +16,7 @@ const GarmentDetails = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { selectedCategory, selectedGarment, selectedColor, handleColorChangePicker,
-        handleModeChange, removeGarment, removeGarmentLocal, setColorPickerOpen, handleBackButtonClick,
-        updateGarmentToDB, updateGarmentLocal } = store;
+        handleBackButtonClick, handleUpdateGarmentButtonClick, handleConfirmDeleteGarment } = store;
     const { user } = useUser();
 
     const [brand, setBrand] = useState<string | undefined>(undefined);
@@ -30,7 +27,10 @@ const GarmentDetails = observer(() => {
     const [dynamicName, setDynamicName] = useState<boolean>(false);
 
     useEffect(() => {
-        if (dynamicName) setName(`${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
+        if (dynamicName) {
+            const dynamicallyGeneratedName = generateDynamicName(selectedColor, brand, selectedCategory);
+            setName(dynamicallyGeneratedName);
+        }
     }, [name, brand, selectedColor, dynamicName]);
 
     useEffect(() => {
@@ -41,9 +41,8 @@ const GarmentDetails = observer(() => {
         // Initial set of dynamicName
         const garmentName = selectedGarment.name;
         const garmentBrand = selectedGarment.brand;
-        const constructedName = `${selectedColor}${garmentBrand ? ` ${garmentBrand}` : ''} ${GarmentTypeStrings[selectedCategory]}`;
+        const constructedName = generateDynamicName(selectedColor, garmentBrand, selectedCategory);
         setDynamicName(garmentName === constructedName);
-        // console.log('setDynamicName condition result: 'garmentName === constructedName);
 
     }, [selectedGarment]);
 
@@ -74,32 +73,21 @@ const GarmentDetails = observer(() => {
             );
         }
 
-        setDynamicName(newName === '' || newName === `${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
+        const dynamicallyGeneratedName = generateDynamicName(selectedColor, brand, selectedCategory);
+        setDynamicName(newName === '' || newName === dynamicallyGeneratedName);
 
     };
 
     const handleColorPickerChange = (color: string) => {
 
         handleColorChangePicker(color);
-
         const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
         setHasChanges(
             brand !== originalBrand ||
             name !== originalName ||
             color !== originalColor
         );
-
         setDiffColor(color !== originalColor);
-
-    };
-
-    const handleUpdateGarmentButtonClick = () => {
-
-        const { id, area } = selectedGarment;
-        if (user) updateGarmentToDB(id, area, selectedColor, brand, name);
-        else updateGarmentLocal(id, area, selectedColor, brand, name);
-        handleModeChange(Mode.Closet);
-        setColorPickerOpen(false);
 
     };
 
@@ -109,31 +97,21 @@ const GarmentDetails = observer(() => {
 
     const handleResetColor = () => {
 
-
         const { color: originalColor, brand: originalBrand, name: originalName } = selectedGarment;
-
         handleColorChangePicker(originalColor);
-
         setHasChanges(
             brand !== originalBrand ||
             name !== originalName
         );
-
         setDiffColor(false);
 
     };
 
-    const confirmDelete = () => {
-
+    const handleConfirmDeleteGarmentButtonClick = () => {
         if (selectedGarment) {
-            const { id, area } = selectedGarment;
-            if (user) removeGarment(id, area);
-            else removeGarmentLocal(id, area);
-            setColorPickerOpen(false);
-            handleModeChange(Mode.Closet);
+            handleConfirmDeleteGarment(user);
             setShowDeleteDialog(false);
         }
-
     };
 
     return (
@@ -156,12 +134,10 @@ const GarmentDetails = observer(() => {
                         <SketchPicker
                             disableAlpha
                             color={selectedColor}
-                            // onChangeComplete={color => handleColorChangePicker(color.hex)}
                             onChangeComplete={(color) => handleColorPickerChange(color.hex)}
                         />
 
                         <div>
-
                             {diffColor ? (
                                 <div
                                     className="cursor-pointer flex items-center justify-center"
@@ -171,14 +147,13 @@ const GarmentDetails = observer(() => {
                                     <p style={{ fontFamily: "Verdana", color: "white" }}>Reset</p>
                                 </div>
                             ) : (
-                                <div
-                                    style={{ height: "150px", width: "150px", backgroundColor: selectedGarment.color, marginLeft: "30px" }}></div>
+                                <div style={{ height: "150px", width: "150px", backgroundColor: selectedGarment.color, marginLeft: "30px" }}></div>
                             )}
 
-                            {(diffColor) && <div style={{ height: "150px", width: "150px", backgroundColor: selectedColor, marginLeft: "30px" }}></div>}
-
+                            {(diffColor) &&
+                                <div style={{ height: "150px", width: "150px", backgroundColor: selectedColor, marginLeft: "30px" }}></div>
+                            }
                         </div>
-
 
                     </div>
 
@@ -196,8 +171,8 @@ const GarmentDetails = observer(() => {
                             style={{ color: 'black', paddingLeft: '5px' }}
                         />
                     </div>
-
                     <br />
+
                     {/* Name Input */}
                     <div className="flex">
                         <p style={{ fontFamily: "Verdana", marginRight: '10px' }}>Name: </p>
@@ -210,18 +185,16 @@ const GarmentDetails = observer(() => {
                             style={{ color: 'black', paddingLeft: '5px' }}
                         />
                     </div>
-
                     <br />
 
                     {/* Update button */}
                     {hasChanges ? (
-                        <button onClick={handleUpdateGarmentButtonClick}
+                        <button onClick={() => handleUpdateGarmentButtonClick(user, brand, name)}
                             className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-4 rounded">Update</button>
                     ) : (
                         <button
                             className="bg-gray-400 pointer-events-none text-white font-bold py-4 px-4 rounded">Update</button>
                     )}
-
                     <br />
 
                     {/* Delete button */}
@@ -240,7 +213,7 @@ const GarmentDetails = observer(() => {
                             <Button onClick={() => setShowDeleteDialog(false)} color="primary">
                                 Cancel
                             </Button>
-                            <Button onClick={confirmDelete} color="primary">
+                            <Button onClick={handleConfirmDeleteGarmentButtonClick} color="primary">
                                 Delete
                             </Button>
                         </DialogActions>

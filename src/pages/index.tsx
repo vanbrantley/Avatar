@@ -2,14 +2,11 @@ import dynamic from 'next/dynamic';
 const DesktopLayout = dynamic(() => import('@/components/DesktopLayout'));
 // const TabletLayout = dynamic(() => import('@/components/TabletLayout'));
 const MobileLayout = dynamic(() => import('@/components/MobileLayout'));
-
 import { useEffect, useContext } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { useUser } from '../context/AuthContext';
 import { observer } from 'mobx-react-lite';
-
 import { Layout } from './../lib/types';
-
 import { Alert, Snackbar } from "@mui/material";
 
 const Home = observer(() => {

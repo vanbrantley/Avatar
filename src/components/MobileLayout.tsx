@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import Avatar from './Avatar';
+import AvatarExport from './AvatarExport';
 import Header from './Header';
 import AddGarment from './AddGarment';
 import Preview from './Preview';
@@ -10,7 +11,7 @@ import MobileCloset from './MobileCloset';
 import GarmentDetails from './GarmentDetails';
 import { Mode } from '../lib/types';
 import Outfits from './Outfits';
-import Complexion from './Complexion';
+import ComplexionMenu from './ComplexionMenu';
 import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
@@ -18,7 +19,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import ListIcon from '@mui/icons-material/List';
-
+import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
 const MobileLayout = observer(() => {
@@ -27,7 +28,7 @@ const MobileLayout = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { mode, showAvatar, setShowAvatar, embeddedOutfits, cycleOutfitsLeft, cycleOutfitsRight,
-        selectedOutfit, saveOutfit, removeOutfit, navbarOpen, setNavbarOpen } = store;
+        selectedOutfit, saveOutfit, removeOutfit, navbarOpen, setNavbarOpen, captureImage } = store;
 
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
@@ -82,6 +83,11 @@ const MobileLayout = observer(() => {
                                                 </IconButton>
                                             )
                                         )}
+                                        <div>
+                                            <IconButton size="large" onClick={() => captureImage(<AvatarExport mini={false} />)}>
+                                                <CameraswitchIcon fontSize="large" style={{ color: "white" }} />
+                                            </IconButton>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -116,7 +122,7 @@ const MobileLayout = observer(() => {
                                 {(mode === Mode.Add) && <AddGarment mobile={true} />}
                                 {(mode === Mode.Details) && <GarmentDetails />}
                                 {(mode === Mode.Outfit) && <Outfits />}
-                                {(mode === Mode.Complexion) && <Complexion />}
+                                {(mode === Mode.Complexion) && <ComplexionMenu />}
                             </>
 
                         )}
@@ -124,7 +130,8 @@ const MobileLayout = observer(() => {
                         {(mode !== Mode.Add) && (mode !== Mode.Details) && (
 
                             <div className="absolute bottom-20 right-2 p-4">
-                                <IconButton size="large" onClick={() => setShowAvatar(!showAvatar)} style={{ backgroundColor: "#484848", borderRadius: "10%" }}>
+                                <IconButton size="large"
+                                    onClick={() => setShowAvatar(!showAvatar)} style={{ backgroundColor: "#484848", borderRadius: "10%" }}>
                                     {showAvatar ? (
                                         <ListIcon fontSize="large" style={{ color: "white" }} />
 

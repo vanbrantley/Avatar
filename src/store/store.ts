@@ -1,19 +1,25 @@
-import { observable, action, makeObservable } from 'mobx';
 import {
     CreateGarmentInput, CreateGarmentMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput,
     DeleteGarmentMutation, Garment, ListGarmentsQuery, ListComplexionsQuery, UpdateComplexionInput,
     UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation,
     DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery
 } from '@/API';
-import groupByArea from '../lib/groupByArea';
+import { observable, action, makeObservable } from 'mobx';
 import { API, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
 import { listGarments, listComplexions, listOutfits } from '../graphql/queries';
-import { createGarment, createComplexion, deleteGarment, updateComplexion, updateGarment, createOutfit, deleteOutfit } from '../graphql/mutations';
+import {
+    createGarment, createComplexion, deleteGarment, updateComplexion,
+    updateGarment, createOutfit, deleteOutfit
+} from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
 import { Layout, Mode, GarmentType, GarmentTypeStrings, Outfit, EmbeddedOutfit } from '../lib/types';
+import { groupByArea } from '../lib/functions';
 import { v4 as uuidv4 } from 'uuid';
 import isEqual from 'lodash/isEqual';
+import html2canvas from 'html2canvas';
+import ReactDOM from 'react-dom';
+import { ReactElement } from 'react';
 
 class AppStore {
 
@@ -99,8 +105,6 @@ class AppStore {
     colorPickerOpen = false;
     showAvatar = true;
     showPicker = true;
-    showHelp = false;
-    showOnboard = false;
 
     mode: Mode = Mode.Closet;
     layout: Layout = Layout.Desktop;
@@ -110,12 +114,6 @@ class AppStore {
     showErrorMessage = false;
     successMessage: string | null = null;
     showSuccessMessage = false;
-
-    hatLock = false;
-    topLock = false;
-    bottomLock = false;
-    shoeLock = false;
-
 
     constructor() {
 
@@ -136,10 +134,6 @@ class AppStore {
             selectedComplexion: observable,
             selectedCategory: observable,
             selectedColor: observable,
-            hatLock: observable,
-            topLock: observable,
-            bottomLock: observable,
-            shoeLock: observable,
             outfits: observable,
             embeddedOutfits: observable,
             selectedOutfit: observable,
@@ -147,8 +141,6 @@ class AppStore {
             colorPickerOpen: observable,
             showAvatar: observable,
             showPicker: observable,
-            showHelp: observable,
-            showOnboard: observable,
             mode: observable,
             layout: observable,
             user: observable,
@@ -214,22 +206,6 @@ class AppStore {
         this.selectedColor = color;
     });
 
-    setHatLock = action((locked: boolean) => {
-        this.hatLock = locked;
-    });
-
-    setTopLock = action((locked: boolean) => {
-        this.topLock = locked;
-    });
-
-    setBottomLock = action((locked: boolean) => {
-        this.bottomLock = locked;
-    });
-
-    setShoeLock = action((locked: boolean) => {
-        this.shoeLock = locked;
-    });
-
     setOutfits = action((outfits: Outfit[]) => {
         this.outfits = outfits;
     });
@@ -263,14 +239,6 @@ class AppStore {
 
     setShowPicker = action((show: boolean) => {
         this.showPicker = show;
-    });
-
-    setShowHelp = action((show: boolean) => {
-        this.showHelp = show;
-    });
-
-    setShowOnboard = action((show: boolean) => {
-        this.showOnboard = show;
     });
 
     setMode = action((mode: Mode) => {
@@ -364,21 +332,6 @@ class AppStore {
 
     });
 
-    // checkAreaLock = (area: string) => {
-    //     switch (area) {
-    //         case "hat":
-    //             return this.hatLock;
-    //         case "top":
-    //             return this.topLock;
-    //         case "bottom":
-    //             return this.bottomLock;
-    //         case "shoe":
-    //             return this.shoeLock;
-    //         default:
-    //             return false;
-    //     }
-    // };
-
     handleColorChangePicker = action((color: string) => {
 
         this.setSelectedColor(color);
@@ -421,6 +374,15 @@ class AppStore {
 
         this.setSelectedColor(color);
         this.checkIfSavedOutfit();
+
+    });
+
+    handleAddGarmentButtonClick = action((user: CognitoUser | null, brand: string | undefined, name: string) => {
+
+        if (user) this.addGarmentToDB(GarmentTypeStrings[this.selectedCategory], this.selectedColor, brand, name);
+        else this.addGarmentLocal(this.selectedCategory, this.selectedColor, brand, name);
+        this.handleModeChange(Mode.Closet);
+        this.setColorPickerOpen(false);
 
     });
 
@@ -936,6 +898,26 @@ class AppStore {
         }
     });
 
+    handleUpdateGarmentButtonClick = action((user: CognitoUser | null, brand: string | undefined, name: string) => {
+
+        const { id, area } = this.selectedGarment;
+        if (user) this.updateGarmentToDB(id, area, this.selectedColor, brand, name);
+        else this.updateGarmentLocal(id, area, this.selectedColor, brand, name);
+        this.handleModeChange(Mode.Closet);
+        this.setColorPickerOpen(false);
+
+    });
+
+    handleConfirmDeleteGarment = action((user: CognitoUser | null) => {
+
+        const { id, area } = this.selectedGarment;
+        if (user) this.removeGarment(id, area);
+        else this.removeGarmentLocal(id, area);
+        this.setColorPickerOpen(false);
+        this.handleModeChange(Mode.Closet);
+
+    });
+
     populateEmbeddedOutfits = (outfits: Outfit[]) => {
 
         let embeddedOutfits: EmbeddedOutfit[] = [];
@@ -1315,6 +1297,81 @@ class AppStore {
         this.updateDBComlpexion(complexion);
     });
 
+    handleComplexionClick = action((user: CognitoUser | null, index: number) => {
+        this.setSelectedComplexion(index);
+        if (user) this.updateComplexion(this.complexions[index]);
+        else this.setFaceColor(this.complexions[index]);
+    });
+
+    captureImage(component: ReactElement) {
+
+        // const element = document.createElement('div');
+        // document.body.appendChild(element);
+
+        // const containerRef = document.createElement('div');
+        // containerRef.style.width = '800px';
+        // element.appendChild(containerRef);
+
+        // // Render the component into the temporary div
+        // ReactDOM.render(component, containerRef);
+
+        // html2canvas(containerRef).then((canvas) => {
+        //     const dataURL = canvas.toDataURL();
+
+        //     const a = document.createElement('a');
+        //     a.href = dataURL;
+
+        //     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        //     if (isMobile) {
+        //         a.onclick = () => alert('Long-press the image to save.');
+        //     } else {
+        //         a.download = 'avatar.png';
+        //     }
+
+        //     a.click();
+
+        //     // Cleanup: Remove the temporary div and clear its content
+        //     document.body.removeChild(element);
+        //     ReactDOM.unmountComponentAtNode(containerRef);
+
+        const element = document.createElement('div');
+        document.body.appendChild(element);
+
+        const containerRef = document.createElement('div');
+        containerRef.style.width = '800px';
+        element.appendChild(containerRef);
+
+        // html2canvas(containerRef).then((canvas) => {
+
+        // Save the current viewport setting
+        const viewportMeta = document.getElementById('viewportMeta');
+        const originalViewportContent = viewportMeta?.getAttribute('content') || '';
+
+        // Set the viewport to a specific width before calling html2canvas
+        viewportMeta?.setAttribute('content', 'width=800');
+
+        // Render the component into the temporary div
+        ReactDOM.render(component, containerRef);
+
+        html2canvas(containerRef).then((canvas) => {
+            const dataURL = canvas.toDataURL();
+
+            const a = document.createElement('a');
+            a.href = dataURL;
+            a.download = 'exportedComponent.png';
+            a.click();
+
+            // Cleanup: Remove the temporary div and clear its content
+            document.body.removeChild(element);
+            ReactDOM.unmountComponentAtNode(element);
+
+            // Restore the original viewport setting
+            viewportMeta?.setAttribute('content', originalViewportContent);
+
+        });
+    }
+
     signUserOut = action(async () => {
 
         // Clear the access and refresh tokens from local storage
@@ -1328,10 +1385,6 @@ class AppStore {
             // handle clean-up
 
             this.setUser(null);
-            if (this.hatLock) this.setHatLock(false);
-            if (this.topLock) this.setTopLock(false);
-            if (this.bottomLock) this.setBottomLock(false);
-            if (this.shoeLock) this.setShoeLock(false);
 
             this.setSelectedCategory(GarmentType.Top);
             this.setSelectedGarment(this.defaultTop);
