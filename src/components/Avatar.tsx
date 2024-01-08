@@ -12,7 +12,7 @@ const Avatar = observer((props: IAvatarProps) => {
     const store = useContext(AppStoreContext);
 
     const { faceColor, selectedHat, selectedTop, selectedBottom, selectedShoe, selectedCategory,
-        handleAreaChange, colorPickerOpen, selectedColor, handleAvatarClick, handleModeChange } = store;
+        colorPickerOpen, selectedColor, handleAvatarClick, handleModeChange } = store;
 
     const sizeDictionary = {
         hat: {

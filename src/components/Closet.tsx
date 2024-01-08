@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { Garment } from '@/API';
 import { GarmentType, GarmentTypeStrings } from '@/lib/types';
-
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -46,27 +45,47 @@ const Closet = observer(() => {
                     className="col-span-1 flex justify-center cursor-pointer"
                     onClick={() => handleAreaChange(GarmentType.Hat)}
                 >
-                    <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px", color: selectedCategory == GarmentType.Hat ? '#d4650b' : 'white' }}>Hats</p>
+                    <p style={{
+                        fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px",
+                        color: selectedCategory == GarmentType.Hat ? '#d4650b' : 'white'
+                    }}>
+                        Hats
+                    </p>
                 </div>
                 <div
                     className="col-span-1 flex justify-center cursor-pointer"
                     onClick={() => handleAreaChange(GarmentType.Top)}
                 >
-                    <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px", color: selectedCategory == GarmentType.Top ? '#d4650b' : 'white' }}>Tops</p>
+                    <p style={{
+                        fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px",
+                        color: selectedCategory == GarmentType.Top ? '#d4650b' : 'white'
+                    }}>
+                        Tops
+                    </p>
 
                 </div>
                 <div
                     className="col-span-1 flex justify-center cursor-pointer"
                     onClick={() => handleAreaChange(GarmentType.Bottom)}
                 >
-                    <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px", color: selectedCategory == GarmentType.Bottom ? '#d4650b' : 'white' }}>Bottoms</p>
+                    <p style={{
+                        fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px",
+                        color: selectedCategory == GarmentType.Bottom ? '#d4650b' : 'white'
+                    }}>
+                        Bottoms
+                    </p>
 
                 </div>
                 <div
                     className="col-span-1 flex justify-center cursor-pointer"
                     onClick={() => handleAreaChange(GarmentType.Shoe)}
                 >
-                    <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px", color: selectedCategory == GarmentType.Shoe ? '#d4650b' : 'white' }}>Shoes</p>
+                    <p style={{
+                        fontFamily: "Verdana", fontWeight: "bold", fontSize: "24px",
+                        color: selectedCategory == GarmentType.Shoe ? '#d4650b' : 'white'
+                    }}>
+                        Shoes
+                    </p>
 
                 </div>
             </div>
@@ -74,7 +93,6 @@ const Closet = observer(() => {
             <br />
             <br />
 
-            {/* just want this part to be scrollable when overflow */}
             <div className="flex flex-col flex-grow overflow-auto">
 
                 {(selectedArray.length > 0) ? (
@@ -83,7 +101,8 @@ const Closet = observer(() => {
                         const selected = garment.id === selectedGarmentId;
 
                         return (
-                            <div key={index} className="grid grid-cols-10 cursor-pointer" style={{ backgroundColor: selected ? "#141414" : "" }}>
+                            <div key={index} className="grid grid-cols-10 cursor-pointer"
+                                style={{ backgroundColor: selected ? "#141414" : "" }}>
                                 <div className="col-span-3"
                                     style={{ height: "100px", width: "100px", backgroundColor: garment.color }}
                                     onClick={() => handleGarmentClick(garment)}></div>

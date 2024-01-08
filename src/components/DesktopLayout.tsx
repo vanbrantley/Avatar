@@ -2,31 +2,30 @@ import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { useUser } from '../context/AuthContext';
-
 import Header from './Header';
 import Palette from './Palette';
 import Avatar from './Avatar';
+import AvatarExport from './AvatarExport';
 import Preview from './Preview';
 import Closet from './Closet';
 import AddGarment from './AddGarment';
 import GarmentDetails from './GarmentDetails';
 import Outfits from './Outfits';
-import Complexion from './Complexion';
+import ComplexionMenu from './ComplexionMenu';
 import { Mode } from '../lib/types';
-
 import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-
+import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
 const DesktopLayout = observer(() => {
 
     const { user } = useUser();
     const store = useContext(AppStoreContext);
-    const { mode, cycleOutfitsLeft, cycleOutfitsRight, selectedOutfit, embeddedOutfits, saveOutfit, removeOutfit } = store;
+    const { mode, cycleOutfitsLeft, cycleOutfitsRight, selectedOutfit, embeddedOutfits, saveOutfit, removeOutfit, captureImage } = store;
 
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
@@ -37,7 +36,7 @@ const DesktopLayout = observer(() => {
     const confirmDelete = () => {
         if (selectedOutfit) removeOutfit(selectedOutfit.id);
         setShowDeleteDialog(false);
-    }
+    };
 
     return (
 
@@ -51,6 +50,8 @@ const DesktopLayout = observer(() => {
                         <Palette />
                         <br></br>
                         <br></br>
+
+                        {/* Heart save icon */}
                         {user && (
                             selectedOutfit ? (
                                 <IconButton size="large" onClick={handleDeleteOutfitButtonClick}>
@@ -63,9 +64,16 @@ const DesktopLayout = observer(() => {
                             )
                         )}
 
+                        <div>
+                            <IconButton size="large" onClick={() => captureImage(<AvatarExport mini={false} />)}>
+                                <CameraswitchIcon fontSize="large" style={{ color: "white" }} />
+                            </IconButton>
+                        </div>
                     </div>
+
                     <div className="col-start-2 col-span-6 flex items-center justify-center">
 
+                        {/* Cycle outfits left arrow */}
                         {
                             (user && embeddedOutfits.length !== 0) && (
                                 (embeddedOutfits.length === 1) ? (
@@ -80,8 +88,11 @@ const DesktopLayout = observer(() => {
                             )
                         }
 
-                        <Avatar mini={false} />
+                        <div id="avatar">
+                            <Avatar mini={false} />
+                        </div>
 
+                        {/* Cycle outfits right arrow */}
                         {
                             (user && embeddedOutfits.length !== 0) && (
                                 (embeddedOutfits.length === 1) ? (
@@ -104,7 +115,7 @@ const DesktopLayout = observer(() => {
                         {(mode === Mode.Add) && <AddGarment mobile={false} />}
                         {(mode === Mode.Details) && <GarmentDetails />}
                         {(mode === Mode.Outfit) && <Outfits />}
-                        {(mode === Mode.Complexion) && <Complexion />}
+                        {(mode === Mode.Complexion) && <ComplexionMenu />}
 
                     </div>
                 </div>

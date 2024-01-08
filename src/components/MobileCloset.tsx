@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { Garment } from '@/API';
 import { GarmentType, GarmentTypeStrings } from '@/lib/types';
-
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -77,7 +76,8 @@ const MobileCloset = observer(() => {
                         const selected = garment.id === selectedGarmentId;
 
                         return (
-                            <div key={index} className="grid grid-cols-10 cursor-pointer" style={{ height: "100px", backgroundColor: garment.color, border: selected ? "#d4650b solid 4px" : "" }}>
+                            <div key={index} className="grid grid-cols-10 cursor-pointer"
+                                style={{ height: "100px", backgroundColor: garment.color, border: selected ? "#d4650b solid 4px" : "" }}>
                                 <div className="col-span-1"></div>
                                 <div className="col-span-7 flex items-center"
                                     onClick={() => handleGarmentClick(garment)}>

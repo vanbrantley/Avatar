@@ -2,11 +2,10 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useContext, useState } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { useUser } from '../context/AuthContext';
-
-import { Mode, GarmentType, GarmentTypeStrings } from '../lib/types';
+import { GarmentType, GarmentTypeStrings } from '../lib/types';
+import { generateDynamicName } from '../lib/functions';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
 import dynamic from 'next/dynamic';
 const SketchPicker = dynamic(
     () => import('react-color').then((mod) => mod.SketchPicker),
@@ -28,14 +27,18 @@ const AddGarment = observer((props: IAddGarmentProps) => {
     const { user } = useUser();
     const store = useContext(AppStoreContext);
     const { selectedColor, handleColorChangePicker, selectedCategory, handleAreaChange,
-        addGarmentToDB, addGarmentLocal, handleModeChange, handleBackButtonClick, setColorPickerOpen } = store;
+        handleBackButtonClick, handleAddGarmentButtonClick } = store;
 
     const [brand, setBrand] = useState<string | undefined>(undefined);
-    const [name, setName] = useState<string>(`${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
+    const defaultName = generateDynamicName(selectedColor, brand, selectedCategory);
+    const [name, setName] = useState<string>(defaultName);
     const [dynamicName, setDynamicName] = useState<boolean>(true);
 
     useEffect(() => {
-        if (dynamicName) setName(`${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
+        if (dynamicName) {
+            const dynamicallyGeneratedName = generateDynamicName(selectedColor, brand, selectedCategory);
+            setName(dynamicallyGeneratedName);
+        }
     }, [selectedColor, brand, selectedCategory, dynamicName]);
 
     const handleAreaChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -73,15 +76,10 @@ const AddGarment = observer((props: IAddGarmentProps) => {
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newName = e.target.value;
         setName(newName);
-        setDynamicName(newName === '' || newName === `${selectedColor}${brand ? ` ${brand}` : ''} ${GarmentTypeStrings[selectedCategory]}`);
-    };
-
-    const handleAddGarmentButtonClick = () => {
-
-        if (user) addGarmentToDB(GarmentTypeStrings[selectedCategory], selectedColor, brand, name);
-        else addGarmentLocal(selectedCategory, selectedColor, brand, name);
-        handleModeChange(Mode.Closet);
-        setColorPickerOpen(false);
+        const dynamicallyGeneratedName = generateDynamicName(selectedColor, brand, selectedCategory);
+        // start dynamically generating name again if name field is cleared,
+        // or is equal to the name that would've been generated
+        setDynamicName(newName === '' || newName === dynamicallyGeneratedName);
     };
 
     return (
@@ -103,10 +101,9 @@ const AddGarment = observer((props: IAddGarmentProps) => {
             </select>
             <br></br>
 
-            {/* Sketch picker */}
-
             <p style={{ fontFamily: "Verdana" }}>Color: </p>
 
+            {/* Sketch picker */}
             <div className="flex">
 
                 {mobile ? (
@@ -156,9 +153,11 @@ const AddGarment = observer((props: IAddGarmentProps) => {
             </div>
 
             <br />
-
             {/* Add button */}
-            <button onClick={handleAddGarmentButtonClick} className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-4 rounded">Add</button>
+            <button onClick={() => handleAddGarmentButtonClick(user, brand, name)}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-4 rounded">
+                Add
+            </button>
 
         </div>
     );
