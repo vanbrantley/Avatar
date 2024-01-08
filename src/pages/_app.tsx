@@ -10,8 +10,6 @@ import createEmotionCache from '../createEmotionCache';
 
 import appStore from "../store/store";
 import { AppStoreContext } from "../context/AppStoreContext";
-import HelpModal from '../components/HelpModal';
-import OnboardModal from '../components/OnboardModal';
 
 import AuthContext from '../context/AuthContext';
 import { Amplify, Auth } from 'aws-amplify';
