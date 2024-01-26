@@ -12,7 +12,8 @@ export enum Mode {
     Add,
     Details,
     Outfit,
-    Complexion
+    Complexion,
+    Group
 };
 
 export enum GarmentType {

@@ -18,6 +18,18 @@ type Outfit @model @auth(rules: [{ allow: owner, operations: [create, update, de
   shoeId: String!
 }
 
+# type Group @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
+#   id: ID!
+#   name: String!
+# }
+
+# type GroupAssignments @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
+#   id: ID!
+#   groupId: String!
+#   garmentId: String!
+#   area: String!
+# }
+
 type Palette @model @auth(rules: [{ allow: owner, operations: [create, update, delete, read] }]) {
   id: ID!
   hatColor: String!

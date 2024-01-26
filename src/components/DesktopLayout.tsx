@@ -12,6 +12,7 @@ import AddGarment from './AddGarment';
 import GarmentDetails from './GarmentDetails';
 import Outfits from './Outfits';
 import ComplexionMenu from './ComplexionMenu';
+import GroupMenu from './GroupMenu';
 import { Mode } from '../lib/types';
 import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -116,6 +117,7 @@ const DesktopLayout = observer(() => {
                         {(mode === Mode.Details) && <GarmentDetails />}
                         {(mode === Mode.Outfit) && <Outfits />}
                         {(mode === Mode.Complexion) && <ComplexionMenu />}
+                        {(mode === Mode.Group) && <GroupMenu />}
 
                     </div>
                 </div>

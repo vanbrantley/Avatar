@@ -12,6 +12,7 @@ import GarmentDetails from './GarmentDetails';
 import { Mode } from '../lib/types';
 import Outfits from './Outfits';
 import ComplexionMenu from './ComplexionMenu';
+import GroupMenu from './GroupMenu';
 import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
@@ -123,6 +124,7 @@ const MobileLayout = observer(() => {
                                 {(mode === Mode.Details) && <GarmentDetails />}
                                 {(mode === Mode.Outfit) && <Outfits />}
                                 {(mode === Mode.Complexion) && <ComplexionMenu />}
+                                {(mode === Mode.Group) && <GroupMenu />}
                             </>
 
                         )}

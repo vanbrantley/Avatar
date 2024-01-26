@@ -81,6 +81,13 @@ const Header = observer(function Header(props: IHeaderProps) {
                                 style={{ fontFamily: "Verdana" }}>
                                 Outfits
                             </button>
+                            <button
+                                onClick={() => handleModeChange(Mode.Group)}
+                                className={`${(mode === Mode.Group) ?
+                                    'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0`}
+                                style={{ fontFamily: "Verdana" }}>
+                                Groups
+                            </button>
 
                             {user ? (
                                 <div className="text-sm lg:flex-grow">
@@ -145,9 +152,16 @@ const Header = observer(function Header(props: IHeaderProps) {
                             <button
                                 onClick={() => handleModeChange(Mode.Outfit)}
                                 className={`${(mode === Mode.Outfit) ?
-                                    'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0`}
+                                    'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0 mr-4`}
                                 style={{ fontFamily: "Verdana" }}>
                                 Outfits
+                            </button>
+                            <button
+                                onClick={() => handleModeChange(Mode.Group)}
+                                className={`${(mode === Mode.Group) ?
+                                    'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0`}
+                                style={{ fontFamily: "Verdana" }}>
+                                Groups
                             </button>
 
                         </div>

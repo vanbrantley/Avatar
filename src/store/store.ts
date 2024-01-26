@@ -1305,44 +1305,12 @@ class AppStore {
 
     captureImage(component: ReactElement) {
 
-        // const element = document.createElement('div');
-        // document.body.appendChild(element);
-
-        // const containerRef = document.createElement('div');
-        // containerRef.style.width = '800px';
-        // element.appendChild(containerRef);
-
-        // // Render the component into the temporary div
-        // ReactDOM.render(component, containerRef);
-
-        // html2canvas(containerRef).then((canvas) => {
-        //     const dataURL = canvas.toDataURL();
-
-        //     const a = document.createElement('a');
-        //     a.href = dataURL;
-
-        //     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        //     if (isMobile) {
-        //         a.onclick = () => alert('Long-press the image to save.');
-        //     } else {
-        //         a.download = 'avatar.png';
-        //     }
-
-        //     a.click();
-
-        //     // Cleanup: Remove the temporary div and clear its content
-        //     document.body.removeChild(element);
-        //     ReactDOM.unmountComponentAtNode(containerRef);
-
         const element = document.createElement('div');
         document.body.appendChild(element);
 
         const containerRef = document.createElement('div');
         containerRef.style.width = '800px';
         element.appendChild(containerRef);
-
-        // html2canvas(containerRef).then((canvas) => {
 
         // Save the current viewport setting
         const viewportMeta = document.getElementById('viewportMeta');
@@ -1359,7 +1327,7 @@ class AppStore {
 
             const a = document.createElement('a');
             a.href = dataURL;
-            a.download = 'exportedComponent.png';
+            a.download = 'avatar.png';
             a.click();
 
             // Cleanup: Remove the temporary div and clear its content
