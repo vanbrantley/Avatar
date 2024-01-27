@@ -11,7 +11,7 @@ const Closet = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { userHats, userTops, userBottoms, userShoes, handleAreaChange,
-        selectedHat, selectedTop, selectedBottom, selectedShoe,
+        selectedHat, selectedTop, selectedBottom, selectedShoe, selectedGroup, setSelectedGroup,
         selectedCategory, handlePlusButtonClick, handleGarmentClick, openGarmentDetails } = store;
 
     let selectedArray: Garment[] = [];
@@ -40,6 +40,7 @@ const Closet = observer(() => {
         <div className="flex flex-col h-full">
 
             <br />
+
             <div className="grid grid-cols-4 gap-2">
                 <div
                     className="col-span-1 flex justify-center cursor-pointer"
