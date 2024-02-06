@@ -1,8 +1,8 @@
 import {
     CreateGarmentInput, CreateGarmentMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput,
-    DeleteGarmentMutation, Garment, ListGarmentsQuery, ListComplexionsQuery, UpdateComplexionInput, Group, GroupAssignments,
+    DeleteGarmentMutation, Garment, ListGarmentsQuery, ListComplexionsQuery, UpdateComplexionInput, Group, GroupAssignment,
     UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation,
-    DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery, DeleteGroupInput, DeleteGroupMutation, CreateGroupInput, CreateGroupMutation, ListGroupsQuery, ListGroupAssignmentsQuery
+    DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery, DeleteGroupInput, DeleteGroupMutation, CreateGroupInput, CreateGroupMutation, ListGroupsQuery, ListGroupAssignmentsQuery, CreateGroupAssignmentInput, CreateGroupAssignmentMutation
 } from '@/API';
 import { observable, action, makeObservable, computed } from 'mobx';
 import { API, Auth } from 'aws-amplify';
@@ -10,7 +10,7 @@ import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api'
 import { listGarments, listComplexions, listOutfits, listGroups, listGroupAssignments } from '../graphql/queries';
 import {
     createGarment, createComplexion, deleteGarment, updateComplexion,
-    updateGarment, createOutfit, deleteOutfit, deleteGroup, createGroup
+    updateGarment, createOutfit, deleteOutfit, deleteGroup, createGroup, createGroupAssignment
 } from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
 import { Layout, Mode, GarmentType, GarmentTypeStrings, Outfit, EmbeddedOutfit } from '../lib/types';
@@ -94,7 +94,7 @@ class AppStore {
     selectedColor = this.selectedTop.color; // color picker's color
 
     groups: Group[] = [];
-    groupAssignments: GroupAssignments[] = [];
+    groupAssignments: GroupAssignment[] = [];
     selectedGroup = "all";
     groupGarmentIds: string[] = [];
 
@@ -231,7 +231,7 @@ class AppStore {
         this.groups = groups;
     });
 
-    setGroupAssignments = action((groupAssignments: GroupAssignments[]) => {
+    setGroupAssignments = action((groupAssignments: GroupAssignment[]) => {
         this.groupAssignments = groupAssignments;
     });
 
@@ -1466,7 +1466,7 @@ class AppStore {
 
                 this.setSuccessMessageHandler("Group successfully deleted");
 
-                const groupAssignmentsToDelete: GroupAssignments[] = [];
+                const groupAssignmentsToDelete: GroupAssignment[] = [];
 
                 for (const groupAssignmentToDelete of groupAssignmentsToDelete) {
                     // await this.deleteGroupAssignment(groupAssignmentToDelete);
@@ -1482,7 +1482,37 @@ class AppStore {
     });
 
 
+    createGroupAssignment = action(async (garmentId: string) => {
 
+        try {
+
+            const createNewGroupAssignmentInput: CreateGroupAssignmentInput = {
+                groupId: "b3db49ee-4855-482c-9692-8a2bb4dcc431",
+                garmentId: "caf6842b-6fec-4b11-9778-f84496712170" // cactus jack shirt
+            };
+
+            const response = await API.graphql<GraphQLQuery<CreateGroupAssignmentMutation>>(graphqlOperation(createGroupAssignment, {
+                input: createNewGroupAssignmentInput
+            })) as GraphQLResult<CreateGroupAssignmentMutation>;
+            const { data } = response;
+
+            if (data && data.createGroupAssignment) {
+                const createdGroupAssignment = data.createGroupAssignment;
+                const { id, groupId, garmentId } = createdGroupAssignment;
+
+                this.setGroupAssignments([createdGroupAssignment, ...this.groupAssignments]);
+                // update groupGarmentIds..
+
+                // this.setSuccessMessageHandler("Group assignment created successfully");
+            }
+
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error creating group assignment");
+            throw error;
+        }
+
+    });
 
 
     signUserOut = action(async () => {

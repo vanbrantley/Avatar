@@ -155,16 +155,15 @@ export const deleteGroup = /* GraphQL */ `
     }
   }
 `;
-export const createGroupAssignments = /* GraphQL */ `
-  mutation CreateGroupAssignments(
-    $input: CreateGroupAssignmentsInput!
-    $condition: ModelGroupAssignmentsConditionInput
+export const createGroupAssignment = /* GraphQL */ `
+  mutation CreateGroupAssignment(
+    $input: CreateGroupAssignmentInput!
+    $condition: ModelGroupAssignmentConditionInput
   ) {
-    createGroupAssignments(input: $input, condition: $condition) {
+    createGroupAssignment(input: $input, condition: $condition) {
       id
       groupId
       garmentId
-      area
       createdAt
       updatedAt
       owner
@@ -172,16 +171,15 @@ export const createGroupAssignments = /* GraphQL */ `
     }
   }
 `;
-export const updateGroupAssignments = /* GraphQL */ `
-  mutation UpdateGroupAssignments(
-    $input: UpdateGroupAssignmentsInput!
-    $condition: ModelGroupAssignmentsConditionInput
+export const updateGroupAssignment = /* GraphQL */ `
+  mutation UpdateGroupAssignment(
+    $input: UpdateGroupAssignmentInput!
+    $condition: ModelGroupAssignmentConditionInput
   ) {
-    updateGroupAssignments(input: $input, condition: $condition) {
+    updateGroupAssignment(input: $input, condition: $condition) {
       id
       groupId
       garmentId
-      area
       createdAt
       updatedAt
       owner
@@ -189,16 +187,15 @@ export const updateGroupAssignments = /* GraphQL */ `
     }
   }
 `;
-export const deleteGroupAssignments = /* GraphQL */ `
-  mutation DeleteGroupAssignments(
-    $input: DeleteGroupAssignmentsInput!
-    $condition: ModelGroupAssignmentsConditionInput
+export const deleteGroupAssignment = /* GraphQL */ `
+  mutation DeleteGroupAssignment(
+    $input: DeleteGroupAssignmentInput!
+    $condition: ModelGroupAssignmentConditionInput
   ) {
-    deleteGroupAssignments(input: $input, condition: $condition) {
+    deleteGroupAssignment(input: $input, condition: $condition) {
       id
       groupId
       garmentId
-      area
       createdAt
       updatedAt
       owner

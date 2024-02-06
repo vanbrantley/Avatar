@@ -12,7 +12,7 @@ const GroupMenu = observer(() => {
 
     const { user } = useUser();
     const store = useContext(AppStoreContext);
-    const { groups, selectedGroup, setSelectedGroup, handleModeChange } = store;
+    const { groups, selectedGroup, setSelectedGroup, handleModeChange, createGroupAssignment } = store;
 
     const allOption: Group = {
         __typename: "Group",
@@ -100,6 +100,10 @@ const GroupMenu = observer(() => {
                             <IconButton size="large" onClick={() => handleModeChange(Mode.CreateGroup)}>
                                 <AddIcon fontSize="large" style={{ color: "white" }} />
                             </IconButton>
+                        </div>
+
+                        <div>
+                            <button onClick={() => createGroupAssignment("")}>Test group assignment</button>
                         </div>
                     </div>
                 </div>

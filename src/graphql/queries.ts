@@ -110,13 +110,12 @@ export const listGroups = /* GraphQL */ `
     }
   }
 `;
-export const getGroupAssignments = /* GraphQL */ `
-  query GetGroupAssignments($id: ID!) {
-    getGroupAssignments(id: $id) {
+export const getGroupAssignment = /* GraphQL */ `
+  query GetGroupAssignment($id: ID!) {
+    getGroupAssignment(id: $id) {
       id
       groupId
       garmentId
-      area
       createdAt
       updatedAt
       owner
@@ -126,7 +125,7 @@ export const getGroupAssignments = /* GraphQL */ `
 `;
 export const listGroupAssignments = /* GraphQL */ `
   query ListGroupAssignments(
-    $filter: ModelGroupAssignmentsFilterInput
+    $filter: ModelGroupAssignmentFilterInput
     $limit: Int
     $nextToken: String
   ) {
@@ -139,7 +138,6 @@ export const listGroupAssignments = /* GraphQL */ `
         id
         groupId
         garmentId
-        area
         createdAt
         updatedAt
         owner

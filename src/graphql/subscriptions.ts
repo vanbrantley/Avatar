@@ -155,16 +155,15 @@ export const onDeleteGroup = /* GraphQL */ `
     }
   }
 `;
-export const onCreateGroupAssignments = /* GraphQL */ `
-  subscription OnCreateGroupAssignments(
-    $filter: ModelSubscriptionGroupAssignmentsFilterInput
+export const onCreateGroupAssignment = /* GraphQL */ `
+  subscription OnCreateGroupAssignment(
+    $filter: ModelSubscriptionGroupAssignmentFilterInput
     $owner: String
   ) {
-    onCreateGroupAssignments(filter: $filter, owner: $owner) {
+    onCreateGroupAssignment(filter: $filter, owner: $owner) {
       id
       groupId
       garmentId
-      area
       createdAt
       updatedAt
       owner
@@ -172,16 +171,15 @@ export const onCreateGroupAssignments = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateGroupAssignments = /* GraphQL */ `
-  subscription OnUpdateGroupAssignments(
-    $filter: ModelSubscriptionGroupAssignmentsFilterInput
+export const onUpdateGroupAssignment = /* GraphQL */ `
+  subscription OnUpdateGroupAssignment(
+    $filter: ModelSubscriptionGroupAssignmentFilterInput
     $owner: String
   ) {
-    onUpdateGroupAssignments(filter: $filter, owner: $owner) {
+    onUpdateGroupAssignment(filter: $filter, owner: $owner) {
       id
       groupId
       garmentId
-      area
       createdAt
       updatedAt
       owner
@@ -189,16 +187,15 @@ export const onUpdateGroupAssignments = /* GraphQL */ `
     }
   }
 `;
-export const onDeleteGroupAssignments = /* GraphQL */ `
-  subscription OnDeleteGroupAssignments(
-    $filter: ModelSubscriptionGroupAssignmentsFilterInput
+export const onDeleteGroupAssignment = /* GraphQL */ `
+  subscription OnDeleteGroupAssignment(
+    $filter: ModelSubscriptionGroupAssignmentFilterInput
     $owner: String
   ) {
-    onDeleteGroupAssignments(filter: $filter, owner: $owner) {
+    onDeleteGroupAssignment(filter: $filter, owner: $owner) {
       id
       groupId
       garmentId
-      area
       createdAt
       updatedAt
       owner
