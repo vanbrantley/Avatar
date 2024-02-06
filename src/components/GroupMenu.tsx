@@ -5,82 +5,112 @@ import { useUser } from '../context/AuthContext';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import { Mode } from '@/lib/types';
+import { Group } from '@/API';
 
 const GroupMenu = observer(() => {
 
     const { user } = useUser();
     const store = useContext(AppStoreContext);
-    // const { complexions} = store;
+    const { groups, selectedGroup, setSelectedGroup, handleModeChange } = store;
 
-    const dummyGroups = [
+    const allOption: Group = {
+        __typename: "Group",
+        id: "all",
+        name: "All",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        owner: null
+    };
 
-        {
-            "id": 0,
-            "name": "All"
-        },
-        {
-            "id": 1,
-            "name": "Lounge"
-        },
-        {
-            "id": 2,
-            "name": "Normal"
-        },
-        {
-            "id": 3,
-            "name": "Gym"
-        },
-        {
-            "id": 4,
-            "name": "Professional"
-        },
+    const groupsPlusAllOption: Group[] = [allOption, ...groups];
 
-    ];
+    const handleEditGroupButtonClick = (groupId: string) => {
+        setSelectedGroup(groupId);
+        handleModeChange(Mode.ManageGroup);
+    };
+
+    // const groups = [
+
+    //     {
+    //         "id": 0,
+    //         "name": "All"
+    //     },
+    //     {
+    //         "id": 1,
+    //         "name": "Lounge"
+    //     },
+    //     {
+    //         "id": 2,
+    //         "name": "Normal"
+    //     },
+    //     {
+    //         "id": 3,
+    //         "name": "Gym"
+    //     },
+    //     {
+    //         "id": 4,
+    //         "name": "Professional"
+    //     },
+
+    // ];
 
     return (
-        <div className="flex flex-col h-full">
+        <>
 
-            <div className="flex flex-col flex-grow overflow-auto">
+            {user ? (
 
-                {(dummyGroups.length > 0) ? (
-                    dummyGroups.map((group, index) => {
+                <div className="flex flex-col h-full">
+                    <div className="flex flex-col flex-grow overflow-auto">
 
-                        return (
-                            <div key={index} className="grid grid-cols-10 cursor-pointer hover:bg-slate-950" style={{ minHeight: "100px" }}>
-                                <div className="col-span-9 flex items-center ml-4"
-                                    onClick={() => console.log('click')}>
-                                    <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "18px" }}>{group.name}</p>
-                                </div>
-                                {index != 0 && (
-                                    <div className="col-span-1 flex items-center">
-                                        <IconButton size="large" onClick={() => console.log('edit')}>
-                                            <EditIcon fontSize="large" style={{ color: "#484848" }} />
-                                        </IconButton>
+                        {(groups.length > 0) ? (
+                            groupsPlusAllOption.map((group, index) => {
+
+                                const selected = group.id === selectedGroup;
+
+                                return (
+                                    <div key={index} className="grid grid-cols-10 cursor-pointer" style={{ minHeight: "100px", backgroundColor: selected ? "#141414" : "" }}>
+                                        <div className="col-span-9 flex items-center ml-4"
+                                            onClick={() => setSelectedGroup(group.id)}>
+                                            <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "18px" }}>{group.name}</p>
+                                        </div>
+                                        {index != 0 && (
+                                            <div className="col-span-1 flex items-center">
+                                                <IconButton size="large" onClick={() => handleEditGroupButtonClick(group.id)}>
+                                                    <EditIcon fontSize="large" style={{ color: "#484848" }} />
+                                                </IconButton>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
+                                );
+
+                            })
+                        ) : (
+                            <div className="flex items-center justify-center h-full">
+                                <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>
+                                    Click the plus button below to create a group.
+                                </p>
                             </div>
-                        );
+                        )}
 
-                    })
-                ) : (
-                    <div className="flex items-center justify-center h-full">
-                        <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>
-                            Click the plus button below to create a group.
-                        </p>
                     </div>
-                )}
 
-            </div>
-
-            <div className="flex">
-                <div>
-                    <IconButton size="large" onClick={() => console.log('create group')}>
-                        <AddIcon fontSize="large" style={{ color: "white" }} />
-                    </IconButton>
+                    <div className="flex">
+                        <div>
+                            <IconButton size="large" onClick={() => handleModeChange(Mode.CreateGroup)}>
+                                <AddIcon fontSize="large" style={{ color: "white" }} />
+                            </IconButton>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-        </div>
+            ) : (
+                <div className="flex h-full items-center justify-center">
+                    <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>Sign in to save outfits</p>
+                </div>
+            )}
+
+        </>
     );
 
 });

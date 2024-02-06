@@ -110,6 +110,102 @@ export const onDeleteOutfit = /* GraphQL */ `
     }
   }
 `;
+export const onCreateGroup = /* GraphQL */ `
+  subscription OnCreateGroup(
+    $filter: ModelSubscriptionGroupFilterInput
+    $owner: String
+  ) {
+    onCreateGroup(filter: $filter, owner: $owner) {
+      id
+      name
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const onUpdateGroup = /* GraphQL */ `
+  subscription OnUpdateGroup(
+    $filter: ModelSubscriptionGroupFilterInput
+    $owner: String
+  ) {
+    onUpdateGroup(filter: $filter, owner: $owner) {
+      id
+      name
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const onDeleteGroup = /* GraphQL */ `
+  subscription OnDeleteGroup(
+    $filter: ModelSubscriptionGroupFilterInput
+    $owner: String
+  ) {
+    onDeleteGroup(filter: $filter, owner: $owner) {
+      id
+      name
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const onCreateGroupAssignments = /* GraphQL */ `
+  subscription OnCreateGroupAssignments(
+    $filter: ModelSubscriptionGroupAssignmentsFilterInput
+    $owner: String
+  ) {
+    onCreateGroupAssignments(filter: $filter, owner: $owner) {
+      id
+      groupId
+      garmentId
+      area
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const onUpdateGroupAssignments = /* GraphQL */ `
+  subscription OnUpdateGroupAssignments(
+    $filter: ModelSubscriptionGroupAssignmentsFilterInput
+    $owner: String
+  ) {
+    onUpdateGroupAssignments(filter: $filter, owner: $owner) {
+      id
+      groupId
+      garmentId
+      area
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const onDeleteGroupAssignments = /* GraphQL */ `
+  subscription OnDeleteGroupAssignments(
+    $filter: ModelSubscriptionGroupAssignmentsFilterInput
+    $owner: String
+  ) {
+    onDeleteGroupAssignments(filter: $filter, owner: $owner) {
+      id
+      groupId
+      garmentId
+      area
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
 export const onCreatePalette = /* GraphQL */ `
   subscription OnCreatePalette(
     $filter: ModelSubscriptionPaletteFilterInput

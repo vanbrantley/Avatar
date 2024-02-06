@@ -126,6 +126,74 @@ export type DeleteOutfitInput = {
   id: string,
 };
 
+export type CreateGroupInput = {
+  id?: string | null,
+  name: string,
+};
+
+export type ModelGroupConditionInput = {
+  name?: ModelStringInput | null,
+  and?: Array< ModelGroupConditionInput | null > | null,
+  or?: Array< ModelGroupConditionInput | null > | null,
+  not?: ModelGroupConditionInput | null,
+};
+
+export type Group = {
+  __typename: "Group",
+  id: string,
+  name: string,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type UpdateGroupInput = {
+  id: string,
+  name?: string | null,
+};
+
+export type DeleteGroupInput = {
+  id: string,
+};
+
+export type CreateGroupAssignmentsInput = {
+  id?: string | null,
+  groupId: string,
+  garmentId: string,
+  area: string,
+};
+
+export type ModelGroupAssignmentsConditionInput = {
+  groupId?: ModelStringInput | null,
+  garmentId?: ModelStringInput | null,
+  area?: ModelStringInput | null,
+  and?: Array< ModelGroupAssignmentsConditionInput | null > | null,
+  or?: Array< ModelGroupAssignmentsConditionInput | null > | null,
+  not?: ModelGroupAssignmentsConditionInput | null,
+};
+
+export type GroupAssignments = {
+  __typename: "GroupAssignments",
+  id: string,
+  groupId: string,
+  garmentId: string,
+  area: string,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type UpdateGroupAssignmentsInput = {
+  id: string,
+  groupId?: string | null,
+  garmentId?: string | null,
+  area?: string | null,
+};
+
+export type DeleteGroupAssignmentsInput = {
+  id: string,
+};
+
 export type CreatePaletteInput = {
   id?: string | null,
   hatColor: string,
@@ -248,6 +316,36 @@ export type ModelOutfitConnection = {
   nextToken?: string | null,
 };
 
+export type ModelGroupFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  and?: Array< ModelGroupFilterInput | null > | null,
+  or?: Array< ModelGroupFilterInput | null > | null,
+  not?: ModelGroupFilterInput | null,
+};
+
+export type ModelGroupConnection = {
+  __typename: "ModelGroupConnection",
+  items:  Array<Group | null >,
+  nextToken?: string | null,
+};
+
+export type ModelGroupAssignmentsFilterInput = {
+  id?: ModelIDInput | null,
+  groupId?: ModelStringInput | null,
+  garmentId?: ModelStringInput | null,
+  area?: ModelStringInput | null,
+  and?: Array< ModelGroupAssignmentsFilterInput | null > | null,
+  or?: Array< ModelGroupAssignmentsFilterInput | null > | null,
+  not?: ModelGroupAssignmentsFilterInput | null,
+};
+
+export type ModelGroupAssignmentsConnection = {
+  __typename: "ModelGroupAssignmentsConnection",
+  items:  Array<GroupAssignments | null >,
+  nextToken?: string | null,
+};
+
 export type ModelPaletteFilterInput = {
   id?: ModelIDInput | null,
   hatColor?: ModelStringInput | null,
@@ -327,6 +425,22 @@ export type ModelSubscriptionOutfitFilterInput = {
   shoeId?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
   or?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
+};
+
+export type ModelSubscriptionGroupFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionGroupFilterInput | null > | null,
+  or?: Array< ModelSubscriptionGroupFilterInput | null > | null,
+};
+
+export type ModelSubscriptionGroupAssignmentsFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  groupId?: ModelSubscriptionStringInput | null,
+  garmentId?: ModelSubscriptionStringInput | null,
+  area?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionGroupAssignmentsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionGroupAssignmentsFilterInput | null > | null,
 };
 
 export type ModelSubscriptionPaletteFilterInput = {
@@ -454,6 +568,108 @@ export type DeleteOutfitMutation = {
     topId: string,
     bottomId: string,
     shoeId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type CreateGroupMutationVariables = {
+  input: CreateGroupInput,
+  condition?: ModelGroupConditionInput | null,
+};
+
+export type CreateGroupMutation = {
+  createGroup?:  {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type UpdateGroupMutationVariables = {
+  input: UpdateGroupInput,
+  condition?: ModelGroupConditionInput | null,
+};
+
+export type UpdateGroupMutation = {
+  updateGroup?:  {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type DeleteGroupMutationVariables = {
+  input: DeleteGroupInput,
+  condition?: ModelGroupConditionInput | null,
+};
+
+export type DeleteGroupMutation = {
+  deleteGroup?:  {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type CreateGroupAssignmentsMutationVariables = {
+  input: CreateGroupAssignmentsInput,
+  condition?: ModelGroupAssignmentsConditionInput | null,
+};
+
+export type CreateGroupAssignmentsMutation = {
+  createGroupAssignments?:  {
+    __typename: "GroupAssignments",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    area: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type UpdateGroupAssignmentsMutationVariables = {
+  input: UpdateGroupAssignmentsInput,
+  condition?: ModelGroupAssignmentsConditionInput | null,
+};
+
+export type UpdateGroupAssignmentsMutation = {
+  updateGroupAssignments?:  {
+    __typename: "GroupAssignments",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    area: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type DeleteGroupAssignmentsMutationVariables = {
+  input: DeleteGroupAssignmentsInput,
+  condition?: ModelGroupAssignmentsConditionInput | null,
+};
+
+export type DeleteGroupAssignmentsMutation = {
+  deleteGroupAssignments?:  {
+    __typename: "GroupAssignments",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    area: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -649,6 +865,82 @@ export type ListOutfitsQuery = {
   } | null,
 };
 
+export type GetGroupQueryVariables = {
+  id: string,
+};
+
+export type GetGroupQuery = {
+  getGroup?:  {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type ListGroupsQueryVariables = {
+  filter?: ModelGroupFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListGroupsQuery = {
+  listGroups?:  {
+    __typename: "ModelGroupConnection",
+    items:  Array< {
+      __typename: "Group",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetGroupAssignmentsQueryVariables = {
+  id: string,
+};
+
+export type GetGroupAssignmentsQuery = {
+  getGroupAssignments?:  {
+    __typename: "GroupAssignments",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    area: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type ListGroupAssignmentsQueryVariables = {
+  filter?: ModelGroupAssignmentsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListGroupAssignmentsQuery = {
+  listGroupAssignments?:  {
+    __typename: "ModelGroupAssignmentsConnection",
+    items:  Array< {
+      __typename: "GroupAssignments",
+      id: string,
+      groupId: string,
+      garmentId: string,
+      area: string,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetPaletteQueryVariables = {
   id: string,
 };
@@ -835,6 +1127,108 @@ export type OnDeleteOutfitSubscription = {
     topId: string,
     bottomId: string,
     shoeId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnCreateGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnCreateGroupSubscription = {
+  onCreateGroup?:  {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnUpdateGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnUpdateGroupSubscription = {
+  onUpdateGroup?:  {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnDeleteGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnDeleteGroupSubscription = {
+  onDeleteGroup?:  {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnCreateGroupAssignmentsSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupAssignmentsFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnCreateGroupAssignmentsSubscription = {
+  onCreateGroupAssignments?:  {
+    __typename: "GroupAssignments",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    area: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnUpdateGroupAssignmentsSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupAssignmentsFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnUpdateGroupAssignmentsSubscription = {
+  onUpdateGroupAssignments?:  {
+    __typename: "GroupAssignments",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    area: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnDeleteGroupAssignmentsSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupAssignmentsFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnDeleteGroupAssignmentsSubscription = {
+  onDeleteGroupAssignments?:  {
+    __typename: "GroupAssignments",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    area: string,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,

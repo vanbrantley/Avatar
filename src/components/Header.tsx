@@ -82,8 +82,8 @@ const Header = observer(function Header(props: IHeaderProps) {
                                 Outfits
                             </button>
                             <button
-                                onClick={() => handleModeChange(Mode.Group)}
-                                className={`${(mode === Mode.Group) ?
+                                onClick={() => handleModeChange(Mode.ListGroup)}
+                                className={`${(mode === Mode.ListGroup || mode === Mode.CreateGroup || mode === Mode.ManageGroup) ?
                                     'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0`}
                                 style={{ fontFamily: "Verdana" }}>
                                 Groups
@@ -157,8 +157,8 @@ const Header = observer(function Header(props: IHeaderProps) {
                                 Outfits
                             </button>
                             <button
-                                onClick={() => handleModeChange(Mode.Group)}
-                                className={`${(mode === Mode.Group) ?
+                                onClick={() => handleModeChange(Mode.ListGroup)}
+                                className={`${(mode === Mode.ListGroup || mode === Mode.CreateGroup || mode === Mode.ManageGroup) ?
                                     'text-black' : 'text-white'} block mt-4 lg:inline-block lg:mt-0`}
                                 style={{ fontFamily: "Verdana" }}>
                                 Groups

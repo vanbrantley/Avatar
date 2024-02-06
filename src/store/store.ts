@@ -1,16 +1,16 @@
 import {
     CreateGarmentInput, CreateGarmentMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput,
-    DeleteGarmentMutation, Garment, ListGarmentsQuery, ListComplexionsQuery, UpdateComplexionInput,
+    DeleteGarmentMutation, Garment, ListGarmentsQuery, ListComplexionsQuery, UpdateComplexionInput, Group, GroupAssignments,
     UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation,
-    DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery
+    DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery, DeleteGroupInput, DeleteGroupMutation, CreateGroupInput, CreateGroupMutation, ListGroupsQuery, ListGroupAssignmentsQuery
 } from '@/API';
 import { observable, action, makeObservable, computed } from 'mobx';
 import { API, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
-import { listGarments, listComplexions, listOutfits } from '../graphql/queries';
+import { listGarments, listComplexions, listOutfits, listGroups, listGroupAssignments } from '../graphql/queries';
 import {
     createGarment, createComplexion, deleteGarment, updateComplexion,
-    updateGarment, createOutfit, deleteOutfit
+    updateGarment, createOutfit, deleteOutfit, deleteGroup, createGroup
 } from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
 import { Layout, Mode, GarmentType, GarmentTypeStrings, Outfit, EmbeddedOutfit } from '../lib/types';
@@ -93,7 +93,10 @@ class AppStore {
     selectedCategory: GarmentType = GarmentType.Top;
     selectedColor = this.selectedTop.color; // color picker's color
 
+    groups: Group[] = [];
+    groupAssignments: GroupAssignments[] = [];
     selectedGroup = "all";
+    groupGarmentIds: string[] = [];
 
     outfits: Outfit[] = [];
     embeddedOutfits: EmbeddedOutfit[] = [];
@@ -133,7 +136,10 @@ class AppStore {
             selectedComplexion: observable,
             selectedCategory: observable,
             selectedColor: observable,
+            groups: observable,
+            groupAssignments: observable,
             selectedGroup: observable,
+            groupGarmentIds: observable,
             outfits: observable,
             embeddedOutfits: observable,
             selectedOutfit: observable,
@@ -154,20 +160,29 @@ class AppStore {
 
     // computed properties
 
+    // change these user... to shownHats, shownTops, shownBottoms, shownShoes
+    // if selectedGroup != 'all', additonal filter is added
+
+    // Note: want shown arrays to include everything when Mode is ManageGroup so you can add/remove garments from the group
+
     get userHats() {
-        return this.garments.filter(garment => garment.area === 'hat');
+        if (this.selectedGroup == 'all' || this.mode == Mode.ManageGroup) return this.garments.filter(garment => garment.area === 'hat');
+        else return this.garments.filter(garment => garment.area === 'hat' && this.groupGarmentIds.includes(garment.id));
     };
 
     get userTops() {
-        return this.garments.filter(garment => garment.area === 'top');
+        if (this.selectedGroup == 'all' || this.mode == Mode.ManageGroup) return this.garments.filter(garment => garment.area === 'top');
+        else return this.garments.filter(garment => garment.area === 'top' && this.groupGarmentIds.includes(garment.id));
     };
 
     get userBottoms() {
-        return this.garments.filter(garment => garment.area === 'bottom');
+        if (this.selectedGroup == 'all' || this.mode == Mode.ManageGroup) return this.garments.filter(garment => garment.area === 'bottom');
+        else return this.garments.filter(garment => garment.area === 'bottom' && this.groupGarmentIds.includes(garment.id));
     };
 
     get userShoes() {
-        return this.garments.filter(garment => garment.area === 'shoe');
+        if (this.selectedGroup == 'all' || this.mode == Mode.ManageGroup) return this.garments.filter(garment => garment.area === 'shoe');
+        else return this.garments.filter(garment => garment.area === 'shoe' && this.groupGarmentIds.includes(garment.id));
     };
 
     // setter functions
@@ -200,22 +215,6 @@ class AppStore {
         this.garments = garments;
     });
 
-    // setUserHats = action((hats: Garment[]) => {
-    //     this.userHats = hats;
-    // });
-
-    // setUserTops = action((tops: Garment[]) => {
-    //     this.userTops = tops;
-    // });
-
-    // setUserBottoms = action((bottoms: Garment[]) => {
-    //     this.userBottoms = bottoms;
-    // });
-
-    // setUserShoes = action((shoes: Garment[]) => {
-    //     this.userShoes = shoes;
-    // });
-
     setSelectedComplexion = action((index: number) => {
         this.selectedComplexion = index;
     });
@@ -228,8 +227,20 @@ class AppStore {
         this.selectedColor = color;
     });
 
+    setGroups = action((groups: Group[]) => {
+        this.groups = groups;
+    });
+
+    setGroupAssignments = action((groupAssignments: GroupAssignments[]) => {
+        this.groupAssignments = groupAssignments;
+    });
+
     setSelectedGroup = action((group: string) => {
         this.selectedGroup = group;
+    });
+
+    setGroupGarmnetIds = action((groupGarmentIds: string[]) => {
+        this.groupGarmentIds = groupGarmentIds;
     });
 
     setOutfits = action((outfits: Outfit[]) => {
@@ -359,9 +370,7 @@ class AppStore {
     });
 
     handleColorChangePicker = action((color: string) => {
-
         this.setSelectedColor(color);
-
     });
 
     handleBackButtonClick = action(() => {
@@ -1323,7 +1332,158 @@ class AppStore {
             viewportMeta?.setAttribute('content', originalViewportContent);
 
         });
-    }
+    };
+
+    // create group
+    createGroup = action(async (name: string) => {
+
+        try {
+
+            const createNewGroupInput: CreateGroupInput = {
+                name: name
+            };
+
+            const response = await API.graphql<GraphQLQuery<CreateGroupMutation>>(graphqlOperation(createGroup, {
+                input: createNewGroupInput
+            })) as GraphQLResult<CreateGroupMutation>;
+            const { data } = response;
+
+            if (data && data.createGroup) {
+                const createdGroup = data.createGroup;
+                const { id, name } = createdGroup;
+                this.setSelectedGroup(id);
+                // add newly created group to groups
+                this.setGroups([createdGroup, ...this.groups]);
+                this.setSuccessMessageHandler("Group created successfully");
+            }
+
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error saving outfit");
+            throw error;
+        }
+
+    });
+
+
+
+    // read group(s) - groupAssignment stuff is also done here you think
+    fetchGroups = action(async (): Promise<Group[]> => {
+
+        try {
+            const response = (await API.graphql<GraphQLQuery<ListGroupsQuery>>(graphqlOperation(listGroups))) as GraphQLResult<ListGroupsQuery>;
+            const { data } = response;
+            if (data && data.listGroups && data.listGroups.items) {
+
+                const userGroups = data.listGroups.items as Group[];
+                this.setGroups(userGroups);
+                return userGroups;
+
+            } else {
+                throw new Error("Error fetching user groups");
+            }
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error fetching user groups");
+            throw error;
+        }
+
+    });
+
+    fetchGroupAssignments = action(async (): Promise<GroupAssignment[]> => {
+
+        try {
+            const response = (await API.graphql<GraphQLQuery<ListGroupAssignmentsQuery>>(graphqlOperation(listGroupAssignments))) as GraphQLResult<ListGroupAssignmentsQuery>;
+            const { data } = response;
+            if (data && data.listGroupAssignments && data.listGroupAssignments.items) {
+
+                const userGroupAssignments = data.listGroupAssignments.items as GroupAssignment[];
+                this.setGroupAssignments(userGroupAssignments);
+                return userGroupAssignments;
+
+            } else {
+                throw new Error("Error fetching user group assignments");
+            }
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error fetching user group assignments");
+            throw error;
+        }
+
+    });
+
+    // update group / edit group - this is where the groupAssignments logic is handled 
+    // think you do have to store the groupAssingments in store..
+    // take in list of addedGarmentIds , calculate diffs (ins and outs) , process diffs (creating and deleting GroupAssignments)
+    // update groupAssignments state array (is this array even necessary? don't think so) & groupGarmentIds 
+    editGroupGarments = action(async (clickedGarmentIds: string[]) => {
+
+        // calculate diffs between clickedGarmentIds & this.groupGarmentIds
+        const addedGarmentIds = clickedGarmentIds.filter((garmentId) => !this.groupGarmentIds.includes(garmentId)); // ones in clickedGarmentIds but not groupGarmnetIds
+        const removedGarmentIds = this.groupGarmentIds.filter((garmentId) => !clickedGarmentIds.includes(garmentId)); // ones in this.groupGarmentIds that are not in clickedGarmentIds
+
+        // process diffs
+        // remove garments (groupAssignments) that were unclicked
+        for (const removedGarmentId of removedGarmentIds) {
+            // await this.deleteGroupAssignment(removedGarmentId);
+        }
+
+        // create groupAssignments that were clicked
+        for (const addedGarmentId of addedGarmentIds) {
+
+            // await this.createGroupAssignment(addedGarmentId);
+        }
+
+        // update groupAssignments & groupGarmentIds
+
+    });
+
+
+
+    // delete group
+    // first delete the group
+    // then delete all entries from the group assignments array where groupId = deletedGroup.id
+
+    deleteGroup = action(async (groupId: string) => {
+
+        // could also not have the groupId argument and just have a wrapping check to make sure this.selectedGroup != "all"
+
+        try {
+            const groupDetails: DeleteGroupInput = {
+                id: groupId,
+            };
+
+            const response = await API.graphql<GraphQLQuery<DeleteGroupMutation>>(graphqlOperation(deleteGroup, {
+                input: groupDetails
+            })) as GraphQLResult<DeleteGroupMutation>;
+            const { data } = response;
+
+            if (data && data.deleteGroup) {
+                const removedGroup = data.deleteGroup;
+
+                // set selectedGroup to all
+                this.setSelectedGroup("all"); // should make it so that all user garments are shown in closet
+
+                this.setSuccessMessageHandler("Group successfully deleted");
+
+                const groupAssignmentsToDelete: GroupAssignments[] = [];
+
+                for (const groupAssignmentToDelete of groupAssignmentsToDelete) {
+                    // await this.deleteGroupAssignment(groupAssignmentToDelete);
+                }
+
+            }
+
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error deleting group");
+            throw error;
+        }
+    });
+
+
+
+
 
     signUserOut = action(async () => {
 

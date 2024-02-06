@@ -11,7 +11,7 @@ const Closet = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { userHats, userTops, userBottoms, userShoes, handleAreaChange,
-        selectedHat, selectedTop, selectedBottom, selectedShoe, selectedGroup, setSelectedGroup,
+        selectedHat, selectedTop, selectedBottom, selectedShoe,
         selectedCategory, handlePlusButtonClick, handleGarmentClick, openGarmentDetails } = store;
 
     let selectedArray: Garment[] = [];

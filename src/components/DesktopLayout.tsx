@@ -21,6 +21,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import CreateGroup from './CreateGroup';
+import ManageGroup from './ManageGroup';
 
 const DesktopLayout = observer(() => {
 
@@ -117,7 +119,9 @@ const DesktopLayout = observer(() => {
                         {(mode === Mode.Details) && <GarmentDetails />}
                         {(mode === Mode.Outfit) && <Outfits />}
                         {(mode === Mode.Complexion) && <ComplexionMenu />}
-                        {(mode === Mode.Group) && <GroupMenu />}
+                        {(mode === Mode.ListGroup) && <GroupMenu />}
+                        {(mode === Mode.CreateGroup) && <CreateGroup />}
+                        {(mode === Mode.ManageGroup) && <ManageGroup />}
 
                     </div>
                 </div>

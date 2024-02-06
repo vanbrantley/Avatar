@@ -78,6 +78,78 @@ export const listOutfits = /* GraphQL */ `
     }
   }
 `;
+export const getGroup = /* GraphQL */ `
+  query GetGroup($id: ID!) {
+    getGroup(id: $id) {
+      id
+      name
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const listGroups = /* GraphQL */ `
+  query ListGroups(
+    $filter: ModelGroupFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listGroups(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        createdAt
+        updatedAt
+        owner
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getGroupAssignments = /* GraphQL */ `
+  query GetGroupAssignments($id: ID!) {
+    getGroupAssignments(id: $id) {
+      id
+      groupId
+      garmentId
+      area
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const listGroupAssignments = /* GraphQL */ `
+  query ListGroupAssignments(
+    $filter: ModelGroupAssignmentsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listGroupAssignments(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        groupId
+        garmentId
+        area
+        createdAt
+        updatedAt
+        owner
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const getPalette = /* GraphQL */ `
   query GetPalette($id: ID!) {
     getPalette(id: $id) {
