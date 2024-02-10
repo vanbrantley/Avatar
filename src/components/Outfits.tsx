@@ -8,16 +8,16 @@ const Outfits = observer(() => {
     const { user } = useUser();
 
     const store = useContext(AppStoreContext);
-    const { embeddedOutfits, selectedOutfit, donOutfit } = store;
+    const { embeddedOutfits, shownOutfits, selectedOutfit, donOutfit } = store;
 
     return (
         <>
             {user ? (
                 <div className="flex h-full items-center justify-center">
-                    {embeddedOutfits.length === 0 ? (
+                    {shownOutfits.length === 0 ? (
                         <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>Click the heart button to save an outfit</p>
                     ) : (
-                        embeddedOutfits.map((outfit, i) => {
+                        shownOutfits.map((outfit, i) => {
                             const { id, hat, top, bottom, shoe } = outfit;
                             const selected = id === selectedOutfit?.id;
                             return (

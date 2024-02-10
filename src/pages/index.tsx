@@ -13,8 +13,8 @@ const Home = observer(() => {
 
   const { user } = useUser();
   const store = useContext(AppStoreContext);
-  const { fetchGarments, fetchComplexion, fetchGroups, initializeRandomComplexion, layout, setLayout, setUser,
-    errorMessage, showErrorMessage, dismissErrorMessage,
+  const { fetchGarments, fetchComplexion, fetchGroups, fetchGroupAssignments, initializeRandomComplexion,
+    layout, setLayout, setUser, errorMessage, showErrorMessage, dismissErrorMessage,
     successMessage, showSuccessMessage, dismissSuccessMessage } = store;
 
 
@@ -48,6 +48,7 @@ const Home = observer(() => {
       setUser(user);
       fetchGarments();
       fetchGroups();
+      fetchGroupAssignments();
       fetchComplexion();
     } else {
       initializeRandomComplexion();
@@ -59,6 +60,7 @@ const Home = observer(() => {
         setUser(user);
         fetchGarments();
         fetchGroups();
+        fetchGroupAssignments();
         fetchComplexion();
       }
     };

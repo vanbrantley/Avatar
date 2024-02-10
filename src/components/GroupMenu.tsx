@@ -25,35 +25,17 @@ const GroupMenu = observer(() => {
 
     const groupsPlusAllOption: Group[] = [allOption, ...groups];
 
+    const handleGroupClick = (groupId: string) => {
+
+        setSelectedGroup(groupId);
+        // handleModeChange(Mode.Closet);
+
+    };
+
     const handleEditGroupButtonClick = (groupId: string) => {
         setSelectedGroup(groupId);
         handleModeChange(Mode.ManageGroup);
     };
-
-    // const groups = [
-
-    //     {
-    //         "id": 0,
-    //         "name": "All"
-    //     },
-    //     {
-    //         "id": 1,
-    //         "name": "Lounge"
-    //     },
-    //     {
-    //         "id": 2,
-    //         "name": "Normal"
-    //     },
-    //     {
-    //         "id": 3,
-    //         "name": "Gym"
-    //     },
-    //     {
-    //         "id": 4,
-    //         "name": "Professional"
-    //     },
-
-    // ];
 
     return (
         <>
@@ -71,7 +53,7 @@ const GroupMenu = observer(() => {
                                 return (
                                     <div key={index} className="grid grid-cols-10 cursor-pointer" style={{ minHeight: "100px", backgroundColor: selected ? "#141414" : "" }}>
                                         <div className="col-span-9 flex items-center ml-4"
-                                            onClick={() => setSelectedGroup(group.id)}>
+                                            onClick={() => handleGroupClick(group.id)}>
                                             <p style={{ fontFamily: "Verdana", fontWeight: "bold", fontSize: "18px" }}>{group.name}</p>
                                         </div>
                                         {index != 0 && (
@@ -96,15 +78,9 @@ const GroupMenu = observer(() => {
                     </div>
 
                     <div className="flex">
-                        <div>
-                            <IconButton size="large" onClick={() => handleModeChange(Mode.CreateGroup)}>
-                                <AddIcon fontSize="large" style={{ color: "white" }} />
-                            </IconButton>
-                        </div>
-
-                        <div>
-                            <button onClick={() => createGroupAssignment("")}>Test group assignment</button>
-                        </div>
+                        <IconButton size="large" onClick={() => handleModeChange(Mode.CreateGroup)}>
+                            <AddIcon fontSize="large" style={{ color: "white" }} />
+                        </IconButton>
                     </div>
                 </div>
 

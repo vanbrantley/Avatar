@@ -2,13 +2,14 @@ import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
 import { AppStoreContext } from '../context/AppStoreContext';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
-import { GarmentType, GarmentTypeStrings } from '@/lib/types';
+import { GarmentType, GarmentTypeStrings, Mode } from '@/lib/types';
 import { Garment } from '@/API';
 
 const ManageGroup = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { userHats, userTops, userBottoms, userShoes, handleAreaChange, selectedCategory, groupGarmentIds, deleteGroup } = store;
+    const { userHats, userTops, userBottoms, userShoes, handleAreaChange, handleModeChange,
+        selectedCategory, groupGarmentIds, deleteGroup, editGroupGarments } = store;
 
     const [addedGarmentIds, setAddedGarmentIds] = useState<string[]>(groupGarmentIds);
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
@@ -39,17 +40,18 @@ const ManageGroup = observer(() => {
     };
 
     const handleUpdateGroupButtonClick = () => {
-        console.log('Clicked');
+        editGroupGarments(addedGarmentIds);
+        handleModeChange(Mode.Closet);
     };
 
     const handleDeleteGroupButtonClick = () => {
-        console.log('Clicked');
+        setShowDeleteDialog(true);
     };
 
     const handleConfirmDeleteGroupButtonClick = () => {
-
-        deleteGroup('');
-
+        deleteGroup();
+        setShowDeleteDialog(false);
+        handleModeChange(Mode.ListGroup);
     };
 
     return (
@@ -162,7 +164,7 @@ const ManageGroup = observer(() => {
                 <DialogTitle>Delete Garment</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete this garment?
+                        Are you sure you want to delete this group?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
