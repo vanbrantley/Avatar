@@ -11,7 +11,7 @@ const Closet = observer(() => {
 
     const store = useContext(AppStoreContext);
     const { userHats, userTops, userBottoms, userShoes, handleAreaChange,
-        selectedHat, selectedTop, selectedBottom, selectedShoe,
+        selectedHat, selectedTop, selectedBottom, selectedShoe, selectedGroup,
         selectedCategory, handlePlusButtonClick, handleGarmentClick, openGarmentDetails } = store;
 
     let selectedArray: Garment[] = [];
@@ -122,9 +122,15 @@ const Closet = observer(() => {
                     })
                 ) : (
                     <div className="flex items-center justify-center h-full">
-                        <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>
-                            Click the plus button below to add a {GarmentTypeStrings[selectedCategory]} to your closet.
-                        </p>
+                        {(selectedGroup == 'all') ? (
+                            <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>
+                                Click the plus button below to add a {GarmentTypeStrings[selectedCategory]} to your closet
+                            </p>
+                        ) : (
+                            <p style={{ fontFamily: "Verdana", fontSize: "24px", color: "gray" }}>
+                                There are no {GarmentTypeStrings[selectedCategory]}s in this group
+                            </p>
+                        )}
                     </div>
                 )}
 

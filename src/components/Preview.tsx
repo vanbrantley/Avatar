@@ -8,7 +8,7 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 const Preview = observer(() => {
 
     const store = useContext(AppStoreContext);
-    const { userHats, userTops, userBottoms, userShoes,
+    const { userHats, userTops, userBottoms, userShoes, selectedGroup,
         selectedHat, selectedTop, selectedBottom, selectedShoe, randomizeGarments } = store;
 
     return (
@@ -21,7 +21,11 @@ const Preview = observer(() => {
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
 
                         {userHats.length === 0 ? (
-                            <p style={{ fontFamily: "Verdana" }}>No hats added</p>
+                            (selectedGroup == 'all') ? (
+                                <p style={{ fontFamily: "Verdana" }}>No hats added</p>
+                            ) : (
+                                <p style={{ fontFamily: "Verdana" }}>No hats in group</p>
+                            )
                         ) : (
                             userHats.map((garment) => (
                                 <div
@@ -48,7 +52,11 @@ const Preview = observer(() => {
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
                         {userTops.length === 0 ? (
-                            <p style={{ fontFamily: "Verdana" }}>No tops added</p>
+                            (selectedGroup == 'all') ? (
+                                <p style={{ fontFamily: "Verdana" }}>No tops added</p>
+                            ) : (
+                                <p style={{ fontFamily: "Verdana" }}>No tops in group</p>
+                            )
                         ) : (
                             userTops.map((garment) => (
                                 <div
@@ -74,7 +82,11 @@ const Preview = observer(() => {
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
                         {userBottoms.length === 0 ? (
-                            <p style={{ fontFamily: "Verdana" }}>No bottoms added</p>
+                            (selectedGroup == 'all') ? (
+                                <p style={{ fontFamily: "Verdana" }}>No bottoms added</p>
+                            ) : (
+                                <p style={{ fontFamily: "Verdana" }}>No bottoms in group</p>
+                            )
                         ) : (
                             userBottoms.map((garment) => (
                                 <div
@@ -100,7 +112,11 @@ const Preview = observer(() => {
                 <div className="flex items-center">
                     <div className="flex flex-1 max-w-sm overflow-x-auto flex-shrink-0">
                         {userShoes.length === 0 ? (
-                            <p style={{ fontFamily: "Verdana" }}>No shoes added</p>
+                            (selectedGroup == 'all') ? (
+                                <p style={{ fontFamily: "Verdana" }}>No shoes added</p>
+                            ) : (
+                                <p style={{ fontFamily: "Verdana" }}>No shoes in group</p>
+                            )
                         ) : (
                             userShoes.map((garment) => (
                                 <div
