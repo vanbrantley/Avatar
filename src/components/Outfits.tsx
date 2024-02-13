@@ -8,7 +8,7 @@ const Outfits = observer(() => {
     const { user } = useUser();
 
     const store = useContext(AppStoreContext);
-    const { embeddedOutfits, shownOutfits, selectedOutfit, donOutfit } = store;
+    const { shownOutfits, selectedOutfit, donOutfit } = store;
 
     return (
         <>

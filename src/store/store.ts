@@ -1570,8 +1570,7 @@ class AppStore {
 
             this.setUser(null);
 
-            this.setSelectedCategory(GarmentType.Top);
-            this.setSelectedGarment(this.defaultTop);
+            this.setGarments([]);
 
             this.setSelectedHat(this.defaultHat);
             this.setSelectedTop(this.defaultTop);
@@ -1580,7 +1579,9 @@ class AppStore {
             this.setSelectedOutfit(null);
             this.setSelectedColor(this.selectedTop.color);
 
-            this.setGarments([]);
+            this.setSelectedCategory(GarmentType.Top);
+            this.setSelectedGarment(this.defaultTop);
+            this.setSelectedGroup("all");
 
             this.setSuccessMessageHandler("User signed out successfully");
 

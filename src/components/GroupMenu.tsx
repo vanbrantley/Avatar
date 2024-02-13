@@ -7,12 +7,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { Mode } from '@/lib/types';
 import { Group } from '@/API';
+import GroupDropdown from './GroupDropdown';
 
 const GroupMenu = observer(() => {
 
     const { user } = useUser();
     const store = useContext(AppStoreContext);
-    const { groups, selectedGroup, setSelectedGroup, handleModeChange, createGroupAssignment } = store;
+    const { groups, selectedGroup, setSelectedGroup, handleModeChange } = store;
 
     const allOption: Group = {
         __typename: "Group",
@@ -44,6 +45,8 @@ const GroupMenu = observer(() => {
 
                 <div className="flex flex-col h-full">
                     <div className="flex flex-col flex-grow overflow-auto">
+
+                        <GroupDropdown />
 
                         {(groups.length > 0) ? (
                             groupsPlusAllOption.map((group, index) => {
