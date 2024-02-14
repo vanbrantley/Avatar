@@ -6,6 +6,7 @@ import { GarmentType, GarmentTypeStrings } from '@/lib/types';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import GroupDropdown from './GroupDropdown';
 
 const Closet = observer(() => {
 
@@ -39,6 +40,7 @@ const Closet = observer(() => {
     return (
         <div className="flex flex-col h-full">
 
+            <GroupDropdown />
             <br />
 
             <div className="grid grid-cols-4 gap-2">

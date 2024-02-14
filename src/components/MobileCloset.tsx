@@ -6,6 +6,7 @@ import { GarmentType, GarmentTypeStrings } from '@/lib/types';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import GroupDropdown from './GroupDropdown';
 
 const MobileCloset = observer(() => {
 
@@ -38,6 +39,8 @@ const MobileCloset = observer(() => {
 
     return (
         <div className="flex flex-col h-full w-full">
+            <GroupDropdown />
+
             <div className="flex flex-wrap justify-center">
                 <div
                     className="flex justify-center cursor-pointer p-2"

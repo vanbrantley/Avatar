@@ -7,7 +7,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { Mode } from '@/lib/types';
 import { Group } from '@/API';
-import GroupDropdown from './GroupDropdown';
 
 const GroupMenu = observer(() => {
 
@@ -44,9 +43,8 @@ const GroupMenu = observer(() => {
             {user ? (
 
                 <div className="flex flex-col h-full">
-                    <div className="flex flex-col flex-grow overflow-auto">
 
-                        <GroupDropdown />
+                    <div className="flex flex-col flex-grow overflow-auto">
 
                         {(groups.length > 0) ? (
                             groupsPlusAllOption.map((group, index) => {
