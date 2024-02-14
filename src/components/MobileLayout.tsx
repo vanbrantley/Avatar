@@ -12,6 +12,7 @@ import GarmentDetails from './GarmentDetails';
 import { Mode } from '../lib/types';
 import Outfits from './Outfits';
 import ComplexionMenu from './ComplexionMenu';
+import GroupMenu from './GroupMenu';
 import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
@@ -21,6 +22,8 @@ import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import ListIcon from '@mui/icons-material/List';
 import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import CreateGroup from './CreateGroup';
+import ManageGroup from './ManageGroup';
 
 const MobileLayout = observer(() => {
 
@@ -123,6 +126,9 @@ const MobileLayout = observer(() => {
                                 {(mode === Mode.Details) && <GarmentDetails />}
                                 {(mode === Mode.Outfit) && <Outfits />}
                                 {(mode === Mode.Complexion) && <ComplexionMenu />}
+                                {(mode === Mode.ListGroup) && <GroupMenu />}
+                                {(mode === Mode.CreateGroup) && <CreateGroup />}
+                                {(mode === Mode.ManageGroup) && <ManageGroup />}
                             </>
 
                         )}

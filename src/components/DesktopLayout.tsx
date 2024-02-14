@@ -12,6 +12,7 @@ import AddGarment from './AddGarment';
 import GarmentDetails from './GarmentDetails';
 import Outfits from './Outfits';
 import ComplexionMenu from './ComplexionMenu';
+import GroupMenu from './GroupMenu';
 import { Mode } from '../lib/types';
 import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -20,6 +21,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import CreateGroup from './CreateGroup';
+import ManageGroup from './ManageGroup';
 
 const DesktopLayout = observer(() => {
 
@@ -116,6 +119,9 @@ const DesktopLayout = observer(() => {
                         {(mode === Mode.Details) && <GarmentDetails />}
                         {(mode === Mode.Outfit) && <Outfits />}
                         {(mode === Mode.Complexion) && <ComplexionMenu />}
+                        {(mode === Mode.ListGroup) && <GroupMenu />}
+                        {(mode === Mode.CreateGroup) && <CreateGroup />}
+                        {(mode === Mode.ManageGroup) && <ManageGroup />}
 
                     </div>
                 </div>

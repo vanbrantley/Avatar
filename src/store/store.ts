@@ -1,20 +1,19 @@
 import {
     CreateGarmentInput, CreateGarmentMutation, CreateComplexionInput, CreateComplexionMutation, DeleteGarmentInput,
-    DeleteGarmentMutation, Garment, ListGarmentsQuery, ListComplexionsQuery, UpdateComplexionInput,
+    DeleteGarmentMutation, Garment, ListGarmentsQuery, ListComplexionsQuery, UpdateComplexionInput, Group, GroupAssignment,
     UpdateComplexionMutation, UpdateGarmentInput, UpdateGarmentMutation, CreateOutfitInput, CreateOutfitMutation,
-    DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery
+    DeleteOutfitInput, DeleteOutfitMutation, ListOutfitsQuery, DeleteGroupInput, DeleteGroupMutation, CreateGroupInput, CreateGroupMutation, ListGroupsQuery, ListGroupAssignmentsQuery, CreateGroupAssignmentInput, CreateGroupAssignmentMutation, DeleteGroupAssignmentInput, DeleteGroupAssignmentMutation
 } from '@/API';
-import { observable, action, makeObservable } from 'mobx';
+import { observable, action, makeObservable, computed } from 'mobx';
 import { API, Auth } from 'aws-amplify';
 import { GraphQLQuery, GraphQLResult, graphqlOperation } from '@aws-amplify/api';
-import { listGarments, listComplexions, listOutfits } from '../graphql/queries';
+import { listGarments, listComplexions, listOutfits, listGroups, listGroupAssignments } from '../graphql/queries';
 import {
     createGarment, createComplexion, deleteGarment, updateComplexion,
-    updateGarment, createOutfit, deleteOutfit
+    updateGarment, createOutfit, deleteOutfit, deleteGroup, createGroup, createGroupAssignment, deleteGroupAssignment
 } from '../graphql/mutations';
 import { CognitoUser } from '@aws-amplify/auth';
 import { Layout, Mode, GarmentType, GarmentTypeStrings, Outfit, EmbeddedOutfit } from '../lib/types';
-import { groupByArea } from '../lib/functions';
 import { v4 as uuidv4 } from 'uuid';
 import isEqual from 'lodash/isEqual';
 import html2canvas from 'html2canvas';
@@ -80,10 +79,7 @@ class AppStore {
 
     selectedGarment: Garment = this.defaultTop;
 
-    userHats: Garment[] = [];
-    userTops: Garment[] = [];
-    userBottoms: Garment[] = [];
-    userShoes: Garment[] = [];
+    garments: Garment[] = [];
 
     // OG complexion #a18057
     complexions: string[] = ["#ecdacc", "#dbc9ba", "#d9bca7",
@@ -96,6 +92,10 @@ class AppStore {
 
     selectedCategory: GarmentType = GarmentType.Top;
     selectedColor = this.selectedTop.color; // color picker's color
+
+    groups: Group[] = [];
+    groupAssignments: GroupAssignment[] = [];
+    selectedGroup = "all";
 
     outfits: Outfit[] = [];
     embeddedOutfits: EmbeddedOutfit[] = [];
@@ -126,14 +126,18 @@ class AppStore {
             selectedBottom: observable,
             selectedShoe: observable,
             selectedGarment: observable,
-            userHats: observable,
-            userTops: observable,
-            userBottoms: observable,
-            userShoes: observable,
+            garments: observable,
+            userHats: computed,
+            userTops: computed,
+            userBottoms: computed,
+            userShoes: computed,
             complexions: observable,
             selectedComplexion: observable,
             selectedCategory: observable,
             selectedColor: observable,
+            groups: observable,
+            groupAssignments: observable,
+            selectedGroup: observable,
             outfits: observable,
             embeddedOutfits: observable,
             selectedOutfit: observable,
@@ -151,6 +155,51 @@ class AppStore {
         });
 
     }
+
+    // computed properties
+
+    // change these user... to shownHats, shownTops, shownBottoms, shownShoes
+    // if selectedGroup != 'all', additonal filter is added
+
+    get userHats() {
+        if (this.selectedGroup == 'all' || this.mode == Mode.ManageGroup) return this.garments.filter(garment => garment.area === 'hat');
+        else return this.garments.filter(garment => garment.area === 'hat' && this.groupGarmentIds.includes(garment.id));
+    };
+
+    get userTops() {
+        if (this.selectedGroup == 'all' || this.mode == Mode.ManageGroup) return this.garments.filter(garment => garment.area === 'top');
+        else return this.garments.filter(garment => garment.area === 'top' && this.groupGarmentIds.includes(garment.id));
+    };
+
+    get userBottoms() {
+        if (this.selectedGroup == 'all' || this.mode == Mode.ManageGroup) return this.garments.filter(garment => garment.area === 'bottom');
+        else return this.garments.filter(garment => garment.area === 'bottom' && this.groupGarmentIds.includes(garment.id));
+    };
+
+    get userShoes() {
+        if (this.selectedGroup == 'all' || this.mode == Mode.ManageGroup) return this.garments.filter(garment => garment.area === 'shoe');
+        else return this.garments.filter(garment => garment.area === 'shoe' && this.groupGarmentIds.includes(garment.id));
+    };
+
+    get groupGarmentIds() {
+        const groupGarments = this.groupAssignments.filter(groupAssignment => groupAssignment.groupId == this.selectedGroup);
+        return groupGarments.map(groupAssignment => groupAssignment.garmentId);
+    };
+
+    areAllGarmentsInGroup = (embeddedOutfit: EmbeddedOutfit) => {
+        const { hat, top, bottom, shoe } = embeddedOutfit;
+        return (
+            this.groupGarmentIds.includes(hat.id)
+            && this.groupGarmentIds.includes(top.id)
+            && this.groupGarmentIds.includes(bottom.id)
+            && this.groupGarmentIds.includes(shoe.id)
+        );
+    };
+
+    get shownOutfits() {
+        if (this.selectedGroup === 'all') return this.embeddedOutfits;
+        else return this.embeddedOutfits.filter((embeddedOutfit) => this.areAllGarmentsInGroup(embeddedOutfit));
+    };
 
     // setter functions
 
@@ -178,20 +227,8 @@ class AppStore {
         this.selectedGarment = garment;
     });
 
-    setUserHats = action((hats: Garment[]) => {
-        this.userHats = hats;
-    });
-
-    setUserTops = action((tops: Garment[]) => {
-        this.userTops = tops;
-    });
-
-    setUserBottoms = action((bottoms: Garment[]) => {
-        this.userBottoms = bottoms;
-    });
-
-    setUserShoes = action((shoes: Garment[]) => {
-        this.userShoes = shoes;
+    setGarments = action((garments: Garment[]) => {
+        this.garments = garments;
     });
 
     setSelectedComplexion = action((index: number) => {
@@ -204,6 +241,18 @@ class AppStore {
 
     setSelectedColor = action((color: string) => {
         this.selectedColor = color;
+    });
+
+    setGroups = action((groups: Group[]) => {
+        this.groups = groups;
+    });
+
+    setGroupAssignments = action((groupAssignments: GroupAssignment[]) => {
+        this.groupAssignments = groupAssignments;
+    });
+
+    setSelectedGroup = action((group: string) => {
+        this.selectedGroup = group;
     });
 
     setOutfits = action((outfits: Outfit[]) => {
@@ -333,9 +382,7 @@ class AppStore {
     });
 
     handleColorChangePicker = action((color: string) => {
-
         this.setSelectedColor(color);
-
     });
 
     handleBackButtonClick = action(() => {
@@ -498,11 +545,7 @@ class AppStore {
             const { data } = response;
             if (data && data.listGarments && data.listGarments.items) {
                 const userGarments = data.listGarments.items as Garment[];
-                const grouped = groupByArea(userGarments);
-                this.setUserHats(grouped["hat"]);
-                this.setUserTops(grouped["top"]);
-                this.setUserBottoms(grouped["bottom"]);
-                this.setUserShoes(grouped["shoe"]);
+                this.setGarments(userGarments);
 
                 // Assign random garment IDs to selected variables
                 // set selectedColor 
@@ -571,22 +614,21 @@ class AppStore {
             owner: null
         };
 
-        // add createdGarment to user garment group
+        // add createdGarment to garments
+        this.setGarments([newGarment, ...this.garments]);
+
+        // make newGarmnet the selected area garment
         switch (area) {
             case GarmentType.Hat:
-                this.setUserHats([newGarment, ...this.userHats]);
                 this.setSelectedHat(newGarment);
                 break;
             case GarmentType.Top:
-                this.setUserTops([newGarment, ...this.userTops]);
                 this.setSelectedTop(newGarment);
                 break;
             case GarmentType.Bottom:
-                this.setUserBottoms([newGarment, ...this.userBottoms]);
                 this.setSelectedBottom(newGarment);
                 break;
             case GarmentType.Shoe:
-                this.setUserShoes([newGarment, ...this.userShoes]);
                 this.setSelectedShoe(newGarment);
                 break;
         }
@@ -611,23 +653,24 @@ class AppStore {
             const { data } = response;
             if (data && data.createGarment) {
                 const createdGarment = data.createGarment;
-                // add createdGarment to user garment group
+
+                // add createdGarment to garments
+                this.setGarments([createdGarment, ...this.garments]);
+
+                if (this.selectedGroup) this.createGroupAssignment(createdGarment.id);
+
                 // make createdGarmnet the selected area garment
                 switch (area) {
                     case GarmentTypeStrings[GarmentType.Hat]:
-                        this.setUserHats([createdGarment, ...this.userHats]);
                         this.setSelectedHat(createdGarment);
                         break;
                     case GarmentTypeStrings[GarmentType.Top]:
-                        this.setUserTops([createdGarment, ...this.userTops]);
                         this.setSelectedTop(createdGarment);
                         break;
                     case GarmentTypeStrings[GarmentType.Bottom]:
-                        this.setUserBottoms([createdGarment, ...this.userBottoms]);
                         this.setSelectedBottom(createdGarment);
                         break;
                     case GarmentTypeStrings[GarmentType.Shoe]:
-                        this.setUserShoes([createdGarment, ...this.userShoes]);
                         this.setSelectedShoe(createdGarment);
                         break;
                 }
@@ -664,38 +707,25 @@ class AppStore {
             owner: null
         };
 
-        let updatedArray: Garment[];
+        // update the garment in the garments state array
+        const updatedArray: Garment[] = [
+            updatedGarment,
+            ...(this.garments.filter(garment => garment.id !== updatedGarment.id) as Garment[])
+        ];
+        this.setGarments(updatedArray);
+
+        // update the selected area garment
         switch (area) {
             case GarmentTypeStrings[GarmentType.Hat]:
-                updatedArray = [
-                    updatedGarment,
-                    ...(this.userHats.filter(garment => garment.id !== id) as Garment[])
-                ];
-                this.setUserHats(updatedArray);
                 this.setSelectedHat(updatedGarment);
                 break;
             case GarmentTypeStrings[GarmentType.Top]:
-                updatedArray = [
-                    updatedGarment,
-                    ...(this.userTops.filter(garment => garment.id !== id) as Garment[])
-                ];
-                this.setUserTops(updatedArray);
                 this.setSelectedTop(updatedGarment);
                 break;
             case GarmentTypeStrings[GarmentType.Bottom]:
-                updatedArray = [
-                    updatedGarment,
-                    ...(this.userBottoms.filter(garment => garment.id !== id) as Garment[])
-                ];
-                this.setUserBottoms(updatedArray);
                 this.setSelectedBottom(updatedGarment);
                 break;
             case GarmentTypeStrings[GarmentType.Shoe]:
-                updatedArray = [
-                    updatedGarment,
-                    ...(this.userShoes.filter(garment => garment.id !== id) as Garment[])
-                ];
-                this.setUserShoes(updatedArray);
                 this.setSelectedShoe(updatedGarment);
                 break;
         }
@@ -725,41 +755,25 @@ class AppStore {
             if (data && data.updateGarment) {
                 const updatedGarment = data.updateGarment as Garment;
 
-                // update the garment in the userGarments area state array
-                // update the selected area garment
+                // update the garment in the garments state array
+                const updatedArray: Garment[] = [
+                    updatedGarment,
+                    ...(this.garments.filter(garment => garment.id !== updatedGarment.id) as Garment[])
+                ];
+                this.setGarments(updatedArray);
 
-                let updatedArray: Garment[];
+                // update the selected area garment
                 switch (area) {
                     case GarmentTypeStrings[GarmentType.Hat]:
-                        updatedArray = [
-                            updatedGarment,
-                            ...(this.userHats.filter(garment => garment.id !== updatedGarment.id) as Garment[])
-                        ];
-                        this.setUserHats(updatedArray);
                         this.setSelectedHat(updatedGarment);
                         break;
                     case GarmentTypeStrings[GarmentType.Top]:
-                        updatedArray = [
-                            updatedGarment,
-                            ...(this.userTops.filter(garment => garment.id !== updatedGarment.id) as Garment[])
-                        ];
-                        this.setUserTops(updatedArray);
                         this.setSelectedTop(updatedGarment);
                         break;
                     case GarmentTypeStrings[GarmentType.Bottom]:
-                        updatedArray = [
-                            updatedGarment,
-                            ...(this.userBottoms.filter(garment => garment.id !== updatedGarment.id) as Garment[])
-                        ];
-                        this.setUserBottoms(updatedArray);
                         this.setSelectedBottom(updatedGarment);
                         break;
                     case GarmentTypeStrings[GarmentType.Shoe]:
-                        updatedArray = [
-                            updatedGarment,
-                            ...(this.userShoes.filter(garment => garment.id !== updatedGarment.id) as Garment[])
-                        ];
-                        this.setUserShoes(updatedArray);
                         this.setSelectedShoe(updatedGarment);
                         break;
                 }
@@ -779,10 +793,11 @@ class AppStore {
     removeGarmentLocal = action((garmentId: string, area: string) => {
 
         // remove removedGarment from garments array
+        this.setGarments(this.garments.filter((garment) => garment.id !== garmentId));
+
         // reset selected area garment
         switch (area) {
             case GarmentTypeStrings[GarmentType.Hat]:
-                this.setUserHats(this.userHats.filter((swatch) => swatch.id !== garmentId));
                 if (this.userHats.length === 0) {
                     this.setSelectedHat(this.defaultHat);
                 } else {
@@ -791,7 +806,6 @@ class AppStore {
                 }
                 break;
             case GarmentTypeStrings[GarmentType.Top]:
-                this.setUserTops(this.userTops.filter((swatch) => swatch.id !== garmentId));
                 if (this.userTops.length === 0) {
                     this.setSelectedTop(this.defaultTop);
                 } else {
@@ -800,7 +814,6 @@ class AppStore {
                 }
                 break;
             case GarmentTypeStrings[GarmentType.Bottom]:
-                this.setUserBottoms(this.userBottoms.filter((swatch) => swatch.id !== garmentId));
                 if (this.userBottoms.length === 0) {
                     this.setSelectedBottom(this.defaultBottom);
                 } else {
@@ -809,7 +822,6 @@ class AppStore {
                 }
                 break;
             case GarmentTypeStrings[GarmentType.Shoe]:
-                this.setUserShoes(this.userShoes.filter((swatch) => swatch.id !== garmentId));
                 if (this.userShoes.length === 0) {
                     this.setSelectedShoe(this.defaultShoe);
                 } else {
@@ -838,11 +850,11 @@ class AppStore {
                 const removedGarment = data.deleteGarment;
 
                 // remove removedGarment from garments array
-                // reset selected area garment
+                this.setGarments(this.garments.filter((garment) => garment.id !== removedGarment.id));
 
+                // reset selected area garment
                 switch (area) {
                     case GarmentTypeStrings[GarmentType.Hat]:
-                        this.setUserHats(this.userHats.filter((swatch) => swatch.id !== removedGarment.id));
                         if (this.userHats.length === 0) {
                             this.setSelectedHat(this.defaultHat);
                         } else {
@@ -851,7 +863,6 @@ class AppStore {
                         }
                         break;
                     case GarmentTypeStrings[GarmentType.Top]:
-                        this.setUserTops(this.userTops.filter((swatch) => swatch.id !== removedGarment.id));
                         if (this.userTops.length === 0) {
                             this.setSelectedTop(this.defaultTop);
                         } else {
@@ -860,7 +871,6 @@ class AppStore {
                         }
                         break;
                     case GarmentTypeStrings[GarmentType.Bottom]:
-                        this.setUserBottoms(this.userBottoms.filter((swatch) => swatch.id !== removedGarment.id));
                         if (this.userBottoms.length === 0) {
                             this.setSelectedBottom(this.defaultBottom);
                         } else {
@@ -869,7 +879,6 @@ class AppStore {
                         }
                         break;
                     case GarmentTypeStrings[GarmentType.Shoe]:
-                        this.setUserShoes(this.userShoes.filter((swatch) => swatch.id !== removedGarment.id));
                         if (this.userShoes.length === 0) {
                             this.setSelectedShoe(this.defaultShoe);
                         } else {
@@ -881,10 +890,17 @@ class AppStore {
 
                 this.setSuccessMessageHandler("Garment removed successfully");
 
+                // delete outfits containing the garment
                 const outfitsToDelete = this.outfits.filter((outfit) => outfit[`${removedGarment.area}Id` as keyof Outfit] === removedGarment.id);
-
                 for (const outfitToDelete of outfitsToDelete) {
                     await this.removeOutfit(outfitToDelete.id);
+                }
+
+                // delete groupAssignments containing the garment
+                const groupAssignmentsToDelete = this.groupAssignments.filter((groupAssignment) => groupAssignment.garmentId == removedGarment.id);
+                for (const groupAssignmentToDelete of groupAssignmentsToDelete) {
+                    const groupAssignmentId = groupAssignmentToDelete.id;
+                    await this.deleteGroupAssignment(groupAssignmentId);
                 }
 
                 this.checkIfSavedOutfit();
@@ -1255,7 +1271,6 @@ class AppStore {
                 const complexion = data.listComplexions.items[0]?.complexion;
                 if (complexion) {
                     if (complexion !== this.faceColor) this.setFaceColor(complexion);
-                    // TODO: Set selectedComplexion
                     const complexionIndex = this.complexions.indexOf(complexion)
                     this.setSelectedComplexion(complexionIndex);
                 }
@@ -1305,44 +1320,12 @@ class AppStore {
 
     captureImage(component: ReactElement) {
 
-        // const element = document.createElement('div');
-        // document.body.appendChild(element);
-
-        // const containerRef = document.createElement('div');
-        // containerRef.style.width = '800px';
-        // element.appendChild(containerRef);
-
-        // // Render the component into the temporary div
-        // ReactDOM.render(component, containerRef);
-
-        // html2canvas(containerRef).then((canvas) => {
-        //     const dataURL = canvas.toDataURL();
-
-        //     const a = document.createElement('a');
-        //     a.href = dataURL;
-
-        //     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        //     if (isMobile) {
-        //         a.onclick = () => alert('Long-press the image to save.');
-        //     } else {
-        //         a.download = 'avatar.png';
-        //     }
-
-        //     a.click();
-
-        //     // Cleanup: Remove the temporary div and clear its content
-        //     document.body.removeChild(element);
-        //     ReactDOM.unmountComponentAtNode(containerRef);
-
         const element = document.createElement('div');
         document.body.appendChild(element);
 
         const containerRef = document.createElement('div');
         containerRef.style.width = '800px';
         element.appendChild(containerRef);
-
-        // html2canvas(containerRef).then((canvas) => {
 
         // Save the current viewport setting
         const viewportMeta = document.getElementById('viewportMeta');
@@ -1359,7 +1342,7 @@ class AppStore {
 
             const a = document.createElement('a');
             a.href = dataURL;
-            a.download = 'exportedComponent.png';
+            a.download = 'avatar.png';
             a.click();
 
             // Cleanup: Remove the temporary div and clear its content
@@ -1370,7 +1353,208 @@ class AppStore {
             viewportMeta?.setAttribute('content', originalViewportContent);
 
         });
-    }
+    };
+
+    // create group
+    createGroup = action(async (name: string) => {
+
+        try {
+
+            const createNewGroupInput: CreateGroupInput = {
+                name: name
+            };
+
+            const response = await API.graphql<GraphQLQuery<CreateGroupMutation>>(graphqlOperation(createGroup, {
+                input: createNewGroupInput
+            })) as GraphQLResult<CreateGroupMutation>;
+            const { data } = response;
+
+            if (data && data.createGroup) {
+                const createdGroup = data.createGroup;
+                const { id } = createdGroup;
+                this.setSelectedGroup(id);
+                // add newly created group to groups
+                this.setGroups([createdGroup, ...this.groups]);
+                this.setSuccessMessageHandler("Group created successfully");
+            }
+
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error creating group");
+            throw error;
+        }
+
+    });
+
+    // read group(s) - groupAssignment stuff is also done here you think
+    fetchGroups = action(async (): Promise<Group[]> => {
+
+        try {
+            const response = (await API.graphql<GraphQLQuery<ListGroupsQuery>>(graphqlOperation(listGroups))) as GraphQLResult<ListGroupsQuery>;
+            const { data } = response;
+            if (data && data.listGroups && data.listGroups.items) {
+
+                const userGroups = data.listGroups.items as Group[];
+                this.setGroups(userGroups);
+                return userGroups;
+
+            } else {
+                throw new Error("Error fetching user groups");
+            }
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error fetching user groups");
+            throw error;
+        }
+
+    });
+
+    fetchGroupAssignments = action(async (): Promise<GroupAssignment[]> => {
+
+        try {
+            const response = (await API.graphql<GraphQLQuery<ListGroupAssignmentsQuery>>(graphqlOperation(listGroupAssignments))) as GraphQLResult<ListGroupAssignmentsQuery>;
+            const { data } = response;
+            if (data && data.listGroupAssignments && data.listGroupAssignments.items) {
+
+                const userGroupAssignments = data.listGroupAssignments.items as GroupAssignment[];
+                this.setGroupAssignments(userGroupAssignments);
+                return userGroupAssignments;
+
+            } else {
+                throw new Error("Error fetching user group assignments");
+            }
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error fetching user group assignments");
+            throw error;
+        }
+
+    });
+
+    createGroupAssignment = action(async (garmentId: string) => {
+
+        try {
+
+            const createNewGroupAssignmentInput: CreateGroupAssignmentInput = {
+                // groupId: "b3db49ee-4855-482c-9692-8a2bb4dcc431",
+                // garmentId: "caf6842b-6fec-4b11-9778-f84496712170" // cactus jack shirt
+                groupId: this.selectedGroup,
+                garmentId: garmentId
+            };
+
+            const response = await API.graphql<GraphQLQuery<CreateGroupAssignmentMutation>>(graphqlOperation(createGroupAssignment, {
+                input: createNewGroupAssignmentInput
+            })) as GraphQLResult<CreateGroupAssignmentMutation>;
+            const { data } = response;
+
+            if (data && data.createGroupAssignment) {
+                const createdGroupAssignment = data.createGroupAssignment;
+                this.setGroupAssignments([createdGroupAssignment, ...this.groupAssignments]);
+            }
+
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error creating group assignment");
+            throw error;
+        }
+
+    });
+
+    deleteGroupAssignment = action(async (groupAssignmentId: string) => {
+
+        try {
+            const groupAssignmentDetails: DeleteGroupAssignmentInput = {
+                id: groupAssignmentId,
+            };
+
+            const response = await API.graphql<GraphQLQuery<DeleteGroupAssignmentMutation>>(graphqlOperation(deleteGroupAssignment, {
+                input: groupAssignmentDetails
+            })) as GraphQLResult<DeleteGroupAssignmentMutation>;
+            const { data } = response;
+
+            if (data && data.deleteGroupAssignment) {
+                const removedGroupAssignment = data.deleteGroupAssignment;
+                // remove groupAssignment from groupAssignments state array
+                this.setGroupAssignments(this.groupAssignments.filter((groupAssignment) => groupAssignment.id !== removedGroupAssignment.id));
+            }
+
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error deleting group assignment");
+            throw error;
+        }
+
+    });
+
+    // update group / edit group - this is where the groupAssignments logic is handled 
+    // think you do have to store the groupAssingments in store..
+    // take in list of addedGarmentIds , calculate diffs (ins and outs) , process diffs (creating and deleting GroupAssignments)
+    // update groupAssignments state array (is this array even necessary? don't think so) & groupGarmentIds 
+    editGroupGarments = action(async (clickedGarmentIds: string[]) => {
+
+        // calculate diffs between clickedGarmentIds & this.groupGarmentIds
+        const addedGarmentIds = clickedGarmentIds.filter((garmentId) => !this.groupGarmentIds.includes(garmentId)); // ones in clickedGarmentIds but not groupGarmnetIds
+        const removedGarmentIds = this.groupGarmentIds.filter((garmentId) => !clickedGarmentIds.includes(garmentId)); // ones in this.groupGarmentIds that are not in clickedGarmentIds
+
+        // process diffs
+        // remove garments (groupAssignments) that were unclicked
+        // filter the groupAssignments state array to get the groupAssignmentIds that you want to delete
+        const groupAssignmentsToDelete = this.groupAssignments.filter((groupAssignment) => removedGarmentIds.includes(groupAssignment.id));
+
+        for (const groupAssignment of groupAssignmentsToDelete) {
+            const groupAssignmentId = groupAssignment.id;
+            await this.deleteGroupAssignment(groupAssignmentId);
+        }
+
+        // create groupAssignments that were clicked
+        for (const addedGarmentId of addedGarmentIds) {
+            await this.createGroupAssignment(addedGarmentId);
+        }
+
+    });
+
+
+    // delete group
+    // first delete the group
+    // then delete all entries from the group assignments array where groupId = deletedGroup.id
+
+    deleteGroup = action(async () => {
+
+        try {
+            const groupDetails: DeleteGroupInput = {
+                id: this.selectedGroup,
+            };
+
+            const response = await API.graphql<GraphQLQuery<DeleteGroupMutation>>(graphqlOperation(deleteGroup, {
+                input: groupDetails
+            })) as GraphQLResult<DeleteGroupMutation>;
+            const { data } = response;
+
+            if (data && data.deleteGroup) {
+                const removedGroup = data.deleteGroup;
+
+                // remove group from groups state array
+                this.setGroups(this.groups.filter((group) => group.id !== removedGroup.id))
+
+                const groupAssignmentsToDelete = this.groupAssignments.filter((groupAssignment) => groupAssignment.groupId == this.selectedGroup);
+                for (const groupAssignmentToDelete of groupAssignmentsToDelete) {
+                    const groupAssignmentId = groupAssignmentToDelete.id;
+                    await this.deleteGroupAssignment(groupAssignmentId);
+                }
+
+                // set selectedGroup to all
+                this.setSelectedGroup("all");
+
+                this.setSuccessMessageHandler("Group successfully deleted");
+
+            }
+
+        } catch (error: any) {
+            console.error(error);
+            this.setErrorMessageHandler("Error deleting group");
+            throw error;
+        }
+    });
 
     signUserOut = action(async () => {
 
@@ -1386,8 +1570,7 @@ class AppStore {
 
             this.setUser(null);
 
-            this.setSelectedCategory(GarmentType.Top);
-            this.setSelectedGarment(this.defaultTop);
+            this.setGarments([]);
 
             this.setSelectedHat(this.defaultHat);
             this.setSelectedTop(this.defaultTop);
@@ -1396,10 +1579,9 @@ class AppStore {
             this.setSelectedOutfit(null);
             this.setSelectedColor(this.selectedTop.color);
 
-            this.setUserHats([]);
-            this.setUserTops([]);
-            this.setUserBottoms([]);
-            this.setUserShoes([]);
+            this.setSelectedCategory(GarmentType.Top);
+            this.setSelectedGarment(this.defaultTop);
+            this.setSelectedGroup("all");
 
             this.setSuccessMessageHandler("User signed out successfully");
 

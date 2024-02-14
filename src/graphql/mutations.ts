@@ -110,6 +110,99 @@ export const deleteOutfit = /* GraphQL */ `
     }
   }
 `;
+export const createGroup = /* GraphQL */ `
+  mutation CreateGroup(
+    $input: CreateGroupInput!
+    $condition: ModelGroupConditionInput
+  ) {
+    createGroup(input: $input, condition: $condition) {
+      id
+      name
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const updateGroup = /* GraphQL */ `
+  mutation UpdateGroup(
+    $input: UpdateGroupInput!
+    $condition: ModelGroupConditionInput
+  ) {
+    updateGroup(input: $input, condition: $condition) {
+      id
+      name
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const deleteGroup = /* GraphQL */ `
+  mutation DeleteGroup(
+    $input: DeleteGroupInput!
+    $condition: ModelGroupConditionInput
+  ) {
+    deleteGroup(input: $input, condition: $condition) {
+      id
+      name
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const createGroupAssignment = /* GraphQL */ `
+  mutation CreateGroupAssignment(
+    $input: CreateGroupAssignmentInput!
+    $condition: ModelGroupAssignmentConditionInput
+  ) {
+    createGroupAssignment(input: $input, condition: $condition) {
+      id
+      groupId
+      garmentId
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const updateGroupAssignment = /* GraphQL */ `
+  mutation UpdateGroupAssignment(
+    $input: UpdateGroupAssignmentInput!
+    $condition: ModelGroupAssignmentConditionInput
+  ) {
+    updateGroupAssignment(input: $input, condition: $condition) {
+      id
+      groupId
+      garmentId
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const deleteGroupAssignment = /* GraphQL */ `
+  mutation DeleteGroupAssignment(
+    $input: DeleteGroupAssignmentInput!
+    $condition: ModelGroupAssignmentConditionInput
+  ) {
+    deleteGroupAssignment(input: $input, condition: $condition) {
+      id
+      groupId
+      garmentId
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
 export const createPalette = /* GraphQL */ `
   mutation CreatePalette(
     $input: CreatePaletteInput!

@@ -15,8 +15,8 @@ export type ModelGarmentConditionInput = {
   color?: ModelStringInput | null,
   brand?: ModelStringInput | null,
   name?: ModelStringInput | null,
-  and?: Array< ModelGarmentConditionInput | null > | null,
-  or?: Array< ModelGarmentConditionInput | null > | null,
+  and?: Array<ModelGarmentConditionInput | null> | null,
+  or?: Array<ModelGarmentConditionInput | null> | null,
   not?: ModelGarmentConditionInput | null,
 };
 
@@ -29,7 +29,7 @@ export type ModelStringInput = {
   gt?: string | null,
   contains?: string | null,
   notContains?: string | null,
-  between?: Array< string | null > | null,
+  between?: Array<string | null> | null,
   beginsWith?: string | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
@@ -57,7 +57,7 @@ export type ModelSizeInput = {
   lt?: number | null,
   ge?: number | null,
   gt?: number | null,
-  between?: Array< number | null > | null,
+  between?: Array<number | null> | null,
 };
 
 export type Garment = {
@@ -97,8 +97,8 @@ export type ModelOutfitConditionInput = {
   topId?: ModelStringInput | null,
   bottomId?: ModelStringInput | null,
   shoeId?: ModelStringInput | null,
-  and?: Array< ModelOutfitConditionInput | null > | null,
-  or?: Array< ModelOutfitConditionInput | null > | null,
+  and?: Array<ModelOutfitConditionInput | null> | null,
+  or?: Array<ModelOutfitConditionInput | null> | null,
   not?: ModelOutfitConditionInput | null,
 };
 
@@ -126,6 +126,70 @@ export type DeleteOutfitInput = {
   id: string,
 };
 
+export type CreateGroupInput = {
+  id?: string | null,
+  name: string,
+};
+
+export type ModelGroupConditionInput = {
+  name?: ModelStringInput | null,
+  and?: Array<ModelGroupConditionInput | null> | null,
+  or?: Array<ModelGroupConditionInput | null> | null,
+  not?: ModelGroupConditionInput | null,
+};
+
+export type Group = {
+  __typename: "Group",
+  id: string,
+  name: string,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type UpdateGroupInput = {
+  id: string,
+  name?: string | null,
+};
+
+export type DeleteGroupInput = {
+  id: string,
+};
+
+export type CreateGroupAssignmentInput = {
+  id?: string | null,
+  groupId: string,
+  garmentId: string,
+};
+
+export type ModelGroupAssignmentConditionInput = {
+  groupId?: ModelStringInput | null,
+  garmentId?: ModelStringInput | null,
+  and?: Array<ModelGroupAssignmentConditionInput | null> | null,
+  or?: Array<ModelGroupAssignmentConditionInput | null> | null,
+  not?: ModelGroupAssignmentConditionInput | null,
+};
+
+export type GroupAssignment = {
+  __typename: "GroupAssignment",
+  id: string,
+  groupId: string,
+  garmentId: string,
+  createdAt: string,
+  updatedAt: string,
+  owner?: string | null,
+};
+
+export type UpdateGroupAssignmentInput = {
+  id: string,
+  groupId?: string | null,
+  garmentId?: string | null,
+};
+
+export type DeleteGroupAssignmentInput = {
+  id: string,
+};
+
 export type CreatePaletteInput = {
   id?: string | null,
   hatColor: string,
@@ -139,8 +203,8 @@ export type ModelPaletteConditionInput = {
   topColor?: ModelStringInput | null,
   bottomColor?: ModelStringInput | null,
   shoeColor?: ModelStringInput | null,
-  and?: Array< ModelPaletteConditionInput | null > | null,
-  or?: Array< ModelPaletteConditionInput | null > | null,
+  and?: Array<ModelPaletteConditionInput | null> | null,
+  or?: Array<ModelPaletteConditionInput | null> | null,
   not?: ModelPaletteConditionInput | null,
 };
 
@@ -175,8 +239,8 @@ export type CreateComplexionInput = {
 
 export type ModelComplexionConditionInput = {
   complexion?: ModelStringInput | null,
-  and?: Array< ModelComplexionConditionInput | null > | null,
-  or?: Array< ModelComplexionConditionInput | null > | null,
+  and?: Array<ModelComplexionConditionInput | null> | null,
+  or?: Array<ModelComplexionConditionInput | null> | null,
   not?: ModelComplexionConditionInput | null,
 };
 
@@ -204,8 +268,8 @@ export type ModelGarmentFilterInput = {
   color?: ModelStringInput | null,
   brand?: ModelStringInput | null,
   name?: ModelStringInput | null,
-  and?: Array< ModelGarmentFilterInput | null > | null,
-  or?: Array< ModelGarmentFilterInput | null > | null,
+  and?: Array<ModelGarmentFilterInput | null> | null,
+  or?: Array<ModelGarmentFilterInput | null> | null,
   not?: ModelGarmentFilterInput | null,
 };
 
@@ -218,7 +282,7 @@ export type ModelIDInput = {
   gt?: string | null,
   contains?: string | null,
   notContains?: string | null,
-  between?: Array< string | null > | null,
+  between?: Array<string | null> | null,
   beginsWith?: string | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
@@ -227,7 +291,7 @@ export type ModelIDInput = {
 
 export type ModelGarmentConnection = {
   __typename: "ModelGarmentConnection",
-  items:  Array<Garment | null >,
+  items: Array<Garment | null>,
   nextToken?: string | null,
 };
 
@@ -237,14 +301,43 @@ export type ModelOutfitFilterInput = {
   topId?: ModelStringInput | null,
   bottomId?: ModelStringInput | null,
   shoeId?: ModelStringInput | null,
-  and?: Array< ModelOutfitFilterInput | null > | null,
-  or?: Array< ModelOutfitFilterInput | null > | null,
+  and?: Array<ModelOutfitFilterInput | null> | null,
+  or?: Array<ModelOutfitFilterInput | null> | null,
   not?: ModelOutfitFilterInput | null,
 };
 
 export type ModelOutfitConnection = {
   __typename: "ModelOutfitConnection",
-  items:  Array<Outfit | null >,
+  items: Array<Outfit | null>,
+  nextToken?: string | null,
+};
+
+export type ModelGroupFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  and?: Array<ModelGroupFilterInput | null> | null,
+  or?: Array<ModelGroupFilterInput | null> | null,
+  not?: ModelGroupFilterInput | null,
+};
+
+export type ModelGroupConnection = {
+  __typename: "ModelGroupConnection",
+  items: Array<Group | null>,
+  nextToken?: string | null,
+};
+
+export type ModelGroupAssignmentFilterInput = {
+  id?: ModelIDInput | null,
+  groupId?: ModelStringInput | null,
+  garmentId?: ModelStringInput | null,
+  and?: Array<ModelGroupAssignmentFilterInput | null> | null,
+  or?: Array<ModelGroupAssignmentFilterInput | null> | null,
+  not?: ModelGroupAssignmentFilterInput | null,
+};
+
+export type ModelGroupAssignmentConnection = {
+  __typename: "ModelGroupAssignmentConnection",
+  items: Array<GroupAssignment | null>,
   nextToken?: string | null,
 };
 
@@ -254,28 +347,28 @@ export type ModelPaletteFilterInput = {
   topColor?: ModelStringInput | null,
   bottomColor?: ModelStringInput | null,
   shoeColor?: ModelStringInput | null,
-  and?: Array< ModelPaletteFilterInput | null > | null,
-  or?: Array< ModelPaletteFilterInput | null > | null,
+  and?: Array<ModelPaletteFilterInput | null> | null,
+  or?: Array<ModelPaletteFilterInput | null> | null,
   not?: ModelPaletteFilterInput | null,
 };
 
 export type ModelPaletteConnection = {
   __typename: "ModelPaletteConnection",
-  items:  Array<Palette | null >,
+  items: Array<Palette | null>,
   nextToken?: string | null,
 };
 
 export type ModelComplexionFilterInput = {
   id?: ModelIDInput | null,
   complexion?: ModelStringInput | null,
-  and?: Array< ModelComplexionFilterInput | null > | null,
-  or?: Array< ModelComplexionFilterInput | null > | null,
+  and?: Array<ModelComplexionFilterInput | null> | null,
+  or?: Array<ModelComplexionFilterInput | null> | null,
   not?: ModelComplexionFilterInput | null,
 };
 
 export type ModelComplexionConnection = {
   __typename: "ModelComplexionConnection",
-  items:  Array<Complexion | null >,
+  items: Array<Complexion | null>,
   nextToken?: string | null,
 };
 
@@ -285,8 +378,8 @@ export type ModelSubscriptionGarmentFilterInput = {
   color?: ModelSubscriptionStringInput | null,
   brand?: ModelSubscriptionStringInput | null,
   name?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
-  or?: Array< ModelSubscriptionGarmentFilterInput | null > | null,
+  and?: Array<ModelSubscriptionGarmentFilterInput | null> | null,
+  or?: Array<ModelSubscriptionGarmentFilterInput | null> | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -298,10 +391,10 @@ export type ModelSubscriptionIDInput = {
   gt?: string | null,
   contains?: string | null,
   notContains?: string | null,
-  between?: Array< string | null > | null,
+  between?: Array<string | null> | null,
   beginsWith?: string | null,
-  in?: Array< string | null > | null,
-  notIn?: Array< string | null > | null,
+  in?: Array<string | null> | null,
+  notIn?: Array<string | null> | null,
 };
 
 export type ModelSubscriptionStringInput = {
@@ -313,10 +406,10 @@ export type ModelSubscriptionStringInput = {
   gt?: string | null,
   contains?: string | null,
   notContains?: string | null,
-  between?: Array< string | null > | null,
+  between?: Array<string | null> | null,
   beginsWith?: string | null,
-  in?: Array< string | null > | null,
-  notIn?: Array< string | null > | null,
+  in?: Array<string | null> | null,
+  notIn?: Array<string | null> | null,
 };
 
 export type ModelSubscriptionOutfitFilterInput = {
@@ -325,8 +418,23 @@ export type ModelSubscriptionOutfitFilterInput = {
   topId?: ModelSubscriptionStringInput | null,
   bottomId?: ModelSubscriptionStringInput | null,
   shoeId?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
-  or?: Array< ModelSubscriptionOutfitFilterInput | null > | null,
+  and?: Array<ModelSubscriptionOutfitFilterInput | null> | null,
+  or?: Array<ModelSubscriptionOutfitFilterInput | null> | null,
+};
+
+export type ModelSubscriptionGroupFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  and?: Array<ModelSubscriptionGroupFilterInput | null> | null,
+  or?: Array<ModelSubscriptionGroupFilterInput | null> | null,
+};
+
+export type ModelSubscriptionGroupAssignmentFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  groupId?: ModelSubscriptionStringInput | null,
+  garmentId?: ModelSubscriptionStringInput | null,
+  and?: Array<ModelSubscriptionGroupAssignmentFilterInput | null> | null,
+  or?: Array<ModelSubscriptionGroupAssignmentFilterInput | null> | null,
 };
 
 export type ModelSubscriptionPaletteFilterInput = {
@@ -335,15 +443,15 @@ export type ModelSubscriptionPaletteFilterInput = {
   topColor?: ModelSubscriptionStringInput | null,
   bottomColor?: ModelSubscriptionStringInput | null,
   shoeColor?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionPaletteFilterInput | null > | null,
-  or?: Array< ModelSubscriptionPaletteFilterInput | null > | null,
+  and?: Array<ModelSubscriptionPaletteFilterInput | null> | null,
+  or?: Array<ModelSubscriptionPaletteFilterInput | null> | null,
 };
 
 export type ModelSubscriptionComplexionFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   complexion?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionComplexionFilterInput | null > | null,
-  or?: Array< ModelSubscriptionComplexionFilterInput | null > | null,
+  and?: Array<ModelSubscriptionComplexionFilterInput | null> | null,
+  or?: Array<ModelSubscriptionComplexionFilterInput | null> | null,
 };
 
 export type CreateGarmentMutationVariables = {
@@ -352,7 +460,7 @@ export type CreateGarmentMutationVariables = {
 };
 
 export type CreateGarmentMutation = {
-  createGarment?:  {
+  createGarment?: {
     __typename: "Garment",
     id: string,
     area: string,
@@ -371,7 +479,7 @@ export type UpdateGarmentMutationVariables = {
 };
 
 export type UpdateGarmentMutation = {
-  updateGarment?:  {
+  updateGarment?: {
     __typename: "Garment",
     id: string,
     area: string,
@@ -390,7 +498,7 @@ export type DeleteGarmentMutationVariables = {
 };
 
 export type DeleteGarmentMutation = {
-  deleteGarment?:  {
+  deleteGarment?: {
     __typename: "Garment",
     id: string,
     area: string,
@@ -409,7 +517,7 @@ export type CreateOutfitMutationVariables = {
 };
 
 export type CreateOutfitMutation = {
-  createOutfit?:  {
+  createOutfit?: {
     __typename: "Outfit",
     id: string,
     hatId: string,
@@ -428,7 +536,7 @@ export type UpdateOutfitMutationVariables = {
 };
 
 export type UpdateOutfitMutation = {
-  updateOutfit?:  {
+  updateOutfit?: {
     __typename: "Outfit",
     id: string,
     hatId: string,
@@ -447,7 +555,7 @@ export type DeleteOutfitMutationVariables = {
 };
 
 export type DeleteOutfitMutation = {
-  deleteOutfit?:  {
+  deleteOutfit?: {
     __typename: "Outfit",
     id: string,
     hatId: string,
@@ -460,13 +568,112 @@ export type DeleteOutfitMutation = {
   } | null,
 };
 
+export type CreateGroupMutationVariables = {
+  input: CreateGroupInput,
+  condition?: ModelGroupConditionInput | null,
+};
+
+export type CreateGroupMutation = {
+  createGroup?: {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type UpdateGroupMutationVariables = {
+  input: UpdateGroupInput,
+  condition?: ModelGroupConditionInput | null,
+};
+
+export type UpdateGroupMutation = {
+  updateGroup?: {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type DeleteGroupMutationVariables = {
+  input: DeleteGroupInput,
+  condition?: ModelGroupConditionInput | null,
+};
+
+export type DeleteGroupMutation = {
+  deleteGroup?: {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type CreateGroupAssignmentMutationVariables = {
+  input: CreateGroupAssignmentInput,
+  condition?: ModelGroupAssignmentConditionInput | null,
+};
+
+export type CreateGroupAssignmentMutation = {
+  createGroupAssignment?: {
+    __typename: "GroupAssignment",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type UpdateGroupAssignmentMutationVariables = {
+  input: UpdateGroupAssignmentInput,
+  condition?: ModelGroupAssignmentConditionInput | null,
+};
+
+export type UpdateGroupAssignmentMutation = {
+  updateGroupAssignment?: {
+    __typename: "GroupAssignment",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type DeleteGroupAssignmentMutationVariables = {
+  input: DeleteGroupAssignmentInput,
+  condition?: ModelGroupAssignmentConditionInput | null,
+};
+
+export type DeleteGroupAssignmentMutation = {
+  deleteGroupAssignment?: {
+    __typename: "GroupAssignment",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
 export type CreatePaletteMutationVariables = {
   input: CreatePaletteInput,
   condition?: ModelPaletteConditionInput | null,
 };
 
 export type CreatePaletteMutation = {
-  createPalette?:  {
+  createPalette?: {
     __typename: "Palette",
     id: string,
     hatColor: string,
@@ -485,7 +692,7 @@ export type UpdatePaletteMutationVariables = {
 };
 
 export type UpdatePaletteMutation = {
-  updatePalette?:  {
+  updatePalette?: {
     __typename: "Palette",
     id: string,
     hatColor: string,
@@ -504,7 +711,7 @@ export type DeletePaletteMutationVariables = {
 };
 
 export type DeletePaletteMutation = {
-  deletePalette?:  {
+  deletePalette?: {
     __typename: "Palette",
     id: string,
     hatColor: string,
@@ -523,7 +730,7 @@ export type CreateComplexionMutationVariables = {
 };
 
 export type CreateComplexionMutation = {
-  createComplexion?:  {
+  createComplexion?: {
     __typename: "Complexion",
     id: string,
     complexion: string,
@@ -539,7 +746,7 @@ export type UpdateComplexionMutationVariables = {
 };
 
 export type UpdateComplexionMutation = {
-  updateComplexion?:  {
+  updateComplexion?: {
     __typename: "Complexion",
     id: string,
     complexion: string,
@@ -555,7 +762,7 @@ export type DeleteComplexionMutationVariables = {
 };
 
 export type DeleteComplexionMutation = {
-  deleteComplexion?:  {
+  deleteComplexion?: {
     __typename: "Complexion",
     id: string,
     complexion: string,
@@ -570,7 +777,7 @@ export type GetGarmentQueryVariables = {
 };
 
 export type GetGarmentQuery = {
-  getGarment?:  {
+  getGarment?: {
     __typename: "Garment",
     id: string,
     area: string,
@@ -590,9 +797,9 @@ export type ListGarmentsQueryVariables = {
 };
 
 export type ListGarmentsQuery = {
-  listGarments?:  {
+  listGarments?: {
     __typename: "ModelGarmentConnection",
-    items:  Array< {
+    items: Array<{
       __typename: "Garment",
       id: string,
       area: string,
@@ -602,7 +809,7 @@ export type ListGarmentsQuery = {
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
-    } | null >,
+    } | null>,
     nextToken?: string | null,
   } | null,
 };
@@ -612,7 +819,7 @@ export type GetOutfitQueryVariables = {
 };
 
 export type GetOutfitQuery = {
-  getOutfit?:  {
+  getOutfit?: {
     __typename: "Outfit",
     id: string,
     hatId: string,
@@ -632,9 +839,9 @@ export type ListOutfitsQueryVariables = {
 };
 
 export type ListOutfitsQuery = {
-  listOutfits?:  {
+  listOutfits?: {
     __typename: "ModelOutfitConnection",
-    items:  Array< {
+    items: Array<{
       __typename: "Outfit",
       id: string,
       hatId: string,
@@ -644,7 +851,81 @@ export type ListOutfitsQuery = {
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
-    } | null >,
+    } | null>,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetGroupQueryVariables = {
+  id: string,
+};
+
+export type GetGroupQuery = {
+  getGroup?: {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type ListGroupsQueryVariables = {
+  filter?: ModelGroupFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListGroupsQuery = {
+  listGroups?: {
+    __typename: "ModelGroupConnection",
+    items: Array<{
+      __typename: "Group",
+      id: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null>,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetGroupAssignmentQueryVariables = {
+  id: string,
+};
+
+export type GetGroupAssignmentQuery = {
+  getGroupAssignment?: {
+    __typename: "GroupAssignment",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type ListGroupAssignmentsQueryVariables = {
+  filter?: ModelGroupAssignmentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListGroupAssignmentsQuery = {
+  listGroupAssignments?: {
+    __typename: "ModelGroupAssignmentConnection",
+    items: Array<{
+      __typename: "GroupAssignment",
+      id: string,
+      groupId: string,
+      garmentId: string,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null>,
     nextToken?: string | null,
   } | null,
 };
@@ -654,7 +935,7 @@ export type GetPaletteQueryVariables = {
 };
 
 export type GetPaletteQuery = {
-  getPalette?:  {
+  getPalette?: {
     __typename: "Palette",
     id: string,
     hatColor: string,
@@ -674,9 +955,9 @@ export type ListPalettesQueryVariables = {
 };
 
 export type ListPalettesQuery = {
-  listPalettes?:  {
+  listPalettes?: {
     __typename: "ModelPaletteConnection",
-    items:  Array< {
+    items: Array<{
       __typename: "Palette",
       id: string,
       hatColor: string,
@@ -686,7 +967,7 @@ export type ListPalettesQuery = {
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
-    } | null >,
+    } | null>,
     nextToken?: string | null,
   } | null,
 };
@@ -696,7 +977,7 @@ export type GetComplexionQueryVariables = {
 };
 
 export type GetComplexionQuery = {
-  getComplexion?:  {
+  getComplexion?: {
     __typename: "Complexion",
     id: string,
     complexion: string,
@@ -713,16 +994,16 @@ export type ListComplexionsQueryVariables = {
 };
 
 export type ListComplexionsQuery = {
-  listComplexions?:  {
+  listComplexions?: {
     __typename: "ModelComplexionConnection",
-    items:  Array< {
+    items: Array<{
       __typename: "Complexion",
       id: string,
       complexion: string,
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
-    } | null >,
+    } | null>,
     nextToken?: string | null,
   } | null,
 };
@@ -733,7 +1014,7 @@ export type OnCreateGarmentSubscriptionVariables = {
 };
 
 export type OnCreateGarmentSubscription = {
-  onCreateGarment?:  {
+  onCreateGarment?: {
     __typename: "Garment",
     id: string,
     area: string,
@@ -752,7 +1033,7 @@ export type OnUpdateGarmentSubscriptionVariables = {
 };
 
 export type OnUpdateGarmentSubscription = {
-  onUpdateGarment?:  {
+  onUpdateGarment?: {
     __typename: "Garment",
     id: string,
     area: string,
@@ -771,7 +1052,7 @@ export type OnDeleteGarmentSubscriptionVariables = {
 };
 
 export type OnDeleteGarmentSubscription = {
-  onDeleteGarment?:  {
+  onDeleteGarment?: {
     __typename: "Garment",
     id: string,
     area: string,
@@ -790,7 +1071,7 @@ export type OnCreateOutfitSubscriptionVariables = {
 };
 
 export type OnCreateOutfitSubscription = {
-  onCreateOutfit?:  {
+  onCreateOutfit?: {
     __typename: "Outfit",
     id: string,
     hatId: string,
@@ -809,7 +1090,7 @@ export type OnUpdateOutfitSubscriptionVariables = {
 };
 
 export type OnUpdateOutfitSubscription = {
-  onUpdateOutfit?:  {
+  onUpdateOutfit?: {
     __typename: "Outfit",
     id: string,
     hatId: string,
@@ -828,7 +1109,7 @@ export type OnDeleteOutfitSubscriptionVariables = {
 };
 
 export type OnDeleteOutfitSubscription = {
-  onDeleteOutfit?:  {
+  onDeleteOutfit?: {
     __typename: "Outfit",
     id: string,
     hatId: string,
@@ -841,13 +1122,112 @@ export type OnDeleteOutfitSubscription = {
   } | null,
 };
 
+export type OnCreateGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnCreateGroupSubscription = {
+  onCreateGroup?: {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnUpdateGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnUpdateGroupSubscription = {
+  onUpdateGroup?: {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnDeleteGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnDeleteGroupSubscription = {
+  onDeleteGroup?: {
+    __typename: "Group",
+    id: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnCreateGroupAssignmentSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupAssignmentFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnCreateGroupAssignmentSubscription = {
+  onCreateGroupAssignment?: {
+    __typename: "GroupAssignment",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnUpdateGroupAssignmentSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupAssignmentFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnUpdateGroupAssignmentSubscription = {
+  onUpdateGroupAssignment?: {
+    __typename: "GroupAssignment",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
+export type OnDeleteGroupAssignmentSubscriptionVariables = {
+  filter?: ModelSubscriptionGroupAssignmentFilterInput | null,
+  owner?: string | null,
+};
+
+export type OnDeleteGroupAssignmentSubscription = {
+  onDeleteGroupAssignment?: {
+    __typename: "GroupAssignment",
+    id: string,
+    groupId: string,
+    garmentId: string,
+    createdAt: string,
+    updatedAt: string,
+    owner?: string | null,
+  } | null,
+};
+
 export type OnCreatePaletteSubscriptionVariables = {
   filter?: ModelSubscriptionPaletteFilterInput | null,
   owner?: string | null,
 };
 
 export type OnCreatePaletteSubscription = {
-  onCreatePalette?:  {
+  onCreatePalette?: {
     __typename: "Palette",
     id: string,
     hatColor: string,
@@ -866,7 +1246,7 @@ export type OnUpdatePaletteSubscriptionVariables = {
 };
 
 export type OnUpdatePaletteSubscription = {
-  onUpdatePalette?:  {
+  onUpdatePalette?: {
     __typename: "Palette",
     id: string,
     hatColor: string,
@@ -885,7 +1265,7 @@ export type OnDeletePaletteSubscriptionVariables = {
 };
 
 export type OnDeletePaletteSubscription = {
-  onDeletePalette?:  {
+  onDeletePalette?: {
     __typename: "Palette",
     id: string,
     hatColor: string,
@@ -904,7 +1284,7 @@ export type OnCreateComplexionSubscriptionVariables = {
 };
 
 export type OnCreateComplexionSubscription = {
-  onCreateComplexion?:  {
+  onCreateComplexion?: {
     __typename: "Complexion",
     id: string,
     complexion: string,
@@ -920,7 +1300,7 @@ export type OnUpdateComplexionSubscriptionVariables = {
 };
 
 export type OnUpdateComplexionSubscription = {
-  onUpdateComplexion?:  {
+  onUpdateComplexion?: {
     __typename: "Complexion",
     id: string,
     complexion: string,
@@ -936,7 +1316,7 @@ export type OnDeleteComplexionSubscriptionVariables = {
 };
 
 export type OnDeleteComplexionSubscription = {
-  onDeleteComplexion?:  {
+  onDeleteComplexion?: {
     __typename: "Complexion",
     id: string,
     complexion: string,
